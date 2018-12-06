@@ -1,0 +1,28 @@
+svg {
+    border: 1px solid #777;
+    border-top: none;
+    border-left: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+svg * {
+    pointer-events: fill;
+}
+svg line {
+    pointer-events: visibleStroke;
+    /* cursor: crosshair; */
+}
+svg text {
+    cursor: default;
+    user-select: none;
+}
+#tools {
+    pointer-events: none;
+}
+#tools * {
+    pointer-events: none;
+}
+#artboard.interactive-points svg {
+    cursor: crosshair;
+}

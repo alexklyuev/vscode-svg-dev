@@ -1,0 +1,93 @@
+{
+    "name": "vscode-svg-dev",
+    "displayName": "vscode-svg-dev",
+    "description": "SVG visual editor",
+    "version": "0.7.0",
+    "publisher": "kontrail",
+    "engines": {
+        "vscode": "^1.29.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onCommand:svgDevNew",
+        "onView:svgDevToolsTreeView",
+        "onWebviewPanel:svgDevPanel"
+    ],
+    "main": "./out/extension",
+    "contributes": {
+        "keybindings": [
+            {
+                "key": "escape",
+                "when": "svgDevAddInteractive",
+                "command": "svgDevCancel"
+            },
+            {
+                "key": "delete",
+                "mac": "backspace",
+                "when": "svgDevActive",
+                "command": "svgDevElementCommandDelete"
+            }
+        ],
+        "commands": [
+            {
+                "command": "svgDevNew",
+                "title": "SVG Dev: New"
+            },
+            {
+                "command": "svgDevAddCircle",
+                "title": "SVG Dev: Add Circle"
+            },
+            {
+                "command": "svgDevZoomIn",
+                "title": "SVG Dev: Zoom In"
+            },
+            {
+                "command": "svgDevZoomOut",
+                "title": "SVG Dev: Zoom Out"
+            },
+            {
+                "command": "svgDevFromOpen",
+                "title": "SVG Dev: Edit"
+            }
+        ],
+        "views": {
+            "explorer": [
+                {
+                    "id": "svgDevToolsTreeView",
+                    "name": "SVG Tools"
+                }
+            ]
+        },
+        "menus": {
+            "editor/title": [
+                {
+                    "when": "editorLangId == xml",
+                    "command": "svgDevFromOpen",
+                    "group": "navigation"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "npm run compile:extension || npm run compile:web",
+        "watch": "tsc -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "test": "npm run compile && node ./node_modules/vscode/bin/test",
+        "compile:extension": "tsc -p ./",
+        "compile:web": "webpack --config src/client/webpack.config.js",
+        "compile:web:watch": "npm run compile:web -- --watch"
+    },
+    "devDependencies": {
+        "@types/mocha": "^2.2.42",
+        "@types/node": "^7.0.43",
+        "awesome-typescript-loader": "^5.2.1",
+        "tslint": "^5.8.0",
+        "typescript": "^2.6.1",
+        "vscode": "^1.1.6",
+        "webpack": "^4.20.2",
+        "webpack-cli": "^3.1.2"
+    }
+}
