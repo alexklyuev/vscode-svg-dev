@@ -18,3 +18,4 @@ Currently in early preview.
 - docs
 - visual transform
 - visual editing modes (transform/by key attrs)
+- beacon mode

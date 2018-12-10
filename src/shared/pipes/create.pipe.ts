@@ -33,6 +33,8 @@ export type ElementsDict = {
         y1: string,
         y2: string,
     } & ColorAttrs,
+    polygon: {} & ColorAttrs,
+    polyline: {} & ColorAttrs,
 };
 
 export class CreatePipeRequest<T extends keyof ElementsDict> {

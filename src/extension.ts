@@ -139,6 +139,11 @@ export function activate(context: vscode.ExtensionContext) {
         {command: {title: 'Add Line', command: 'svgDevAddInteractive', arguments: ['line']}},
     );
     toolbox.register(
+        new ToolGroup('Poly'),
+        {command: {title: 'Add Polygon', command: 'svgDevAddInteractive', arguments: ['polygon']}},
+        {command: {title: 'Add Polyline', command: 'svgDevAddInteractive', arguments: ['polyline']}},
+    );
+    toolbox.register(
         new ToolGroup('Text'),
         {command: {title: 'Add', command: 'svgDevAddText'}},
         {command: {title: 'Edit', command: 'svgDevRemoteAttributeInput', arguments: ['innerText']}},
