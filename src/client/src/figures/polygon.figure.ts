@@ -28,7 +28,7 @@ export class PolygonFigure implements Figure<SVGPolygonElement> {
     create(_elementName: 'polygon', _attributest: {[K: string]: string}) {
         let points = Array<[[number, number], [number, number]]>();
         this.artboard.box.classList.add('interactive-points');
-        let toolsSvg: SVGSVGElement | null = null;
+        let toolsSvgRemover: null | (() => void) = null;
         this.userEventMan.mode = 'interactive';
         const pointsListener = (event: MouseEvent) => {
             const { clientX, clientY } = event;
@@ -37,18 +37,20 @@ export class PolygonFigure implements Figure<SVGPolygonElement> {
                 [clientX, scrollLeft],
                 [clientY, scrollTop],
             ]);
-            if (toolsSvg) {
-                this.artboard.tools.removeChild(toolsSvg);
+            if (toolsSvgRemover instanceof Function) {
+                toolsSvgRemover();
+                toolsSvgRemover = null;
             }
-            toolsSvg = this.renderTools(points);
+            toolsSvgRemover = this.renderTools(points);
         };
         window.addEventListener('click', pointsListener);
         const stop = () => {
             window.removeEventListener('click', pointsListener);
             this.cancelListener.removeCallback(stop);
             this.artboard.box.classList.remove('interactive-points');
-            if (toolsSvg) {
-                this.artboard.tools.removeChild(toolsSvg);
+            if (toolsSvgRemover instanceof Function) {
+                toolsSvgRemover();
+                toolsSvgRemover = null;
             }
             this.userEventMan.mode = 'pick';
             this.render(points);
@@ -61,12 +63,12 @@ export class PolygonFigure implements Figure<SVGPolygonElement> {
         poly.setAttribute('stroke', '#777');
         poly.setAttribute('fill', '#555');
         poly.setAttribute('points', points.map(([[cX, sX], [cY, sY]]) => {
-            return `${cX + sX},${cY + sY}`;
+            return `${(cX + sX) / this.zoom.value},${(cY + sY) / this.zoom.value}`;
         }).join(' '));
         this.artboard.svg.appendChild(poly);
     }
 
-    renderTools(points: Array<[[number, number], [number, number]]>): SVGSVGElement {
+    renderTools(points: Array<[[number, number], [number, number]]>) {
         const { scrollLeft, scrollTop } = document.scrollingElement!;
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         const artboardBox = this.artboard.svg.getBoundingClientRect();
@@ -80,7 +82,63 @@ export class PolygonFigure implements Figure<SVGPolygonElement> {
             left: artboardBox.left + scrollLeft + 'px',
         });
         this.artboard.tools.appendChild(svg);
-        return svg;
+        points.forEach(([[cX, sX], [cY, sY]], index) => {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', `${cX + sX}`);
+            circle.setAttribute('cy', `${cY + sY}`);
+            circle.setAttribute('r', `${3}`);
+            circle.setAttribute('fill', 'none');
+            circle.setAttribute('stroke', '#777');
+            circle.setAttribute('stroke-dasharray', '1');
+            svg.appendChild(circle);
+            if (index > 0) {
+                const [[cXprev, sXprev], [cYprev, sYprev]] = points[index - 1];
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                const attrs: {[K: string]: string} = {
+                    'stroke': '#777',
+                    'stroke-dasharray': '1',
+                    'x1': `${cXprev + sXprev}`,
+                    'y1': `${cYprev + sYprev}`,
+                    'x2': `${cX + sX}`,
+                    'y2': `${cY + sY}`,
+                };
+                Object.keys(attrs).forEach(key => {
+                    const val = attrs[key];
+                    line.setAttribute(key, val);
+                });
+                svg.appendChild(line);
+            }
+        });
+        let mousemoveRemover = () => {};
+        if (points.length > 0) {
+            const [[cX, sX], [cY, sY]] = points[points.length - 1];
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            svg.appendChild(line);
+            const attrs: {[K: string]: string} = {
+                'stroke': '#777',
+                'stroke-dasharray': '1',
+                'x1': `${cX + sX}`,
+                'y1': `${cY + sY}`,
+                'x2': `${cX + sX}`,
+                'y2': `${cY + sY}`,
+            };
+            Object.keys(attrs).forEach(key => {
+                const val = attrs[key];
+                line.setAttribute(key, val);
+            });
+            const onMousemove = (event: MouseEvent) => {
+                const { clientX, clientY } = event;
+                const { scrollLeft, scrollTop } = document.scrollingElement!;
+                line.setAttribute('x2', `${clientX + scrollLeft}`);
+                line.setAttribute('y2', `${clientY + scrollTop}`);
+            };
+            window.addEventListener('mousemove', onMousemove);
+            mousemoveRemover = () => window.removeEventListener('mousemove', onMousemove);
+        }
+        return () => {
+            mousemoveRemover();
+            this.artboard.tools.removeChild(svg);
+        };
     }
 
 }
