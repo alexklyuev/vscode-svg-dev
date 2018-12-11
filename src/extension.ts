@@ -231,7 +231,9 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('svgDevArtboardViewBox', async () => {
             artboardConnection.ifConnected(async viewBoxHost => {
                 const { value } = await viewBoxHost.makeGetRequest({property: 'viewBox'});
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                 const newValue = await vscode.window.showInputBox({value: value!});
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                 if (newValue) {
                     viewBoxHost.makeSetRequest({property: 'viewBox', value: newValue});
                 }
@@ -242,7 +244,9 @@ export function activate(context: vscode.ExtensionContext) {
                 const { content } = await endpoint.makeGetRequest({});
                 if (content) {
                     const document = await vscode.workspace.openTextDocument({content});
+                    await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                     vscode.window.showTextDocument(document, vscode.ViewColumn.Beside);
+                    await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                 }
             });
         }),
@@ -254,7 +258,9 @@ export function activate(context: vscode.ExtensionContext) {
             });
         }),
         vscode.commands.registerCommand('svgDevAddText', async () => {
+            await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
             const innerText = await vscode.window.showInputBox();
+            await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
             if (innerText) {
                 vscode.commands.executeCommand('svgDevAdd', 'text', {innerText});
             }
@@ -287,7 +293,9 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('svgDevArtboardWidth', async () => {
             artboardConnection.ifConnected(async artboardHost => {
                 const { value } = await artboardHost.makeGetRequest({property: 'width'});
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                 const newValue = await vscode.window.showInputBox({value: value!});
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                 if (newValue) {
                     artboardHost.makeSetRequest({property: 'width', value: newValue});
                 }
@@ -296,7 +304,9 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('svgDevArtboardHeight', async () => {
             artboardConnection.ifConnected(async artboardHost => {
                 const { value } = await artboardHost.makeGetRequest({property: 'height'});
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                 const newValue = await vscode.window.showInputBox({value: value!});
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                 if (newValue) {
                     artboardHost.makeSetRequest({property: 'height', value: newValue});
                 }
@@ -312,7 +322,9 @@ export function activate(context: vscode.ExtensionContext) {
         }),
         vscode.commands.registerCommand('svgDevStyleAdd', async () => {
             remoteAttributeConnnection.ifConnected(async endpoint => {
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                 const directive = await vscode.window.showInputBox({prompt: 'Css directive - `name: value`'});
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                 if (directive && directive.indexOf(':') > -1) {
                     const {value: style} = await endpoint.makeGetRequest({attribute: 'style'});
                     if (style) {
@@ -334,11 +346,15 @@ export function activate(context: vscode.ExtensionContext) {
                     .filter(t => !!t)
                     .filter(t => t.indexOf(':') > -1)
                     .map(t => t.split(':', 2).map(t => t.trim()));
+                    await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                     const picked = await vscode.window.showQuickPick(rules.map(([label, detail]) => {
                         return {label, detail};
                     }));
+                    await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                     if (picked) {
+                        await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                         const newValue = await vscode.window.showInputBox({value: picked.detail});
+                        await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                         const newRules = rules.map(([label, detail]) => {
                             if (label === picked.label && detail === picked.detail) {
                                 return [label, newValue];
@@ -362,9 +378,11 @@ export function activate(context: vscode.ExtensionContext) {
                     .filter(t => !!t)
                     .filter(t => t.indexOf(':') > -1)
                     .map(t => t.split(':', 2).map(t => t.trim()));
+                    await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                     const picked = await vscode.window.showQuickPick(rules.map(([label, detail]) => {
                         return {label, detail};
                     }));
+                    await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                     if (picked) {
                         const newRules = rules
                         .map(([label, detail]) => {
