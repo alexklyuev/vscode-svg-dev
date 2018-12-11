@@ -13,6 +13,7 @@ import { cancelListener } from "../listeners";
 import { userEventMan } from "../services/user-event";
 import { PolygonFigure } from "./polygon.figure";
 import { DraggerPoints } from "../services/dragger/dragger-points";
+import { PolylineFigure } from "./polyline.figure";
 
 
 const figuresCollection = new FiguresCollection();
@@ -32,6 +33,7 @@ figuresCollection.add(
     new GFigure(draggerDelegate, artboard),
     new LineFigure(draggerDouble, artboard, zoom, cancelListener, userEventMan),
     new PolygonFigure(draggerPoints, artboard, zoom, cancelListener, userEventMan),
+    new PolylineFigure(draggerPoints, artboard, zoom, cancelListener, userEventMan),
 );
 
 export { figuresCollection };

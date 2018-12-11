@@ -4,7 +4,7 @@ Trying to build visual svg editor.
 Currently in early preview.
 
 ## Todo
-- polyline figure
+- shift point mod for poly
 - poly points remote attribute
 - line points attribute (x1, y1, x2, y2)
 - path figure
