@@ -137,11 +137,16 @@ export function activate(context: vscode.ExtensionContext) {
     toolbox.register(
         new ToolGroup('Line'),
         {command: {title: 'Add Line', command: 'svgDevAddInteractive', arguments: ['line']}},
+        {command: {title: 'X1', command: 'svgDevRemoteAttributeInput', arguments: ['x1']}},
+        {command: {title: 'Y1', command: 'svgDevRemoteAttributeInput', arguments: ['y1']}},
+        {command: {title: 'X2', command: 'svgDevRemoteAttributeInput', arguments: ['x2']}},
+        {command: {title: 'Y2', command: 'svgDevRemoteAttributeInput', arguments: ['y2']}},
     );
     toolbox.register(
         new ToolGroup('Poly'),
         {command: {title: 'Add Polygon', command: 'svgDevAddInteractive', arguments: ['polygon']}},
         {command: {title: 'Add Polyline', command: 'svgDevAddInteractive', arguments: ['polyline']}},
+        {command: {title: 'Points', command: 'svgDevRemoteAttributeInput', arguments: ['points']}},
     );
     toolbox.register(
         new ToolGroup('Text'),
@@ -298,9 +303,11 @@ export function activate(context: vscode.ExtensionContext) {
             });
         }),
         vscode.commands.registerCommand('svgDevRemoteAttributeInput', async (attribute: string) => {
-            remoteAttributeConnnection.ifConnected(async remoteAttributeHost => {
+            await remoteAttributeConnnection.ifConnected(async remoteAttributeHost => {
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                 const remote = new RemoteAttributeInput(remoteAttributeHost, attribute);
                 await remote.change();
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
             });
         }),
         vscode.commands.registerCommand('svgDevStyleAdd', async () => {

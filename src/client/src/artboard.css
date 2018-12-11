@@ -1,10 +1,8 @@
 svg {
-    border: 1px solid #777;
-    border-top: none;
-    border-left: none;
     position: absolute;
     top: 0px;
     left: 0px;
+    outline: 1px dotted #777;
 }
 svg * {
     pointer-events: fill;
