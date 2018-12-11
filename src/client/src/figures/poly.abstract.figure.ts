@@ -32,12 +32,23 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         let toolsSvgRemover: null | (() => void) = null;
         this.userEventMan.mode = 'interactive';
         const pointsListener = (event: MouseEvent) => {
-            const { clientX, clientY } = event;
+            const { clientX, clientY, shiftKey } = event;
             const { scrollLeft, scrollTop } = document.scrollingElement!;
-            points.push([
+            const point: [[number, number], [number, number]] = [
                 [clientX, scrollLeft],
                 [clientY, scrollTop],
-            ]);
+            ];
+            if (points.length > 0 && shiftKey) {
+                const [[cx,], [cy,]] = points[points.length - 1];
+                const deltax = Math.abs(clientX - cx);
+                const deltay = Math.abs(clientY - cy);
+                if (deltax < deltay) {
+                    point[0] = [cx, scrollLeft];
+                } else {
+                    point[1] = [cy, scrollTop];
+                }
+            }
+            points.push(point);
             if (toolsSvgRemover instanceof Function) {
                 toolsSvgRemover();
                 toolsSvgRemover = null;
@@ -128,10 +139,25 @@ export abstract class PolyFigure implements Figure<SVGElement> {
                 line.setAttribute(key, val);
             });
             const onMousemove = (event: MouseEvent) => {
-                const { clientX, clientY } = event;
+                const { clientX, clientY, shiftKey } = event;
                 const { scrollLeft, scrollTop } = document.scrollingElement!;
-                line.setAttribute('x2', `${clientX + scrollLeft}`);
-                line.setAttribute('y2', `${clientY + scrollTop}`);
+                const points: {[K: string]: string} = {
+                    'x2': `${clientX + scrollLeft}`,
+                    'y2': `${clientY + scrollTop}`,
+                };
+                if (shiftKey) {
+                    const absDeltaX = Math.abs(clientX - cX);
+                    const absDeltaY = Math.abs(clientY - cY);
+                    if (absDeltaX < absDeltaY) {
+                        points.x2 = `${cX + sX}`;
+                    } else {
+                        points.y2 = `${cY + sY}`;
+                    }
+                }
+                Object.keys(points).forEach(key => {
+                    const val = points[key];
+                    line.setAttribute(key, val);
+                });
             };
             window.addEventListener('mousemove', onMousemove);
             mousemoveRemover = () => window.removeEventListener('mousemove', onMousemove);
