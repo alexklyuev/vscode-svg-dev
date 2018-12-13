@@ -52,11 +52,20 @@
                 "title": "SVG Dev: Edit"
             }
         ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "title": "SVG Dev",
+                    "id": "svgDev",
+                    "icon": "images/svgdev0.svg"
+                }
+            ]
+        },
         "views": {
-            "explorer": [
+            "svgDev": [
                 {
                     "id": "svgDevToolsTreeView",
-                    "name": "SVG Tools"
+                    "name": "Tools"
                 }
             ]
         },

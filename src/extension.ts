@@ -23,7 +23,7 @@ import { RectAddTool } from './tools/rect/rect-add.tool';
 import { RectRxTool } from './tools/rect/rect-rx.tool';
 import { RectRyTool } from './tools/rect/rect-ry.tool';
 import { FlushTool } from './tools/document/flush.tool';
-import { RemoteAttributeInput } from './services/remote-attribute-input/remote-attribute-input';
+import { RemoteAttributeInput } from './services/inputs/remote-attribute-input';
 import { Connection } from './services/connection/connection';
 import { HostEndpoint } from './services/host-endpoint/host-endpoint';
 import { remoteAttributePipe } from './shared/pipes/remote-attribute.pipe';
@@ -39,6 +39,16 @@ import { pickPipe } from './shared/pipes/pick.pipe';
 import { StatusBarItem, StatusBarAlignment } from 'vscode';
 import { groupPipe } from './shared/pipes/group.pipe';
 import { cancelPipe } from './shared/pipes/cancel.pipe';
+import { BaseInput } from './services/inputs/ base-input';
+import { DeleteTool } from './tools/element/delete.tool';
+import { IdTool } from './tools/element/id.tool';
+import { GroupTool } from './tools/group/group.tool';
+import { UngroupTool } from './tools/group/ungroup.tool';
+import { CircleAdd } from './tools/circle/circle-add.tool';
+import { CircleRadiusTool } from './tools/circle/circle-radius.tool';
+import { EllipseRxTool } from './tools/ellipse/rx.tool';
+import { AddEllipseTool } from './tools/ellipse/add-ellipse.tool';
+import { EllipseRyTool } from './tools/ellipse/ry.tool';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -94,7 +104,6 @@ export function activate(context: vscode.ExtensionContext) {
     const webappTemplate = new WebappTemplate(assetsManager);
     const editor = new Editor(webappTemplate, contextManager, connections);
 
-
     assetsManager.addScript('src', 'client', 'build', 'main.js');
     assetsManager.addStyle('src', 'client', 'src', 'artboard.css');
 
@@ -107,24 +116,24 @@ export function activate(context: vscode.ExtensionContext) {
     );
     toolbox.register(
         new ToolGroup('Element'),
-        {command: {title: 'Delete', command: 'svgDevElementCommand', arguments: ['delete']}},
-        {command: {title: 'Id', command: 'svgDevRemoteAttributeInput', arguments: ['id']}},
+        new DeleteTool(),
+        new IdTool(),
     );
     toolbox.register(
         new ToolGroup('Group'),
-        {command: {title: 'Group selection', command: 'svgDevGroup', arguments: ['group']}},
-        {command: {title: 'Ungroup', command: 'svgDevGroup', arguments: ['ungroup']}},
+        new GroupTool(),
+        new UngroupTool(),
     );
     toolbox.register(
         new ToolGroup('Circle'),
-        {command: {title: 'Add Circle', command: 'svgDevAdd', arguments: ['circle']}},
-        {command: {title: 'Radius', command: 'svgDevRemoteAttributeInput', arguments: ['r']}},
+        new CircleAdd(),
+        new CircleRadiusTool(),
     );
     toolbox.register(
         new ToolGroup('Ellipse'),
-        {command: {title: 'Add Ellipse', command: 'svgDevAdd', arguments: ['ellipse']}},
-        {command: {title: 'Rx', command: 'svgDevRemoteAttributeInput', arguments: ['rx']}},
-        {command: {title: 'Ry', command: 'svgDevRemoteAttributeInput', arguments: ['ry']}},
+        new AddEllipseTool(),
+        new EllipseRxTool(),
+        new EllipseRyTool(),
     );
     toolbox.register(
         new ToolGroup('Rect'),
@@ -158,6 +167,7 @@ export function activate(context: vscode.ExtensionContext) {
         new DefaultZoom(),
         new ZoomIn(),
         new ZoomOut(),
+        {command: {title: 'Set value', command: 'svgDevZoom'}},
     );
     toolbox.register(
         new ToolGroup('Artboard'),
@@ -189,7 +199,6 @@ export function activate(context: vscode.ExtensionContext) {
         {command: {title: 'Edit', command: 'svgDevStyleEdit'}},
     );
 
-
     vscode.window.registerTreeDataProvider(
         'svgDevToolsTreeView',
         new ToolsTreeProvider(toolbox),
@@ -206,6 +215,7 @@ export function activate(context: vscode.ExtensionContext) {
             await editor.activate(panel);
             const hostEndpoint = new HostEndpoint(panel);
             connections.forEach(con => con.connect(hostEndpoint));
+            // @deprecated
             loggerConnection.ifConnected(hostLogger => {
                 hostLogger.listenSetRequest(
                     _request => true,
@@ -244,9 +254,7 @@ export function activate(context: vscode.ExtensionContext) {
                 const { content } = await endpoint.makeGetRequest({});
                 if (content) {
                     const document = await vscode.workspace.openTextDocument({content});
-                    await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                     vscode.window.showTextDocument(document, vscode.ViewColumn.Beside);
-                    await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                 }
             });
         }),
@@ -274,6 +282,14 @@ export function activate(context: vscode.ExtensionContext) {
                 endpoint.makeSetRequest('cancel');
             });
             vscode.commands.executeCommand('setContext', 'svgDevAddInteractive', false);
+        }),
+        vscode.commands.registerCommand('svgDevZoom', () => {
+            zoomConnection.ifConnected(async endpoint => {
+                const input = new BaseInput();
+                const value = await input.get({prompt: 'Set value in percents'});
+                const abs = (parseInt(value!) || 100) / 100;
+                endpoint.makeSetRequest({abs});
+            });
         }),
         vscode.commands.registerCommand('svgDevZoomIn', () => {
             zoomConnection.ifConnected(endpoint => {
@@ -314,10 +330,8 @@ export function activate(context: vscode.ExtensionContext) {
         }),
         vscode.commands.registerCommand('svgDevRemoteAttributeInput', async (attribute: string) => {
             await remoteAttributeConnnection.ifConnected(async remoteAttributeHost => {
-                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                 const remote = new RemoteAttributeInput(remoteAttributeHost, attribute);
                 await remote.change();
-                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
             });
         }),
         vscode.commands.registerCommand('svgDevStyleAdd', async () => {

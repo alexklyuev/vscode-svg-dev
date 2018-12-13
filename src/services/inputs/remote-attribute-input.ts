@@ -17,7 +17,9 @@ export class RemoteAttributeInput<Attribute extends string> {
 
     async change() {
         const { value } = await this.remoteAttribute.get();
+        await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
         const newValue = await vscode.window.showInputBox({value: value || ''});
+        await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
         this.remoteAttribute.set(newValue || '');
     }
 
