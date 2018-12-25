@@ -41,11 +41,15 @@
             },
             {
                 "command": "svgDevZoomIn",
-                "title": "SVG Dev: Zoom In"
+                "title": "Zoom In"
             },
             {
                 "command": "svgDevZoomOut",
-                "title": "SVG Dev: Zoom Out"
+                "title": "Zoom Out"
+            },
+            {
+                "command": "svgDevDefaultZoom",
+                "title": "Zoom 100%"
             },
             {
                 "command": "svgDevFromOpen",
@@ -74,6 +78,21 @@
                 {
                     "when": "editorLangId == xml",
                     "command": "svgDevFromOpen",
+                    "group": "navigation"
+                },
+                {
+                    "when": "svgDevActive",
+                    "command": "svgDevZoomIn",
+                    "group": "navigation"
+                },
+                {
+                    "when": "svgDevActive",
+                    "command": "svgDevZoomOut",
+                    "group": "navigation"
+                },
+                {
+                    "when": "svgDevActive",
+                    "command": "svgDevDefaultZoom",
                     "group": "navigation"
                 }
             ]
