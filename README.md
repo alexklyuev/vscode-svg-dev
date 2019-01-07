@@ -17,3 +17,4 @@ Currently in early preview.
 - visual transform
 - visual editing modes (transform/by key attrs)
 - beacon mode
+- move artboard

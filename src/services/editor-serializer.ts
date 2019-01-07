@@ -1,6 +1,6 @@
 import { WebviewPanelSerializer, WebviewPanel } from "vscode";
 import { Editor } from "./editor";
-import { Connection } from "./connection/connection";
+import { PipeConnection } from "./connection/pipe-connection";
 import { HostEndpoint } from "./host-endpoint/host-endpoint";
 
 
@@ -8,7 +8,7 @@ export class EditorSerializer implements WebviewPanelSerializer {
 
     constructor(
         private editor: Editor,
-        private connections: Connection<any, any, any>[],
+        private connections: PipeConnection<any, any, any>[],
     ) {}
 
     async deserializeWebviewPanel(webviewPanel: WebviewPanel, state: string): Promise<void> {

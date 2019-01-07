@@ -3,7 +3,7 @@ import { WebviewPanel } from 'vscode';
 import { ContextManager } from './context-manager';
 import { AppContext } from '../app-context.type';
 import { Template } from '../models/template.model';
-import { Connection } from './connection/connection';
+import { PipeConnection } from './connection/pipe-connection';
 import { HostEndpoint } from './host-endpoint/host-endpoint';
 
 
@@ -18,7 +18,7 @@ export class Editor {
     constructor(
         private readonly template: Template,
         private readonly contextManager: ContextManager<AppContext>,
-        private connections: Connection<any, any, any>[],
+        private connections: PipeConnection<any, any, any>[],
     ) {}
 
     /**

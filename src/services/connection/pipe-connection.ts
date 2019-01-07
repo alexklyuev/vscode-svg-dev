@@ -1,8 +1,9 @@
 import { Pipe, PipeEndpoint } from "../../shared/services/pipe/pipe";
 import { HostEndpoint } from "../host-endpoint/host-endpoint";
+import { Connection } from "./connection.interface";
 
 
-export class Connection<Req, Res, Tag extends string> {
+export class PipeConnection<Req, Res, Tag extends string> implements Connection<PipeEndpoint<Req, Res, Tag>> {
 
     private endpoint: PipeEndpoint<Req, Res, Tag> | null = null;
 

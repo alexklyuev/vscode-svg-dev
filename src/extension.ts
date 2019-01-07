@@ -24,7 +24,7 @@ import { RectRxTool } from './tools/rect/rect-rx.tool';
 import { RectRyTool } from './tools/rect/rect-ry.tool';
 import { FlushTool } from './tools/document/flush.tool';
 import { RemoteAttributeInput } from './services/inputs/remote-attribute-input';
-import { Connection } from './services/connection/connection';
+import { PipeConnection } from './services/connection/pipe-connection';
 import { HostEndpoint } from './services/host-endpoint/host-endpoint';
 import { remoteAttributePipe } from './shared/pipes/remote-attribute.pipe';
 import { artboardPipe } from './shared/pipes/artboard.pipe';
@@ -53,19 +53,19 @@ import { EllipseRyTool } from './tools/ellipse/ry.tool';
 
 export function activate(context: vscode.ExtensionContext) {
 
-    const pickConnection = new Connection(pickPipe);
-    const remoteAttributeConnnection = new Connection(remoteAttributePipe);
-    const artboardConnection = new Connection(artboardPipe);
-    const loggerConnection = new Connection(loggerPipe);
-    const zoomConnection = new Connection(zoomPipe);
-    const createConnection = new Connection(createPipe);
-    const flushConnection = new Connection(flushPipe);
-    const arrangeConnection = new Connection(arrangePipe);
-    const elementConnection = new Connection(elementPipe);
-    const groupConnection = new Connection(groupPipe);
-    const cancelConnection = new Connection(cancelPipe);
+    const pickConnection = new PipeConnection(pickPipe);
+    const remoteAttributeConnnection = new PipeConnection(remoteAttributePipe);
+    const artboardConnection = new PipeConnection(artboardPipe);
+    const loggerConnection = new PipeConnection(loggerPipe);
+    const zoomConnection = new PipeConnection(zoomPipe);
+    const createConnection = new PipeConnection(createPipe);
+    const flushConnection = new PipeConnection(flushPipe);
+    const arrangeConnection = new PipeConnection(arrangePipe);
+    const elementConnection = new PipeConnection(elementPipe);
+    const groupConnection = new PipeConnection(groupPipe);
+    const cancelConnection = new PipeConnection(cancelPipe);
 
-    const connections: Connection<any, any, any>[] = [
+    const connections: PipeConnection<any, any, any>[] = [
         remoteAttributeConnnection,
         artboardConnection,
         loggerConnection,
