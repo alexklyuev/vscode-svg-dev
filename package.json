@@ -24,6 +24,11 @@
                 "command": "svgDevCancel"
             },
             {
+                "key": "enter",
+                "when": "svgDevAddInteractive",
+                "command": "svgDevCancel"
+            },
+            {
                 "key": "delete",
                 "mac": "backspace",
                 "when": "svgDevActive && !svgDevHostInput",

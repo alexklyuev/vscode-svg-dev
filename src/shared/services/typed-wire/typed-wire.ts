@@ -31,7 +31,7 @@ export interface SenderFn<
 /**
  * //
  */
-export class TypedSocketEndpoint<
+export class TypedWireEndpoint<
     Tag extends string,
     Request,
     Response,
@@ -147,7 +147,7 @@ export class TypedSocketEndpoint<
 /**
  * //
  */
-export class TypedSocket<
+export class TypedWire<
     Tag extends string,
     Request,
     Response,
@@ -165,8 +165,8 @@ export class TypedSocket<
     createEndpoint(
         listenerFn: ListenerFn<Tag, Request, Response>,
         senderFn: SenderFn<Tag, Request, Response>,
-    ): TypedSocketEndpoint<Tag, Request, Response> {
-        return new TypedSocketEndpoint(
+    ): TypedWireEndpoint<Tag, Request, Response> {
+        return new TypedWireEndpoint(
             this.tag,
             this.RequestDataClass,
             this.ResponseDataClass,
@@ -177,8 +177,43 @@ export class TypedSocket<
 
 }
 
-export const zoomts = new TypedSocket(
+export const zoomTW = new TypedWire(
     'zoom',
     createDataClass<number>(),
     createDataClass<null>(),
 );
+
+const obs = {
+    callbacks: Array<(value: any) => void>(),
+    on(cb: (value: any) => void) {
+        this.callbacks.push(cb);
+    },
+    emit(value: any) {
+        this.callbacks.forEach(cb => cb(value));
+    },
+};
+
+export const store = Object.create(null, {
+    state: {
+        val: null,
+        set(value) {
+            this.val = value;
+            obs.emit(value);
+        },
+        get() {
+            return this.val;
+        },
+    },
+});
+
+export function createListenerFn<A extends string, B, C>(): ListenerFn<A, B, C> {
+    return () => {
+        return () => {};
+    };
+}
+
+export function createSenderFn<A extends string, B, C>(): SenderFn<A, B, C> {
+    return () => {};
+}
+
+
