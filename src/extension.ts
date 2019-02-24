@@ -104,8 +104,10 @@ export function activate(context: vscode.ExtensionContext) {
     const webappTemplate = new WebappTemplate(assetsManager);
     const editor = new Editor(webappTemplate, contextManager, connections);
 
-    assetsManager.addScript('src', 'client', 'build', 'main.js');
-    assetsManager.addStyle('src', 'client', 'src', 'artboard.css');
+    // assetsManager.addScript('src', 'client', 'build', 'main.js');
+    // assetsManager.addStyle('src', 'client', 'src', 'artboard.css');
+    assetsManager.addScript('out', 'client', 'build', 'main.js');
+    assetsManager.addStyle('out', 'client', 'build', 'artboard.css');
 
     const toolbox = new Toolbox(assetsManager);
 

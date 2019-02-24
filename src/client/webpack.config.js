@@ -6,7 +6,7 @@ const webpack = require('webpack');
  * @returns {webpack.Configuration}
  */
 module.exports = {
-    mode: 'development',
+    mode: 'production',
     entry: __dirname + '/main.ts',
     output: {
         path: __dirname,
