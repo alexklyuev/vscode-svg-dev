@@ -2,8 +2,12 @@
     "name": "vscode-svg-dev",
     "displayName": "vscode-svg-dev",
     "description": "SVG visual editor",
-    "version": "0.7.0",
+    "version": "0.7.4",
     "publisher": "kontrail",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/alexklyuev/vscode-svg-dev"
+    },
     "engines": {
         "vscode": "^1.29.0"
     },
@@ -105,7 +109,7 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
-        "compile": "npm run compile:extension || npm run compile:web",
+        "compile": "rm -rf ./out && npm run compile:extension && npm run compile:web && mkdir ./out/client && mkdir ./out/client/build && cp ./src/client/build/main.js ./out/client/build/main.js",
         "watch": "tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "npm run compile && node ./node_modules/vscode/bin/test",

@@ -14,18 +14,24 @@ export interface ListenerFn<
     (callback: (data: any) => void): () => void;
 }
 
+export type SenderData<
+    Tag extends string,
+    Request,
+    Response,
+> = {
+    [K in Tag]: {
+        [M in RequestMethods]?: Request
+    } | {
+        [M in ResponseMethods]?: Response
+    }
+};
+
 export interface SenderFn<
     Tag extends string,
     Request,
     Response,
 > {
-    (data: {
-        [K in Tag]: {
-            [M in RequestMethods]?: Request
-        } | {
-            [M in ResponseMethods]?: Response
-        }
-    }): void;
+    (data: SenderData<Tag, Request, Response>): void;
 }
 
 /**
@@ -80,7 +86,7 @@ export class TypedWireEndpoint<
                     resolve(data[this.tag].response);
                 }
             });
-            const payload = {[this.tag]: {get: request}};
+            const payload: SenderData<Tag, Request, Response> = {[this.tag]: {get: request}} as SenderData<Tag, Request, Response>;
             this.senderFn(payload);
         });
     }
@@ -89,7 +95,7 @@ export class TypedWireEndpoint<
      * Make set request
      */
     set(request: Request) {
-        const payload = {[this.tag]: {set: request}};
+        const payload: SenderData<Tag, Request, Response> = {[this.tag]: {set: request}} as SenderData<Tag, Request, Response>;
         this.senderFn(payload);
     }
 
@@ -106,12 +112,12 @@ export class TypedWireEndpoint<
                 if (response instanceof Promise) {
                     (async () => {
                         try {
-                            const payload = {[this.tag]: {response: await response}};
+                            const payload: SenderData<Tag, Request, Response> = {[this.tag]: {response: await response}} as SenderData<Tag, Request, Response>;
                             this.senderFn(payload);
                         } catch {}
                     })();
                 } else {
-                    const payload = {[this.tag]: {response}};
+                    const payload: SenderData<Tag, Request, Response> = {[this.tag]: {response}} as SenderData<Tag, Request, Response>;
                     this.senderFn(payload);
                 }
             }
@@ -183,37 +189,35 @@ export const zoomTW = new TypedWire(
     createDataClass<null>(),
 );
 
-const obs = {
-    callbacks: Array<(value: any) => void>(),
+const ee = {
+    callbacks: new Set<(value: any) => void>(),
     on(cb: (value: any) => void) {
-        this.callbacks.push(cb);
+        this.callbacks.add(cb);
+    },
+    off(cb: (value: any) => void) {
+        this.callbacks.delete(cb);
     },
     emit(value: any) {
         this.callbacks.forEach(cb => cb(value));
     },
 };
 
-export const store = Object.create(null, {
-    state: {
-        val: null,
-        set(value) {
-            this.val = value;
-            obs.emit(value);
-        },
-        get() {
-            return this.val;
-        },
-    },
-});
-
 export function createListenerFn<A extends string, B, C>(): ListenerFn<A, B, C> {
-    return () => {
-        return () => {};
+    return fn => {
+        const callback = (value: B) => fn(value);
+        ee.on(callback);
+        return () => ee.off(callback);
     };
 }
 
 export function createSenderFn<A extends string, B, C>(): SenderFn<A, B, C> {
-    return () => {};
+    return data => {
+        ee.emit(data);
+    };
 }
+
+export const hostZoomTW = zoomTW.createEndpoint(createListenerFn(), createSenderFn());
+
+export const clientZoomTW = zoomTW.createEndpoint(createListenerFn(), createSenderFn());
 
 

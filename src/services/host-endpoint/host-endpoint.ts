@@ -1,6 +1,6 @@
 import { WebviewPanel } from "vscode";
 import { Pipe, PipeEndpoint } from "../../shared/services/pipe/pipe";
-import { TypedSocket, TypedSocketEndpoint } from "../../shared/services/typed-socket/typed-socket";
+import { TypedWire, TypedWireEndpoint } from "../../shared/services/typed-wire/typed-wire";
 
 
 export class HostEndpoint {
@@ -27,8 +27,8 @@ export class HostEndpoint {
      * Create host typed socket endpoint
      * with host specific listener and sender functions
      */
-    createFromTypedSocket<Tag extends string, Req, Res>(typedSocket: TypedSocket<Tag, Req, Res>): TypedSocketEndpoint<Tag, Req, Res> {
-        return typedSocket.createEndpoint(
+    createFromTypedWire<Tag extends string, Req, Res>(typedWire: TypedWire<Tag, Req, Res>): TypedWireEndpoint<Tag, Req, Res> {
+        return typedWire.createEndpoint(
             fn => {
                 const disposable = this.panel!.webview.onDidReceiveMessage(fn);
                 return () => disposable.dispose();
