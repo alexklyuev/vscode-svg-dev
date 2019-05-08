@@ -109,13 +109,14 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
-        "compile": "rm -rf ./out && npm run compile:extension && npm run compile:web && mkdir -p ./out/client/build && cp ./src/client/build/main.js ./out/client/build/main.js && cp ./src/client/src/artboard.css ./out/client/build/artboard.css",
-        "watch": "tsc -watch -p ./",
+        "compile": "rm -rf ./out && npm run compile:extension && npm run compile:web && npm run styles",
+        "watch": "npm run styles && tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "npm run compile && node ./node_modules/vscode/bin/test",
         "compile:extension": "tsc -p ./",
         "compile:web": "webpack --config src/client/webpack.config.js",
-        "compile:web:watch": "npm run compile:web -- --watch"
+        "compile:web:watch": "npm run compile:web -- --watch",
+        "styles": "cp ./src/client/src/artboard.css ./out/client/build/artboard.css"
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
