@@ -1,6 +1,6 @@
 // @ts-check
 
-const webpack = require('webpack');
+const path = require('path');
 
 /**
  * @returns {webpack.Configuration}
@@ -9,7 +9,7 @@ module.exports = {
     mode: 'production',
     entry: __dirname + '/main.ts',
     output: {
-        path: __dirname,
+        path: path.resolve(__dirname, '../../out/client'),
         filename: 'build/main.js'
     },
     module: {
