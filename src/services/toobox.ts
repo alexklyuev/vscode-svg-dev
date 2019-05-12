@@ -1,4 +1,3 @@
-import { AssetsManager } from './assets-manager';
 import { Tool } from '../models/tool.model';
 import { EventEmitter } from 'vscode';
 import { ToolGroup } from '../entities/tool-group';
@@ -8,11 +7,6 @@ export class Toolbox {
     private map = new Map<ToolGroup, Tool[]>();
 
     public changeEventEmitter = new EventEmitter<null>();
-
-    constructor(
-        public readonly assetsManager: AssetsManager,
-    ) {}
-
 
     register(group: ToolGroup, ...tools: Tool[]) {
         if (!this.map.has(group)) {
