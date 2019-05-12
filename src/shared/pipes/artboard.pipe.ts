@@ -1,7 +1,7 @@
 import { Pipe } from "../services/pipe/pipe";
 
 /**
- * Artboard
+ * Artboard attributes
  */
 export type ArtboardRequest = {property: string; value?: string};
 export type ArtboardResponse = {value: string | null};
