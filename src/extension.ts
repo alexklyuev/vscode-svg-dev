@@ -28,6 +28,7 @@ import { PipeConnection } from './services/connection/pipe-connection';
 import { HostEndpoint } from './services/host-endpoint/host-endpoint';
 import { remoteAttributePipe } from './shared/pipes/remote-attribute.pipe';
 import { artboardPipe } from './shared/pipes/artboard.pipe';
+import { artboardStylePipe } from './shared/pipes/artboard-style.pipe';
 import { loggerPipe } from './shared/pipes/logger.pipe';
 import { zoomPipe } from './shared/pipes/zoom.pipe';
 import { createPipe, CreatePipeRequest, ElementsDict } from './shared/pipes/create.pipe';
@@ -56,6 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
     const pickConnection = new PipeConnection(pickPipe);
     const remoteAttributeConnnection = new PipeConnection(remoteAttributePipe);
     const artboardConnection = new PipeConnection(artboardPipe);
+    const artboardStyleConnection = new PipeConnection(artboardStylePipe);
     const loggerConnection = new PipeConnection(loggerPipe);
     const zoomConnection = new PipeConnection(zoomPipe);
     const createConnection = new PipeConnection(createPipe);
@@ -68,6 +70,7 @@ export function activate(context: vscode.ExtensionContext) {
     const connections: PipeConnection<any, any, any>[] = [
         remoteAttributeConnnection,
         artboardConnection,
+        artboardStyleConnection,
         loggerConnection,
         zoomConnection,
         createConnection,
@@ -104,8 +107,6 @@ export function activate(context: vscode.ExtensionContext) {
     const webappTemplate = new WebappTemplate(assetsManager);
     const editor = new Editor(webappTemplate, contextManager, connections);
 
-    // assetsManager.addScript('src', 'client', 'build', 'main.js');
-    // assetsManager.addStyle('src', 'client', 'src', 'artboard.css');
     assetsManager.addScript('out', 'client', 'build', 'main.js');
     assetsManager.addStyle('out', 'client', 'build', 'artboard.css');
 
@@ -176,6 +177,7 @@ export function activate(context: vscode.ExtensionContext) {
         new ArtboardWidth(),
         new ArtboardHeight(),
         {command: {title: 'viewbox', command: 'svgDevArtboardViewBox'}},
+        {command: {title: 'Set style', command: 'svgDevArtboardStyleAdd'}},
     );
     toolbox.register(
         new ToolGroup('Color'), 
@@ -334,6 +336,15 @@ export function activate(context: vscode.ExtensionContext) {
             await remoteAttributeConnnection.ifConnected(async remoteAttributeHost => {
                 const remote = new RemoteAttributeInput(remoteAttributeHost, attribute);
                 await remote.change();
+            });
+        }),
+        vscode.commands.registerCommand('svgDevArtboardStyleAdd', async () => {
+            artboardStyleConnection.ifConnected(async artboardStyleHost => {
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
+                const styleDirective = await vscode.window.showInputBox({prompt: 'Css directive - `name: value`'});
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
+                const [ styleName, styleValue ] = styleDirective!.split(':').map(str => str.trim());
+                artboardStyleHost.makeSetRequest({styleName, styleValue});
             });
         }),
         vscode.commands.registerCommand('svgDevStyleAdd', async () => {
