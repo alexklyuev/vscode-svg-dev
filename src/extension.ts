@@ -4,83 +4,37 @@ import { AssetsManager } from './services/assets-manager';
 import { Editor } from './services/editor';
 import { ContextManager } from './services/context-manager';
 import { AppContext } from './app-context.type';
-import { Toolbox } from './services/toobox';
 import { ToolsTreeProvider } from './services/tools-tree-provider';
-import { ToolGroup } from './entities/tool-group';
-import { ZoomIn } from './tools/zoom/zoom-in.tool';
-import { ZoomOut } from './tools/zoom/zoom-out.tool';
-import { NewDocument } from './tools/document/new.tool';
-import { DefaultZoom } from './tools/zoom/default-zoom.tool';
-import { ArtboardWidth } from './tools/document/artboard-width.tool';
-import { ArtboardHeight } from './tools/document/artboard-height.tool';
-import { Fill } from './tools/color/fill.tool';
-import { Stroke } from './tools/color/stroke.tool';
-import { StrokeWidth } from './tools/stroke/stroke-width.tool';
-import { StrokeDasharray } from './tools/stroke/stroke-dasharray.tool';
-import { RectWidthTool } from './tools/rect/rect-width.tool';
-import { RectHeightTool } from './tools/rect/rect-height.tool';
-import { RectAddTool } from './tools/rect/rect-add.tool';
-import { RectRxTool } from './tools/rect/rect-rx.tool';
-import { RectRyTool } from './tools/rect/rect-ry.tool';
-import { FlushTool } from './tools/document/flush.tool';
 import { RemoteAttributeInput } from './services/inputs/remote-attribute-input';
-import { PipeConnection } from './services/connection/pipe-connection';
 import { HostEndpoint } from './services/host-endpoint/host-endpoint';
-import { remoteAttributePipe } from './shared/pipes/remote-attribute.pipe';
-import { artboardPipe } from './shared/pipes/artboard.pipe';
-import { artboardStylePipe } from './shared/pipes/artboard-style.pipe';
-import { loggerPipe } from './shared/pipes/logger.pipe';
-import { zoomPipe } from './shared/pipes/zoom.pipe';
-import { createPipe, CreatePipeRequest, ElementsDict } from './shared/pipes/create.pipe';
+import { CreatePipeRequest, ElementsDict } from './shared/pipes/create.pipe';
 import { EditorSerializer } from './services/editor-serializer';
-import { flushPipe } from './shared/pipes/flush.pipe';
-import { arrangePipe, ArrangePipeRequest } from './shared/pipes/arrange.pipe';
-import { elementPipe, ElementCommand } from './shared/pipes/element.pipe';
-import { pickPipe } from './shared/pipes/pick.pipe';
+import { ArrangePipeRequest } from './shared/pipes/arrange.pipe';
+import { ElementCommand } from './shared/pipes/element.pipe';
 import { StatusBarItem, StatusBarAlignment } from 'vscode';
-import { groupPipe } from './shared/pipes/group.pipe';
-import { cancelPipe } from './shared/pipes/cancel.pipe';
 import { BaseInput } from './services/inputs/ base-input';
-import { DeleteTool } from './tools/element/delete.tool';
-import { IdTool } from './tools/element/id.tool';
-import { GroupTool } from './tools/group/group.tool';
-import { UngroupTool } from './tools/group/ungroup.tool';
-import { CircleAdd } from './tools/circle/circle-add.tool';
-import { CircleRadiusTool } from './tools/circle/circle-radius.tool';
-import { EllipseRxTool } from './tools/ellipse/rx.tool';
-import { AddEllipseTool } from './tools/ellipse/add-ellipse.tool';
-import { EllipseRyTool } from './tools/ellipse/ry.tool';
+
+
+import { toolbox } from './tools';
+
+import {
+    connections,
+    pickConnection,
+    loggerConnection,
+    artboardConnection,
+    flushConnection,
+    createConnection,
+    cancelConnection,
+    zoomConnection,
+    remoteAttributeConnnection,
+    artboardStyleConnection,
+    arrangeConnection,
+    elementConnection,
+    groupConnection,
+} from './services/connection';
 
 
 export function activate(context: vscode.ExtensionContext) {
-
-    const pickConnection = new PipeConnection(pickPipe);
-    const remoteAttributeConnnection = new PipeConnection(remoteAttributePipe);
-    const artboardConnection = new PipeConnection(artboardPipe);
-    const artboardStyleConnection = new PipeConnection(artboardStylePipe);
-    const loggerConnection = new PipeConnection(loggerPipe);
-    const zoomConnection = new PipeConnection(zoomPipe);
-    const createConnection = new PipeConnection(createPipe);
-    const flushConnection = new PipeConnection(flushPipe);
-    const arrangeConnection = new PipeConnection(arrangePipe);
-    const elementConnection = new PipeConnection(elementPipe);
-    const groupConnection = new PipeConnection(groupPipe);
-    const cancelConnection = new PipeConnection(cancelPipe);
-
-    const connections: PipeConnection<any, any, any>[] = [
-        remoteAttributeConnnection,
-        artboardConnection,
-        artboardStyleConnection,
-        loggerConnection,
-        zoomConnection,
-        createConnection,
-        flushConnection,
-        arrangeConnection,
-        elementConnection,
-        pickConnection,
-        groupConnection,
-        cancelConnection,
-    ];
 
     // TODO: isolate
     let statusBarItem: StatusBarItem | null = null;
@@ -109,99 +63,6 @@ export function activate(context: vscode.ExtensionContext) {
 
     assetsManager.addScript('out', 'client', 'build', 'main.js');
     assetsManager.addStyle('out', 'client', 'build', 'artboard.css');
-
-    const toolbox = new Toolbox(assetsManager);
-
-    toolbox.register(
-        new ToolGroup('Document'),
-        new NewDocument(),
-        new FlushTool()
-    );
-    toolbox.register(
-        new ToolGroup('Element'),
-        new DeleteTool(),
-        new IdTool(),
-    );
-    toolbox.register(
-        new ToolGroup('Group'),
-        new GroupTool(),
-        new UngroupTool(),
-    );
-    toolbox.register(
-        new ToolGroup('Circle'),
-        new CircleAdd(),
-        new CircleRadiusTool(),
-    );
-    toolbox.register(
-        new ToolGroup('Ellipse'),
-        new AddEllipseTool(),
-        new EllipseRxTool(),
-        new EllipseRyTool(),
-    );
-    toolbox.register(
-        new ToolGroup('Rect'),
-        new RectAddTool(),
-        new RectWidthTool(),
-        new RectHeightTool(),
-        new RectRxTool(),
-        new RectRyTool(),
-    );
-    toolbox.register(
-        new ToolGroup('Line'),
-        {command: {title: 'Add Line', command: 'svgDevAddInteractive', arguments: ['line']}},
-        {command: {title: 'X1', command: 'svgDevRemoteAttributeInput', arguments: ['x1']}},
-        {command: {title: 'Y1', command: 'svgDevRemoteAttributeInput', arguments: ['y1']}},
-        {command: {title: 'X2', command: 'svgDevRemoteAttributeInput', arguments: ['x2']}},
-        {command: {title: 'Y2', command: 'svgDevRemoteAttributeInput', arguments: ['y2']}},
-    );
-    toolbox.register(
-        new ToolGroup('Poly'),
-        {command: {title: 'Add Polygon', command: 'svgDevAddInteractive', arguments: ['polygon']}},
-        {command: {title: 'Add Polyline', command: 'svgDevAddInteractive', arguments: ['polyline']}},
-        {command: {title: 'Points', command: 'svgDevRemoteAttributeInput', arguments: ['points']}},
-    );
-    toolbox.register(
-        new ToolGroup('Text'),
-        {command: {title: 'Add', command: 'svgDevAddText'}},
-        {command: {title: 'Edit', command: 'svgDevRemoteAttributeInput', arguments: ['innerText']}},
-    );
-    toolbox.register(
-        new ToolGroup('Zoom'),
-        new DefaultZoom(),
-        new ZoomIn(),
-        new ZoomOut(),
-        {command: {title: 'Set value', command: 'svgDevZoom'}},
-    );
-    toolbox.register(
-        new ToolGroup('Artboard'),
-        new ArtboardWidth(),
-        new ArtboardHeight(),
-        {command: {title: 'viewbox', command: 'svgDevArtboardViewBox'}},
-        {command: {title: 'Set style', command: 'svgDevArtboardStyleAdd'}},
-    );
-    toolbox.register(
-        new ToolGroup('Color'), 
-        new Fill(), 
-        new Stroke(),
-    );
-    toolbox.register(
-        new ToolGroup('Stroke'),
-        new StrokeWidth(),
-        new StrokeDasharray()
-    );
-    toolbox.register(
-        new ToolGroup('Order'),
-        {command: {title: 'Bring to front', command: 'svgDevArrange', arguments: ['bringToFront']}},
-        {command: {title: 'Send to back', command: 'svgDevArrange', arguments: ['sendToBack']}},
-        {command: {title: 'Move forward', command: 'svgDevArrange', arguments: ['moveForward']}},
-        {command: {title: 'Move backward', command: 'svgDevArrange', arguments: ['moveBackward']}},
-    );
-    toolbox.register(
-        new ToolGroup('Style'),
-        {command: {title: 'Add', command: 'svgDevStyleAdd'}},
-        {command: {title: 'Remove', command: 'svgDevStyleRemove'}},
-        {command: {title: 'Edit', command: 'svgDevStyleEdit'}},
-    );
 
     vscode.window.registerTreeDataProvider(
         'svgDevToolsTreeView',
