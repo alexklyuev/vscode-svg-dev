@@ -5,6 +5,9 @@ import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 
 
+/**
+ * 
+ */
 export class ArtboardStyleListener {
     artboardStyleClient: PipeEndpoint<ArtboardStyleRequest, ArtboardStyleResponse, "artboard-style">;
 
@@ -16,6 +19,9 @@ export class ArtboardStyleListener {
         this.artboardStyleClient = this.webviewEndpoint.createFromPipe(this.artboardStylePipe);
     }
 
+    /**
+     * 
+     */
     listen() {
         this.artboardStyleClient.listenSetRequest(
             _request => this.artboard.svg,
@@ -25,9 +31,37 @@ export class ArtboardStyleListener {
         );
     }
 
+    /**
+     * 
+     */
     @setState
     setStyle(svg: SVGElement, styleName: string, styleValue: string) {
-        svg.style[styleName as any] = styleValue;
+        svg.style[this.fromCssToJsNotation(styleName) as any] = styleValue;
+    }
+
+    /**
+     * @todo move to dedicated service
+     */
+    fromCssToJsNotation(cssString: string): string {
+        return cssString.replace(/-\w/g, substr => {
+            return String.fromCharCode(substr.charCodeAt(1) - 32);
+        });
+    }
+
+    /**
+     * @todo move to dedicated service
+     */
+    fromJsToCssNotation(jsString: string): string {
+        let cssString = '';
+        for (let char of jsString) {
+            const code = char.charCodeAt(0);
+            if (code <= 90) {
+                cssString += '-' + String.fromCharCode(code + 32);
+            } else {
+                cssString += char;
+            }
+        }
+        return cssString;
     }
 
 }
