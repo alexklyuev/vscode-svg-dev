@@ -24,6 +24,7 @@ import { selection } from './src/services/selection';
 import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener } from './src/listeners';
 import { ArtboardStyleListener } from './src/listeners/artboard-style.listener';
+import { CssJsNotationConverter } from '../shared/services/css/css-js-notation-converter';
 
 
 /**
@@ -46,7 +47,7 @@ artboardListener.listen();
 /**
  * Webview artboard style pipe client
  */
-const artboardStyleListener = new ArtboardStyleListener(webviewEndpoint, artboardStylePipe, artboard);
+const artboardStyleListener = new ArtboardStyleListener(webviewEndpoint, artboardStylePipe, artboard, new CssJsNotationConverter());
 artboardStyleListener.listen();
 
 /**

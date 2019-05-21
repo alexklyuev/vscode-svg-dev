@@ -214,20 +214,20 @@ export function activate(context: vscode.ExtensionContext) {
                 const directive = await vscode.window.showInputBox({prompt: 'Css directive - `name: value`'});
                 await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                 if (directive && directive.indexOf(':') > -1) {
-                    const {value: style} = await endpoint.makeGetRequest({attribute: 'style'});
+                    const {value: style} = await endpoint.makeGetRequest({ attribute: 'style' });
                     if (style) {
                         const trimmedStyle = style.trim();
                         const newStyle = trimmedStyle[trimmedStyle.length - 1] === ';' ? `${trimmedStyle} ${directive}` : `${trimmedStyle}; ${directive}`;
-                        endpoint.makeSetRequest({attribute: 'style', value: newStyle});
+                        endpoint.makeSetRequest({ attribute: 'style', value: newStyle });
                     } else {
-                        endpoint.makeSetRequest({attribute: 'style', value: directive});
+                        endpoint.makeSetRequest({ attribute: 'style', value: directive });
                     }
                 }
             });
         }),
         vscode.commands.registerCommand('svgDevStyleEdit', async () => {
             remoteAttributeConnnection.ifConnected(async endpoint => {
-                const { value } = await endpoint.makeGetRequest({attribute: 'style'});
+                const { value } = await endpoint.makeGetRequest({ attribute: 'style' });
                 if (value) {
                     const rules = value.split(';')
                     .map(t => t.trim())
