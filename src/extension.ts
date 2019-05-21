@@ -12,22 +12,23 @@ import { EditorSerializer } from './services/editor-serializer';
 import { ArrangePipeRequest } from './shared/pipes/arrange.pipe';
 import { ElementCommand } from './shared/pipes/element.pipe';
 import { StatusBarItem, StatusBarAlignment } from 'vscode';
-import { BaseInput } from './services/inputs/ base-input';
+import { BaseInput } from './services/inputs/base-input';
 
 
 import { toolbox } from './tools';
 
 import {
-    connections,
+    connectionsManager,
     pickConnection,
     loggerConnection,
     artboardConnection,
+    artboardStyleConnection,
+    artboardMoveConnection,
     flushConnection,
     createConnection,
     cancelConnection,
     zoomConnection,
     remoteAttributeConnnection,
-    artboardStyleConnection,
     arrangeConnection,
     elementConnection,
     groupConnection,
@@ -59,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
     const contextManager = new ContextManager<AppContext>();
     const assetsManager = new AssetsManager(context.extensionPath);
     const webappTemplate = new WebappTemplate(assetsManager);
-    const editor = new Editor(webappTemplate, contextManager, connections);
+    const editor = new Editor(webappTemplate, contextManager, connectionsManager);
 
     assetsManager.addScript('out', 'client', 'build', 'main.js');
     assetsManager.addStyle('out', 'client', 'build', 'artboard.css');
@@ -71,7 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.window.registerWebviewPanelSerializer(
         editor.viewType,
-        new EditorSerializer(editor, connections),
+        new EditorSerializer(editor, connectionsManager),
     );
 
     context.subscriptions.push(
@@ -79,7 +80,7 @@ export function activate(context: vscode.ExtensionContext) {
             const panel = editor.create();
             await editor.activate(panel);
             const hostEndpoint = new HostEndpoint(panel);
-            connections.forEach(con => con.connect(hostEndpoint));
+            connectionsManager.each(connection => connection.connect(hostEndpoint));
             // @deprecated
             loggerConnection.ifConnected(hostLogger => {
                 hostLogger.listenSetRequest(
@@ -100,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
                 const panel = editor.create();
                 await editor.activate(panel, content);
                 const hostEndpoint = new HostEndpoint(panel);
-                connections.forEach(con => con.connect(hostEndpoint)); 
+                connectionsManager.each(connection => connection.connect(hostEndpoint));
             }
         }),
         vscode.commands.registerCommand('svgDevArtboardViewBox', async () => {
@@ -208,26 +209,36 @@ export function activate(context: vscode.ExtensionContext) {
                 artboardStyleHost.makeSetRequest({styleName, styleValue});
             });
         }),
+        vscode.commands.registerCommand('svgDevArtboardMoveOn', () => {
+            artboardMoveConnection.ifConnected(async host => {
+                host.makeSetRequest(true);
+            });
+        }),
+        vscode.commands.registerCommand('svgDevArtboardMoveOff', () => {
+            artboardMoveConnection.ifConnected(async host => {
+                host.makeSetRequest(false);
+            });
+        }),
         vscode.commands.registerCommand('svgDevStyleAdd', async () => {
             remoteAttributeConnnection.ifConnected(async endpoint => {
                 await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                 const directive = await vscode.window.showInputBox({prompt: 'Css directive - `name: value`'});
                 await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                 if (directive && directive.indexOf(':') > -1) {
-                    const {value: style} = await endpoint.makeGetRequest({attribute: 'style'});
+                    const {value: style} = await endpoint.makeGetRequest({ attribute: 'style' });
                     if (style) {
                         const trimmedStyle = style.trim();
                         const newStyle = trimmedStyle[trimmedStyle.length - 1] === ';' ? `${trimmedStyle} ${directive}` : `${trimmedStyle}; ${directive}`;
-                        endpoint.makeSetRequest({attribute: 'style', value: newStyle});
+                        endpoint.makeSetRequest({ attribute: 'style', value: newStyle });
                     } else {
-                        endpoint.makeSetRequest({attribute: 'style', value: directive});
+                        endpoint.makeSetRequest({ attribute: 'style', value: directive });
                     }
                 }
             });
         }),
         vscode.commands.registerCommand('svgDevStyleEdit', async () => {
             remoteAttributeConnnection.ifConnected(async endpoint => {
-                const { value } = await endpoint.makeGetRequest({attribute: 'style'});
+                const { value } = await endpoint.makeGetRequest({ attribute: 'style' });
                 if (value) {
                     const rules = value.split(';')
                     .map(t => t.trim())

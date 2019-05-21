@@ -3,8 +3,8 @@ import { WebviewPanel } from 'vscode';
 import { ContextManager } from './context-manager';
 import { AppContext } from '../app-context.type';
 import { Template } from '../models/template.model';
-import { PipeConnection } from './connection/pipe-connection';
 import { HostEndpoint } from './host-endpoint/host-endpoint';
+import { ConnectionsManager } from './connection/connections-manager';
 
 
 export class Editor {
@@ -13,12 +13,12 @@ export class Editor {
 
     public readonly viewType = 'svgDevPanel';
 
-    public title = 'SVG Dev';
+    public title = 'SVG';
 
     constructor(
         private readonly template: Template,
         private readonly contextManager: ContextManager<AppContext>,
-        private connections: PipeConnection<any, any, any>[],
+        private readonly connectionsMan: ConnectionsManager,
     ) {}
 
     /**
@@ -52,7 +52,7 @@ export class Editor {
             this.contextManager.set('svgDevActive', webviewPanel!.active);
             if (webviewPanel.active) {
                 const hostEndpoint = new HostEndpoint(webviewPanel);
-                this.connections.forEach(con => con.connect(hostEndpoint));
+                this.connectionsMan.each(connection => connection.connect(hostEndpoint));
             }
         });
         return this.contextManager.setMulti({

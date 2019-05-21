@@ -132,7 +132,7 @@ export class Pipe<
 > {
 
     constructor(
-        private tag: Tag,
+        public readonly tag: Tag,
     ) {}
 
     createEndpoint(

@@ -4,7 +4,7 @@ import { artboardStylePipe } from '../shared/pipes/artboard-style.pipe';
 import { remoteAttributePipe } from '../shared/pipes/remote-attribute.pipe';
 import { createPipe } from '../shared/pipes/create.pipe';
 import { flushPipe } from '../shared/pipes/flush.pipe';
-import { artboard } from './src/services/artboard';
+import { artboard, artboardMove } from './src/services/artboard';
 import { webviewEndpoint } from './src/services/endpoint';
 import { RemoteAttributeListener } from './src/listeners/remote-attribute.listener';
 import { ArtboardListener } from './src/listeners/artboard.listener';
@@ -24,7 +24,10 @@ import { selection } from './src/services/selection';
 import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener } from './src/listeners';
 import { ArtboardStyleListener } from './src/listeners/artboard-style.listener';
+import { CssJsNotationConverter } from '../shared/services/css/css-js-notation-converter';
 
+// 
+artboardMove.on();
 
 /**
  * 
@@ -46,7 +49,7 @@ artboardListener.listen();
 /**
  * Webview artboard style pipe client
  */
-const artboardStyleListener = new ArtboardStyleListener(webviewEndpoint, artboardStylePipe, artboard);
+const artboardStyleListener = new ArtboardStyleListener(webviewEndpoint, artboardStylePipe, artboard, new CssJsNotationConverter());
 artboardStyleListener.listen();
 
 /**

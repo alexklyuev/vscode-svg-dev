@@ -10,7 +10,8 @@ export class Artboard {
     private toolsElement: HTMLElement | null = null;
 
     constructor(
-    ) {}
+    ) {
+    }
 
     get svg(): SVGElement {
         if (!this.svgElement) {
