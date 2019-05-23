@@ -12,7 +12,7 @@ import { EditorSerializer } from './services/editor-serializer';
 import { ArrangePipeRequest } from './shared/pipes/arrange.pipe';
 import { ElementCommand } from './shared/pipes/element.pipe';
 import { StatusBarItem, StatusBarAlignment } from 'vscode';
-import { BaseInput } from './services/inputs/ base-input';
+import { BaseInput } from './services/inputs/base-input';
 
 
 import { toolbox } from './tools';
