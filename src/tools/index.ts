@@ -31,7 +31,9 @@ export const toolbox = new Toolbox();
 toolbox.register(
     new ToolGroup('Document'),
     new NewDocument(),
-    new FlushTool()
+    new FlushTool(),
+    {command: {title: 'Artboard move on', command: 'svgDevArtboardMoveOn'}},
+    {command: {title: 'Artboard move off', command: 'svgDevArtboardMoveOff'}},
 );
 toolbox.register(
     new ToolGroup('Element'),

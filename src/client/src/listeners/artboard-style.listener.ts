@@ -4,17 +4,18 @@ import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../../shared/pip
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 import { CssJsNotationConverter } from "../../../shared/services/css/css-js-notation-converter";
+import { PipeTags } from "../../../shared/pipes/tags";
 
 
 /**
  * 
  */
 export class ArtboardStyleListener {
-    private artboardStyleClient: PipeEndpoint<ArtboardStyleRequest, ArtboardStyleResponse, "artboard-style">;
+    private artboardStyleClient: PipeEndpoint<ArtboardStyleRequest, ArtboardStyleResponse, PipeTags.artboardStyle>;
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,
-        private artboardStylePipe: Pipe<ArtboardStyleRequest, ArtboardStyleResponse, 'artboard-style'>,
+        private artboardStylePipe: Pipe<ArtboardStyleRequest, ArtboardStyleResponse, PipeTags.artboardStyle>,
         private artboard: Artboard,
         private notationConverter: CssJsNotationConverter,
     ) {

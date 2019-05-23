@@ -11,12 +11,15 @@ import { arrangePipe } from "../../shared/pipes/arrange.pipe";
 import { elementPipe } from "../../shared/pipes/element.pipe";
 import { groupPipe } from "../../shared/pipes/group.pipe";
 import { cancelPipe } from "../../shared/pipes/cancel.pipe";
+import { artboardMovePipe } from "../../shared/pipes/artboard-move.pipe";
+import { ConnectionsManager } from "./connections-manager";
 
 
 export const pickConnection = new PipeConnection(pickPipe);
 export const remoteAttributeConnnection = new PipeConnection(remoteAttributePipe);
 export const artboardConnection = new PipeConnection(artboardPipe);
 export const artboardStyleConnection = new PipeConnection(artboardStylePipe);
+export const artboardMoveConnection = new PipeConnection(artboardMovePipe);
 export const loggerConnection = new PipeConnection(loggerPipe);
 export const zoomConnection = new PipeConnection(zoomPipe);
 export const createConnection = new PipeConnection(createPipe);
@@ -26,10 +29,11 @@ export const elementConnection = new PipeConnection(elementPipe);
 export const groupConnection = new PipeConnection(groupPipe);
 export const cancelConnection = new PipeConnection(cancelPipe);
 
-export const connections: PipeConnection<any, any, any>[] = [
+const connections: PipeConnection<any, any, any>[] = [
     remoteAttributeConnnection,
     artboardConnection,
     artboardStyleConnection,
+    artboardMoveConnection,
     loggerConnection,
     zoomConnection,
     createConnection,
@@ -40,3 +44,6 @@ export const connections: PipeConnection<any, any, any>[] = [
     groupConnection,
     cancelConnection,
 ];
+
+export const connectionsManager = new ConnectionsManager();
+connectionsManager.addMulti(...connections);

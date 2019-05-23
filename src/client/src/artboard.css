@@ -1,5 +1,9 @@
-svg {
+#artboard {
     position: absolute;
+}
+
+svg {
+    position: relative;
     top: 0px;
     left: 0px;
     outline: thin dotted #777;

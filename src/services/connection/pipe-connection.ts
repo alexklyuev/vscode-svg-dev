@@ -11,7 +11,7 @@ export class PipeConnection<Req, Res, Tag extends string> implements Connection<
     private callbacks = Array<(endpoint: PipeEndpoint<Req, Res, Tag>) => void>();
 
     constructor(
-        private pipe: Pipe<Req, Res, Tag>,
+        public readonly pipe: Pipe<Req, Res, Tag>,
     ) {}
 
     connect(hostEndpoint: HostEndpoint) {

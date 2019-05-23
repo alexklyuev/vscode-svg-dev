@@ -49,7 +49,7 @@ export class DraggerPoints implements Dragger {
     }
 
     onMouseup(
-        element: SVGElement,
+        _element: SVGElement,
         _clientX: number,
         _clientY: number,
     ) {}

@@ -22,6 +22,7 @@ export class Picker {
      * @param event 
      */
     onMousemove(event: MouseEvent) {
+        this.controlPropagation(event);
         const { clientX, clientY } = event;
         this.holder.elements.forEach(element => {
             this.figuresCollection.delegate(element)!.drag.onMousemove(
@@ -37,6 +38,7 @@ export class Picker {
      * 
      */
     onMousedown(event: MouseEvent) {
+        this.controlPropagation(event);
         if (this.userEventMan.mode === 'interactive') {
             return;
         }
@@ -93,6 +95,7 @@ export class Picker {
      */
     @setState
     onMouseup(event: MouseEvent) {
+        this.controlPropagation(event);
         const { clientX, clientY } = event;
         this.holder.elements.forEach(element => {
             this.figuresCollection.delegate(element)!.drag.onMouseup(
@@ -123,7 +126,7 @@ export class Picker {
      */
     listen() {
         this.artboard.svg.addEventListener('mousedown', this.bindedMousedown);
-        this.artboard.svg.addEventListener('mouseup', this.bindedMouseup);
+        window.addEventListener('mouseup', this.bindedMouseup);
     }
 
     /**
@@ -148,6 +151,15 @@ export class Picker {
     addMouseupCallback(callback: (event: MouseEvent) => void) {
         this.mouseupCallbacks.add(callback);
         return () => this.mouseupCallbacks.delete(callback);
+    }
+
+    /**
+     * 
+     */
+    controlPropagation(event: MouseEvent) {
+        if ( !(event instanceof SVGElement) ) {
+            event.stopPropagation();
+        }
     }
 
 }
