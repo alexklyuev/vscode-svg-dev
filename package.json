@@ -113,7 +113,7 @@
         "watch": "npm run styles && tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "npm run compile && node ./node_modules/vscode/bin/test",
-        "compile:extension": "tsc -p ./",
+        "compile:extension": "npm run styles && tsc -p ./",
         "compile:web": "webpack --config src/client/webpack.config.js",
         "compile:web:watch": "npm run compile:web -- --watch",
         "styles": "cp ./src/client/src/artboard.css ./out/client/build/artboard.css"

@@ -7,6 +7,10 @@ export class ArtboardMove {
     private bindedOnMouseMove: (event: MouseEvent) => void;
     private bindedOnMouseUp: (event: MouseEvent) => void;
 
+    private onMouseDownCallbacks = new Set<(event: MouseEvent) => void>();
+    private onMouseMoveCallbacks = new Set<(event: MouseEvent) => void>();
+    private onMouseUpCallbacks = new Set<(event: MouseEvent) => void>();
+
     private coords: {clientX: number, clientY: number} = {clientX: 0, clientY: 0};
 
     private marginLeft = 0;
@@ -41,15 +45,16 @@ export class ArtboardMove {
         window.removeEventListener('mousedown', this.bindedOnMouseDown);
     }
 
+    
     onMouseDown(event: MouseEvent) {
         const { clientX, clientY } = event;
         const deltaX = clientX - this.coords.clientX;
         const deltaY = clientY - this.coords.clientY;
         Object.assign(this.coords, { clientX: deltaX, clientY: deltaY });
-        document.body.style.cursor = 'move';
-        event.stopPropagation();
+        this.controlPropagation(event);
         window.addEventListener('mousemove', this.bindedOnMouseMove);
         window.addEventListener('mouseup', this.bindedOnMouseUp);
+        this.onMouseDownCallbacks.forEach(cb => cb(event));
     }
 
     onMouseMove(event: MouseEvent) {
@@ -61,7 +66,8 @@ export class ArtboardMove {
         this.marginTop = deltaY;
         box.style.top = `${ this.marginTop }px`;
         box.style.left = `${ this.marginLeft }px`;
-        event.stopPropagation();
+        this.controlPropagation(event);
+        this.onMouseMoveCallbacks.forEach(cb => cb(event));
     }
 
     onMouseUp(event: MouseEvent) {
@@ -69,9 +75,27 @@ export class ArtboardMove {
         const deltaX = clientX - this.coords.clientX;
         const deltaY = clientY - this.coords.clientY;
         Object.assign(this.coords, {clientX: deltaX, clientY: deltaY});
-        event.stopPropagation();
+        this.controlPropagation(event);
         window.removeEventListener('mousemove', this.bindedOnMouseMove);
         window.removeEventListener('mouseup', this.bindedOnMouseUp);
+        //
+        this.onMouseUpCallbacks.forEach(cb => cb(event));
+    }
+
+    controlPropagation(_event: MouseEvent): void {
+        // event.stopPropagation();
+    }
+
+    addOnMouseDownCallback(cb: (event: MouseEvent) => void) {
+        this.onMouseDownCallbacks.add(cb);
+    }
+
+    addOnMouseMoveCallback(cb: (event: MouseEvent) => void) {
+        this.onMouseMoveCallbacks.add(cb);
+    }
+
+    addOnMouseUpCallback(cb: (event: MouseEvent) => void) {
+        this.onMouseUpCallbacks.add(cb);
     }
 
 }

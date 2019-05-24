@@ -25,9 +25,20 @@ import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener } from './src/listeners';
 import { ArtboardStyleListener } from './src/listeners/artboard-style.listener';
 import { CssJsNotationConverter } from '../shared/services/css/css-js-notation-converter';
+import { guides } from './src/services/guides';
 
-// 
+/**
+ * 
+ */
+guides.create();
+
+/**
+ * 
+ */
 artboardMove.on();
+
+artboardMove.addOnMouseMoveCallback(_event => guides.setStyles());
+
 
 /**
  * 
@@ -100,8 +111,11 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
 holder.addListener(elements => {
     if (elements.length > 0) {
         pickEndpoint.makeSetRequest({html: `selection: [${elements.map(el => [el.nodeName, el.id].filter(str => str).join('#')).join(', ')}]`});
+        guides.disposeAllChildren();
+        guides.drawBox(elements);
     } else {
         pickEndpoint.makeSetRequest({html: null});
+        guides.disposeAllChildren();
     }
 });
 
@@ -116,3 +130,5 @@ selection.listen();
 zoom.addCallback(value => {
     pickEndpoint.makeSetRequest({html: `zoom: ${Math.round(value * 100)}%`});
 });
+
+zoom.addCallback(_value => guides.setStyles());
