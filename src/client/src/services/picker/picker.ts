@@ -157,7 +157,7 @@ export class Picker {
      * 
      */
     controlPropagation(event: MouseEvent) {
-        if ( !(event instanceof SVGElement) ) {
+        if ( !(event.target instanceof SVGSVGElement) ) {
             event.stopPropagation();
         }
     }
