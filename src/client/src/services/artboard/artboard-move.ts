@@ -1,4 +1,5 @@
 import { Artboard } from "./artboard";
+import { ClientEvent } from "../../entities/client-event";
 
 
 export class ArtboardMove {
@@ -7,9 +8,10 @@ export class ArtboardMove {
     private bindedOnMouseMove: (event: MouseEvent) => void;
     private bindedOnMouseUp: (event: MouseEvent) => void;
 
-    private onMouseDownCallbacks = new Set<(event: MouseEvent) => void>();
-    private onMouseMoveCallbacks = new Set<(event: MouseEvent) => void>();
-    private onMouseUpCallbacks = new Set<(event: MouseEvent) => void>();
+    public readonly mouseDownEvent = new ClientEvent<MouseEvent>();
+    public readonly mouseMoveEvent = new ClientEvent<MouseEvent>();
+    public readonly mouseUpEvent = new ClientEvent<MouseEvent>();
+    public readonly moveEvent = new ClientEvent<{left: number; top: number}>();
 
     private coords: {clientX: number, clientY: number} = {clientX: 0, clientY: 0};
 
@@ -54,7 +56,8 @@ export class ArtboardMove {
         this.controlPropagation(event);
         window.addEventListener('mousemove', this.bindedOnMouseMove);
         window.addEventListener('mouseup', this.bindedOnMouseUp);
-        this.onMouseDownCallbacks.forEach(cb => cb(event));
+
+        this.mouseDownEvent.emit(event);
     }
 
     onMouseMove(event: MouseEvent) {
@@ -67,7 +70,10 @@ export class ArtboardMove {
         box.style.top = `${ this.marginTop }px`;
         box.style.left = `${ this.marginLeft }px`;
         this.controlPropagation(event);
-        this.onMouseMoveCallbacks.forEach(cb => cb(event));
+        // this.onMouseMoveCallbacks.forEach(cb => cb(event));
+
+        this.mouseMoveEvent.emit(event);
+        this.moveEvent.emit({left: this.marginLeft, top: this.marginTop});
     }
 
     onMouseUp(event: MouseEvent) {
@@ -79,23 +85,12 @@ export class ArtboardMove {
         window.removeEventListener('mousemove', this.bindedOnMouseMove);
         window.removeEventListener('mouseup', this.bindedOnMouseUp);
         //
-        this.onMouseUpCallbacks.forEach(cb => cb(event));
+        // this.onMouseUpCallbacks.forEach(cb => cb(event));
+        this.mouseUpEvent.emit(event);
     }
 
     controlPropagation(_event: MouseEvent): void {
         // event.stopPropagation();
-    }
-
-    addOnMouseDownCallback(cb: (event: MouseEvent) => void) {
-        this.onMouseDownCallbacks.add(cb);
-    }
-
-    addOnMouseMoveCallback(cb: (event: MouseEvent) => void) {
-        this.onMouseMoveCallbacks.add(cb);
-    }
-
-    addOnMouseUpCallback(cb: (event: MouseEvent) => void) {
-        this.onMouseUpCallbacks.add(cb);
     }
 
 }

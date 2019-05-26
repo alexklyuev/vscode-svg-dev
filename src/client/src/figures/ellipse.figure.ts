@@ -2,6 +2,11 @@ import { Figure } from "./figure.model";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 import { DraggerValue } from "../services/dragger/dragger-value";
+import { Zoom } from "../services/zoom/zoom";
+import { CancelListener } from "../listeners/cancel.listener";
+import { UserEventManager } from "../services/user-event/user-event-manager";
+import { ArtboardMove } from "../services/artboard/artboard-move";
+import { Guides } from "../services/guides/guides";
 
 export class EllipseFigure implements Figure<SVGEllipseElement> {
 
@@ -11,7 +16,12 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
 
     constructor(
         public readonly drag: DraggerValue,
-        private artboard: Artboard,
+        public readonly artboard: Artboard,
+        public readonly artboardMove: ArtboardMove,
+        public readonly zoom: Zoom,
+        public readonly cancelListener: CancelListener,
+        public readonly userEventMan: UserEventManager,
+        public readonly guides: Guides,
     ) {
     }
 
@@ -21,15 +31,93 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
 
     @setState
     create(_elementName: string, _attributes: {[K: string]: string}): void {
-        const svg = this.artboard.svg;
-        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse') as SVGEllipseElement;
-        svg.appendChild(circle);
-        circle.setAttribute('cx', '50');
-        circle.setAttribute('cy', '50');
-        circle.setAttribute('rx', '20');
-        circle.setAttribute('ry', '40');
-        circle.setAttribute('stroke', '#ffffff');
-        circle.setAttribute('fill', '#ccc');
+        let points = Array<[number, number]>();
+        this.artboard.box.classList.add('interactive-points');
+        let pseudoElement: SVGEllipseElement | null = null;
+        this.userEventMan.mode = 'interactive';
+        const pointsListener = (event: MouseEvent) => {
+            let { clientX, clientY, shiftKey } = event;
+            const { scrollLeft, scrollTop } = document.scrollingElement!;
+            // const { top: moveTop, left: moveLeft } = this.artboardMove;
+            if (points.length === 1 && shiftKey) {
+                let [ [prevX, prevY] ] = points;
+                prevX -= scrollLeft;
+                prevY -= scrollTop;
+                const absDeltaX = Math.abs(clientX - prevX);
+                const absDeltaY = Math.abs(clientY - prevY);
+                if (absDeltaX < absDeltaY) {
+                    clientX = points[0][0] - scrollLeft;
+                } else {
+                    clientY = points[0][1] - scrollTop;
+                }
+            }
+            points.push([
+                clientX + scrollLeft - this.artboardMove.left,
+                clientY + scrollTop - this.artboardMove.top,
+            ]);
+            if (points.length === 1) {
+                pseudoElement = this.createEditingSelection(points);
+            }
+            if (points.length >= 2) {
+                cancel();
+                const [ [x1, y1], [x2, y2] ] = points;
+                const ellipse = document.createElementNS('http://www.w3.org/2000/svg', this.name);
+                ellipse.setAttribute('cx', `${ (x2 - x1) / 2 + x1 }`);
+                ellipse.setAttribute('cy', `${ (y2 - y1) / 2 + y1 }`);
+                ellipse.setAttribute('rx', `${ (x2 - x1) / 2 }`);
+                ellipse.setAttribute('ry', `${ (y2 - y1) / 2 }`);
+                ellipse.setAttribute('stroke', '#ffffff');
+                ellipse.setAttribute('fill', '#ccc');
+                this.artboard.svg.appendChild(ellipse);
+            }
+        };
+        window.addEventListener('click', pointsListener);
+        const cancel = () => {
+            window.removeEventListener('click', pointsListener);
+            this.cancelListener.removeCallback(cancel);
+            this.artboard.box.classList.remove('interactive-points');
+            if (pseudoElement) {
+                this.guides.guidesContainer!.removeChild(pseudoElement);
+            }
+            this.userEventMan.mode = 'pick';
+        };
+        this.cancelListener.addCallback(cancel);
+    }
+
+    createEditingSelection(points: [number, number][]) {
+        const [ [x1, y1] ] = points;
+        const { scrollLeft, scrollTop } = document.scrollingElement!;
+        const pseudoEllipse = document.createElementNS('http://www.w3.org/2000/svg', this.name);
+        pseudoEllipse.setAttribute('stroke', '#777');
+        pseudoEllipse.setAttribute('fill', 'none');
+        pseudoEllipse.setAttribute('stroke-dasharray', '1');
+        this.guides.guidesContainer!.appendChild(pseudoEllipse);
+        const onMousemove = (event: MouseEvent) => {
+            let { clientX, clientY, shiftKey } = event;
+            const { clientX: x2, clientY: y2 } = event;
+            const prevX = x1 - scrollLeft;
+            const prevY = y1 - scrollTop;
+            const absDeltaX = Math.abs(clientX - prevX);
+            const absDeltaY = Math.abs(clientY - prevY);
+            if (shiftKey) {
+                if (absDeltaX < absDeltaY) {
+                    clientX = x1 - scrollLeft;
+                } else {
+                    clientY = y1 - scrollTop;
+                }
+            }
+            pseudoEllipse.setAttribute('cx', `${ (x2 - x1) / 2 + x1 }`);
+            pseudoEllipse.setAttribute('cy', `${ (y2 - y1) / 2 + y1 }`);
+            pseudoEllipse.setAttribute('rx', `${ (x2 - x1) / 2 }`);
+            pseudoEllipse.setAttribute('ry', `${ (y2 - y1) / 2 }`);
+        };
+        const onClick = (_click: MouseEvent) => {
+            window.removeEventListener('mousemove', onMousemove);
+            window.removeEventListener('click', onClick);
+        };
+        window.addEventListener('mousemove', onMousemove);
+        window.addEventListener('click', onClick);
+        return pseudoEllipse;
     }
 
 }

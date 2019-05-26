@@ -5,6 +5,8 @@ import { Zoom } from "../zoom/zoom";
 import { FiguresCollection } from "../../figures/figures-collection";
 import { setState } from "../../decorators/set-state.decorator";
 import { UserEventManager } from "../user-event/user-event-manager";
+import { ClientEvent } from "../../entities/client-event";
+import { connectEvent } from "../../decorators/connect-event.decorator";
 
 
 export class Picker {
@@ -13,14 +15,15 @@ export class Picker {
     private bindedMousedown: (event: MouseEvent) => void;
     private bindedMouseup: (event: MouseEvent) => void;
 
-    private mousedownCallbacks = new Set<(event: MouseEvent) => void>();
-    private mousemoveCallbacks = new Set<(event: MouseEvent) => void>();
-    private mouseupCallbacks = new Set<(event: MouseEvent) => void>();
+    public readonly mouseDownEvent = new ClientEvent<MouseEvent>();
+    public readonly mouseMoveEvent = new ClientEvent<MouseEvent>();
+    public readonly mouseUpEvent = new ClientEvent<MouseEvent>();
 
     /**
      * 
      * @param event 
      */
+    @connectEvent('mouseMoveEvent')
     onMousemove(event: MouseEvent) {
         this.controlPropagation(event);
         const { clientX, clientY } = event;
@@ -31,12 +34,13 @@ export class Picker {
                 clientY,
             );
         });
-        this.mousemoveCallbacks.forEach(cb => cb(event));
+        return event;
     }
 
     /**
      * 
      */
+    @connectEvent('mouseDownEvent')
     onMousedown(event: MouseEvent) {
         this.controlPropagation(event);
         if (this.userEventMan.mode === 'interactive') {
@@ -87,13 +91,14 @@ export class Picker {
         } else {
             this.holder.elements = [];
         }
-        this.mousedownCallbacks.forEach(cb => cb(event));
+        return event;
     }
 
     /**
      * 
      */
     @setState
+    @connectEvent('mouseUpEvent')
     onMouseup(event: MouseEvent) {
         this.controlPropagation(event);
         const { clientX, clientY } = event;
@@ -105,7 +110,7 @@ export class Picker {
             );
         });
         this.artboard.svg.removeEventListener('mousemove', this.bindedMousemove);
-        this.mouseupCallbacks.forEach(cb => cb(event));
+        return event;
     }
 
     constructor(
@@ -127,30 +132,6 @@ export class Picker {
     listen() {
         this.artboard.svg.addEventListener('mousedown', this.bindedMousedown);
         window.addEventListener('mouseup', this.bindedMouseup);
-    }
-
-    /**
-     * 
-     */
-    addMousemoveCallback(callback: (event: MouseEvent) => void) {
-        this.mousemoveCallbacks.add(callback);
-        return () => this.mousemoveCallbacks.delete(callback);
-    }
-
-    /**
-     * 
-     */
-    addMousedownCallback(callback: (event: MouseEvent) => void) {
-        this.mousedownCallbacks.add(callback);
-        return () => this.mousedownCallbacks.delete(callback);
-    }
-
-    /**
-     * 
-     */
-    addMouseupCallback(callback: (event: MouseEvent) => void) {
-        this.mouseupCallbacks.add(callback);
-        return () => this.mouseupCallbacks.delete(callback);
     }
 
     /**
