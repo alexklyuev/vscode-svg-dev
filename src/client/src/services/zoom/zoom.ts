@@ -31,11 +31,6 @@ export class Zoom {
         Object.assign(this.artboard.box.style, {
             transform: `scale(${this.zoom})`,
         });
-        Object.assign(this.artboard.box.style, {
-            position: `absolute`,
-            top: '0',
-            left: '0',
-        });
         this.callbacks.forEach(cb => cb(this.value));
     }
 
