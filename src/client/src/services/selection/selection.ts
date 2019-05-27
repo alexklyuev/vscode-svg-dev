@@ -4,7 +4,7 @@ import { Artboard } from "../artboard/artboard";
 import { Zoom } from "../zoom/zoom";
 
 
-export class UserSelection {
+export class _UserSelection {
 
     // private box: HTMLDivElement | null = null;
 

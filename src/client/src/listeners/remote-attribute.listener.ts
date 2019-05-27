@@ -3,7 +3,7 @@ import { Pipe, PipeEndpoint } from "../../../shared/services/pipe/pipe";
 import { RemoteAttributeRequest, RemoteAttributeResponse } from "../../../shared/pipes/remote-attribute.pipe";
 import { ElementHolder } from "../services/picker/element-holder";
 import { setState } from "../decorators/set-state.decorator";
-import { updateSelection } from "../decorators/update-selection.decorator";
+// import { updateSelection } from "../decorators/update-selection.decorator";
 import { rehold } from "../decorators/rehold.decorator";
 
 
@@ -56,7 +56,7 @@ export class RemoteAttributeListener {
     /**
      * 
      */
-    @updateSelection
+    // @updateSelection
     @rehold
     @setState
     setAttribute(element: SVGElement, attribute: string, value: string) {
@@ -69,7 +69,7 @@ export class RemoteAttributeListener {
     /**
      * 
      */
-    @updateSelection
+    // @updateSelection
     @rehold
     @setState
     removeAttribute(element: SVGElement, attribute: string) {

@@ -20,7 +20,7 @@ import { ElementListener } from './src/listeners/element.listener';
 import { holder, picker } from './src/services/picker';
 import { zoom } from './src/services/zoom';
 import { figuresCollection } from './src/figures';
-import { selection } from './src/services/selection';
+// import { selection } from './src/services/selection';
 import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener } from './src/listeners';
 import { ArtboardStyleListener } from './src/listeners/artboard-style.listener';
@@ -37,7 +37,7 @@ guides.create();
  */
 artboardMove.on();
 
-artboardMove.addOnMouseMoveCallback(_event => guides.setStyles());
+artboardMove.addOnMouseMoveCallback(_event => guides.setContainerStyles());
 
 
 /**
@@ -111,18 +111,18 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
 holder.addListener(elements => {
     if (elements.length > 0) {
         pickEndpoint.makeSetRequest({html: `selection: [${elements.map(el => [el.nodeName, el.id].filter(str => str).join('#')).join(', ')}]`});
-        guides.disposeAllChildren();
-        guides.drawBox(elements);
+        guides.removeSelection();
+        guides.drawSelection(elements);
     } else {
         pickEndpoint.makeSetRequest({html: null});
-        guides.disposeAllChildren();
+        guides.removeSelection();
     }
 });
 
 /**
  * 
  */
-selection.listen();
+// selection.listen();
 
 /**
  * 
@@ -131,4 +131,4 @@ zoom.addCallback(value => {
     pickEndpoint.makeSetRequest({html: `zoom: ${Math.round(value * 100)}%`});
 });
 
-zoom.addCallback(_value => guides.setStyles());
+zoom.addCallback(_value => guides.setContainerStyles());

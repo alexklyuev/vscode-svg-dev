@@ -3,7 +3,7 @@ import { Zoom } from "../services/zoom/zoom";
 import { Artboard } from "../services/artboard/artboard";
 import { Pipe, PipeEndpoint } from "../../../shared/services/pipe/pipe";
 import { ZoomRequest } from "../../../shared/pipes/zoom.pipe";
-import { updateSelection } from "../decorators/update-selection.decorator";
+// import { updateSelection } from "../decorators/update-selection.decorator";
 
 
 export class ZoomListener {
@@ -29,7 +29,7 @@ export class ZoomListener {
         );
     }
 
-    @updateSelection
+    // @updateSelection
     updateZoom(delta: number | undefined, abs: number | undefined) {
         this.zoom.update(delta, abs);
     }

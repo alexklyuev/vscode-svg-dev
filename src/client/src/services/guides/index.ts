@@ -9,7 +9,7 @@ export function updateGuides(): Function {
         descriptor.value = function (...args: any[]) {
             const returnValue = orig.call(this, ...args);
             setTimeout(() => {
-                guides.setStyles();
+                guides.setContainerStyles();
             }, 0);
             return returnValue;
         };
