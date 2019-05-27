@@ -1,11 +1,13 @@
 import { Artboard } from "../../services/artboard/artboard";
+import { ClientEvent } from "../../entities/client-event";
+import { connectEvent } from "../../decorators/connect-event.decorator";
 
 
 export class Zoom {
 
     private zoom = 1;
 
-    private callbacks = new Set<(value: number) => void>();
+    public readonly zoomEvent = new ClientEvent<number>();
 
     constructor(
         private artboard: Artboard,
@@ -21,7 +23,8 @@ export class Zoom {
     /**
      * update zoom value by relative (delta) value or to absolute (abs) value
      */
-    update(delta: number | undefined, abs: number | undefined) {
+    @connectEvent('zoomEvent')
+    update(delta: number | undefined, abs: number | undefined): number {
         if (delta) {
             this.zoom += delta;
         }
@@ -31,15 +34,7 @@ export class Zoom {
         Object.assign(this.artboard.box.style, {
             transform: `scale(${this.zoom})`,
         });
-        this.callbacks.forEach(cb => cb(this.value));
-    }
-
-    /**
-     * add callback, it would be run on zoom value change
-     */
-    addCallback(callback: (value: number) => void) {
-        this.callbacks.add(callback);
-        return () => this.callbacks.delete(callback);
+        return this.zoom;
     }
 
 }

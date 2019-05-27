@@ -20,7 +20,6 @@ import { ElementListener } from './src/listeners/element.listener';
 import { holder, picker } from './src/services/picker';
 import { zoom } from './src/services/zoom';
 import { figuresCollection } from './src/figures';
-// import { selection } from './src/services/selection';
 import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener } from './src/listeners';
 import { ArtboardStyleListener } from './src/listeners/artboard-style.listener';
@@ -30,15 +29,23 @@ import { guides } from './src/services/guides';
 /**
  * 
  */
-guides.create();
+guides.createContainer();
 
 /**
  * 
  */
 artboardMove.on();
 
-artboardMove.addOnMouseMoveCallback(_event => guides.setContainerStyles());
+artboardMove.moveEvent.on(_move => guides.setContainerStyles());
+artboardMove.moveEvent.on(_move => guides.setSelectionStyles(holder.elements));
 
+picker.mouseMoveEvent.on(_event => guides.setSelectionStyles(holder.elements));
+
+zoom.zoomEvent.on(value => {
+    pickEndpoint.makeSetRequest({html: `zoom: ${Math.round(value * 100)}%`});
+    guides.setContainerStyles();
+    guides.setSelectionStyles(holder.elements);
+});
 
 /**
  * 
@@ -118,17 +125,3 @@ holder.addListener(elements => {
         guides.removeSelection();
     }
 });
-
-/**
- * 
- */
-// selection.listen();
-
-/**
- * 
- */
-zoom.addCallback(value => {
-    pickEndpoint.makeSetRequest({html: `zoom: ${Math.round(value * 100)}%`});
-});
-
-zoom.addCallback(_value => guides.setContainerStyles());
