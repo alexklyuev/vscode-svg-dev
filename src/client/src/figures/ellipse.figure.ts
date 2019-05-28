@@ -93,19 +93,9 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         pseudoEllipse.setAttribute('stroke-dasharray', '1');
         this.guides.guidesContainer!.appendChild(pseudoEllipse);
         const onMousemove = (event: MouseEvent) => {
-            let { clientX, clientY, shiftKey } = event;
-            const { clientX: x2, clientY: y2 } = event;
-            const prevX = x1 - scrollLeft;
-            const prevY = y1 - scrollTop;
-            const absDeltaX = Math.abs(clientX - prevX);
-            const absDeltaY = Math.abs(clientY - prevY);
-            if (shiftKey) {
-                if (absDeltaX < absDeltaY) {
-                    clientX = x1 - scrollLeft;
-                } else {
-                    clientY = y1 - scrollTop;
-                }
-            }
+            let { clientX, clientY, } = event;
+            const x2 = clientX + scrollLeft - this.artboardMove.left;
+            const y2 = clientY + scrollTop - this.artboardMove.top;
             pseudoEllipse.setAttribute('cx', `${ (x2 - x1) / 2 + x1 }`);
             pseudoEllipse.setAttribute('cy', `${ (y2 - y1) / 2 + y1 }`);
             pseudoEllipse.setAttribute('rx', `${ (x2 - x1) / 2 }`);
