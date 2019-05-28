@@ -11,7 +11,7 @@ export class ArtboardMove {
     public readonly mouseDownEvent = new ClientEvent<MouseEvent>();
     public readonly mouseMoveEvent = new ClientEvent<MouseEvent>();
     public readonly mouseUpEvent = new ClientEvent<MouseEvent>();
-    public readonly moveEvent = new ClientEvent<{left: number; top: number}>();
+    public readonly moveEvent = new ClientEvent<{left: number; top: number, event: MouseEvent}>();
 
     private coords: {clientX: number, clientY: number} = {clientX: 0, clientY: 0};
 
@@ -70,10 +70,10 @@ export class ArtboardMove {
         box.style.top = `${ this.marginTop }px`;
         box.style.left = `${ this.marginLeft }px`;
         this.controlPropagation(event);
-        // this.onMouseMoveCallbacks.forEach(cb => cb(event));
 
         this.mouseMoveEvent.emit(event);
-        this.moveEvent.emit({left: this.marginLeft, top: this.marginTop});
+        this.moveEvent.emit({left: this.marginLeft, top: this.marginTop, event});
+        return {left: this.marginLeft, top: this.marginTop, event};
     }
 
     onMouseUp(event: MouseEvent) {
@@ -84,8 +84,7 @@ export class ArtboardMove {
         this.controlPropagation(event);
         window.removeEventListener('mousemove', this.bindedOnMouseMove);
         window.removeEventListener('mouseup', this.bindedOnMouseUp);
-        //
-        // this.onMouseUpCallbacks.forEach(cb => cb(event));
+
         this.mouseUpEvent.emit(event);
     }
 
