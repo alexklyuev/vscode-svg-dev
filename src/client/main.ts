@@ -36,13 +36,15 @@ guides.createContainer();
  */
 artboardMove.on();
 
-artboardMove.moveEvent.on(_move => guides.setContainerStyles());
-artboardMove.moveEvent.on(_move => guides.setSelectionStyles(holder.elements));
+artboardMove.moveEvent.on(_move => {
+    guides.setContainerStyles();
+    guides.setSelectionStyles(holder.elements);
+});
 
 picker.mouseMoveEvent.on(_event => guides.setSelectionStyles(holder.elements));
 
 zoom.zoomEvent.on(value => {
-    pickEndpoint.makeSetRequest({html: `zoom: ${Math.round(value * 100)}%`});
+    pickEndpoint.makeSetRequest({ html: `zoom: ${ Math.round(value * 100) }%` });
     guides.setContainerStyles();
     guides.setSelectionStyles(holder.elements);
 });

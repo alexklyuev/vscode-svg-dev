@@ -2,7 +2,7 @@ import { FiguresCollection } from "./figures-collection";
 import { CircleFigure } from "./circle.figure";
 import { RectFigure } from "./rect.figure";
 import { TextFigure } from "./text.figure";
-import { artboard } from "../services/artboard";
+import { artboard, artboardMove } from "../services/artboard";
 import { zoom } from "../services/zoom";
 import { GFigure } from "./g.figure";
 import { EllipseFigure } from "./ellipse.figure";
@@ -14,6 +14,7 @@ import { userEventMan } from "../services/user-event";
 import { PolygonFigure } from "./polygon.figure";
 import { DraggerPoints } from "../services/dragger/dragger-points";
 import { PolylineFigure } from "./polyline.figure";
+import { guides } from "../services/guides";
 
 
 const figuresCollection = new FiguresCollection();
@@ -27,7 +28,7 @@ const draggerDelegate = new DraggerDelegate(figuresCollection);
 
 figuresCollection.add(
     new CircleFigure(draggerCenter, artboard),
-    new EllipseFigure(draggerCenter, artboard),
+    new EllipseFigure(draggerCenter, artboard, artboardMove, zoom, cancelListener, userEventMan, guides),
     new RectFigure(draggerLeftTop, artboard),
     new TextFigure(draggerLeftTop, artboard),
     new GFigure(draggerDelegate, artboard),

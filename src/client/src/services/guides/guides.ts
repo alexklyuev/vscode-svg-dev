@@ -17,6 +17,10 @@ export class Guides {
         private artboard: Artboard,
     ) {}
 
+    get guidesContainer(): SVGSVGElement | null {
+        return this.container;
+    }
+
     /**
      * 
      */

@@ -3,6 +3,9 @@ import { ClientEvent } from "../../entities/client-event";
 import { connectEvent } from "../../decorators/connect-event.decorator";
 
 
+/**
+ * 
+ */
 export class Zoom {
 
     private zoom = 1;
