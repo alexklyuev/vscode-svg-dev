@@ -9,9 +9,8 @@ export class ArtboardMove {
     private bindedOnMouseUp: (event: MouseEvent) => void;
 
     public readonly mouseDownEvent = new ClientEvent<MouseEvent>();
-    public readonly mouseMoveEvent = new ClientEvent<MouseEvent>();
     public readonly mouseUpEvent = new ClientEvent<MouseEvent>();
-    public readonly moveEvent = new ClientEvent<{left: number; top: number, event: MouseEvent}>();
+    public readonly mouseMoveEvent = new ClientEvent<{left: number; top: number, event: MouseEvent}>();
 
     private coords: {clientX: number, clientY: number} = {clientX: 0, clientY: 0};
 
@@ -25,10 +24,15 @@ export class ArtboardMove {
         this.bindedOnMouseMove = this.onMouseMove.bind(this);
         this.bindedOnMouseUp = this.onMouseUp.bind(this);
 
-        const box = this.artboard.box;
-        box.style.position = 'absolute';
-        box.style.top = '0px';
-        box.style.left = '0px';
+        // const box = this.artboard.box;
+        // box.style.position = 'absolute';
+        // box.style.top = '0px';
+        // box.style.left = '0px';
+        Object.assign(this.artboard.box.style, {
+            position: 'absolute',
+            top: '0px',
+            left: '0px',
+        });
     }
 
     get left(): number {
@@ -58,6 +62,7 @@ export class ArtboardMove {
         window.addEventListener('mouseup', this.bindedOnMouseUp);
 
         this.mouseDownEvent.emit(event);
+        return event;
     }
 
     onMouseMove(event: MouseEvent) {
@@ -71,8 +76,7 @@ export class ArtboardMove {
         box.style.left = `${ this.marginLeft }px`;
         this.controlPropagation(event);
 
-        this.mouseMoveEvent.emit(event);
-        this.moveEvent.emit({left: this.marginLeft, top: this.marginTop, event});
+        this.mouseMoveEvent.emit({ left: this.marginLeft, top: this.marginTop, event });
         return {left: this.marginLeft, top: this.marginTop, event};
     }
 
@@ -86,6 +90,7 @@ export class ArtboardMove {
         window.removeEventListener('mouseup', this.bindedOnMouseUp);
 
         this.mouseUpEvent.emit(event);
+        return event;
     }
 
     controlPropagation(_event: MouseEvent): void {

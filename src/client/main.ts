@@ -36,7 +36,7 @@ guides.createContainer();
  */
 artboardMove.on();
 
-artboardMove.moveEvent.on(_move => {
+artboardMove.mouseMoveEvent.on(_move => {
     guides.setContainerStyles();
     guides.setSelectionStyles(holder.elements);
 });
