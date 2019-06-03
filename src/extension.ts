@@ -33,6 +33,7 @@ import {
     elementConnection,
     groupConnection,
 } from './services/connection';
+import { CancelKeys } from './shared/pipes/cancel.pipe';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -143,9 +144,9 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.commands.executeCommand('setContext', 'svgDevAddInteractive', true);
             vscode.commands.executeCommand('svgDevAdd', name, attributes);
         }),
-        vscode.commands.registerCommand('svgDevCancel', () => {
+        vscode.commands.registerCommand('svgDevCancel', (key: CancelKeys) => {
             cancelConnection.ifConnected(endpoint => {
-                endpoint.makeSetRequest('cancel');
+                endpoint.makeSetRequest(key);
             });
             vscode.commands.executeCommand('setContext', 'svgDevAddInteractive', false);
         }),

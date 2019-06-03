@@ -6,11 +6,18 @@ import { connectEvent } from "../../decorators/connect-event.decorator";
 /**
  * 
  */
+const enum ZoomEvents {
+    valueChange = 'valueChange',
+}
+
+/**
+ * 
+ */
 export class Zoom {
 
     private zoom = 1;
 
-    public readonly zoomEvent = new ClientEvent<number>();
+    public readonly [ZoomEvents.valueChange] = new ClientEvent<number>();
 
     constructor(
         private artboard: Artboard,
@@ -26,7 +33,7 @@ export class Zoom {
     /**
      * update zoom value by relative (delta) value or to absolute (abs) value
      */
-    @connectEvent('zoomEvent')
+    @connectEvent(ZoomEvents.valueChange)
     update(delta: number | undefined, abs: number | undefined): number {
         if (delta) {
             this.zoom += delta;

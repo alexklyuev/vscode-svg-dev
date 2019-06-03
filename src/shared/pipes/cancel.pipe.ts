@@ -1,5 +1,7 @@
 import { Pipe } from "../services/pipe/pipe";
 
+export type CancelKeys = 'enter' | 'escape';
 
-export type CancelPipeRequest = 'cancel';
-export const cancelPipe = new Pipe<'cancel', {}, 'cancel'>('cancel');
+
+export type CancelPipeRequest = CancelKeys;
+export const cancelPipe = new Pipe<CancelKeys, {}, 'cancel'>('cancel');

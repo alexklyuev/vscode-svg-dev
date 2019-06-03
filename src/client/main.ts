@@ -36,14 +36,14 @@ guides.createContainer();
  */
 artboardMove.on();
 
-artboardMove.moveEvent.on(_move => {
+artboardMove.mouseMoveEvent.on(_move => {
     guides.setContainerStyles();
     guides.setSelectionStyles(holder.elements);
 });
 
 picker.mouseMoveEvent.on(_event => guides.setSelectionStyles(holder.elements));
 
-zoom.zoomEvent.on(value => {
+zoom.valueChange.on(value => {
     pickEndpoint.makeSetRequest({ html: `zoom: ${ Math.round(value * 100) }%` });
     guides.setContainerStyles();
     guides.setSelectionStyles(holder.elements);

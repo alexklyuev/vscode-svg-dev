@@ -74,32 +74,32 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         window.addEventListener('click', pointsListener);
         const cancel = () => {
             window.removeEventListener('click', pointsListener);
-            this.cancelListener.removeCallback(cancel);
+            this.cancelListener.keyEvent.off(cancel);
             this.artboard.box.classList.remove('interactive-points');
             if (pseudoElement) {
                 this.guides.guidesContainer!.removeChild(pseudoElement);
             }
             this.userEventMan.mode = 'pick';
         };
-        this.cancelListener.addCallback(cancel);
+        this.cancelListener.keyEvent.on(cancel);
     }
 
     createEditingSelection(points: [number, number][]) {
         const [ [x1, y1] ] = points;
         const { scrollLeft, scrollTop } = document.scrollingElement!;
-        const pseudoEllipse = document.createElementNS('http://www.w3.org/2000/svg', this.name);
-        pseudoEllipse.setAttribute('stroke', '#777');
-        pseudoEllipse.setAttribute('fill', 'none');
-        pseudoEllipse.setAttribute('stroke-dasharray', '1');
-        this.guides.guidesContainer!.appendChild(pseudoEllipse);
+        const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
+        element.setAttribute('stroke', '#777');
+        element.setAttribute('fill', 'none');
+        element.setAttribute('stroke-dasharray', '1');
+        this.guides.guidesContainer!.appendChild(element);
         const onMousemove = (event: MouseEvent) => {
             let { clientX, clientY, } = event;
             const x2 = clientX + scrollLeft - this.artboardMove.left;
             const y2 = clientY + scrollTop - this.artboardMove.top;
-            pseudoEllipse.setAttribute('cx', `${ (x2 - x1) / 2 + x1 }`);
-            pseudoEllipse.setAttribute('cy', `${ (y2 - y1) / 2 + y1 }`);
-            pseudoEllipse.setAttribute('rx', `${ (x2 - x1) / 2 }`);
-            pseudoEllipse.setAttribute('ry', `${ (y2 - y1) / 2 }`);
+            element.setAttribute('cx', `${ (x2 - x1) / 2 + x1 }`);
+            element.setAttribute('cy', `${ (y2 - y1) / 2 + y1 }`);
+            element.setAttribute('rx', `${ (x2 - x1) / 2 }`);
+            element.setAttribute('ry', `${ (y2 - y1) / 2 }`);
         };
         const onClick = (_click: MouseEvent) => {
             window.removeEventListener('mousemove', onMousemove);
@@ -107,7 +107,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         };
         window.addEventListener('mousemove', onMousemove);
         window.addEventListener('click', onClick);
-        return pseudoEllipse;
+        return element;
     }
 
 }

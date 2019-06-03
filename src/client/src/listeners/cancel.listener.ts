@@ -1,11 +1,19 @@
 import { Pipe, PipeEndpoint } from "../../../shared/services/pipe/pipe";
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { CancelPipeRequest } from "../../../shared/pipes/cancel.pipe";
+import { CancelPipeRequest, CancelKeys } from "../../../shared/pipes/cancel.pipe";
+import { ClientEvent } from "../entities/client-event";
+import { connectEvent } from "../decorators/connect-event.decorator";
 
+
+const enum CancelEvents {
+    keyEvent = 'keyEvent',
+}
 
 export class CancelListener {
+
     private endpoint: PipeEndpoint<CancelPipeRequest, {}, 'cancel'>;
-    private callbacks = new Set<() => void>();
+
+    public readonly [CancelEvents.keyEvent] = new ClientEvent<CancelKeys>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,
@@ -17,18 +25,15 @@ export class CancelListener {
     listen() {
         this.endpoint.listenSetRequest(
             _request => true,
-            (_cancel, _true) => {
-                this.callbacks.forEach(cb => cb());
+            (key, _true) => {
+                this.spawnEvent(key);
             },
         );
     }
 
-    addCallback(callback: () => void) {
-        this.callbacks.add(callback);
-    }
-
-    removeCallback(callback: () => void) {
-        this.callbacks.delete(callback);
+    @connectEvent(CancelEvents.keyEvent)
+    spawnEvent(key: CancelKeys): CancelKeys {
+        return key;
     }
 
 }

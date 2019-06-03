@@ -1,5 +1,11 @@
 import { Artboard } from "../artboard/artboard";
-import { ClientEvent } from "../../entities/client-event";
+import { ClientEvent, connectEvent } from "../../entities/client-event";
+
+
+const enum GuidesEvents {
+    selectionDrawn = 'selectionDrawn',
+    selectionDestroyed = 'selectionDestroyed',
+}
 
 
 /**
@@ -10,8 +16,8 @@ export class Guides {
     private container: SVGSVGElement | null = null;
     private selection: SVGRectElement | null = null;
 
-    public readonly selectionDrawn = new ClientEvent<ClientRect>();
-    public readonly selectionDestroyed = new ClientEvent<null>();
+    public readonly [GuidesEvents.selectionDrawn] = new ClientEvent<ClientRect>();
+    public readonly [GuidesEvents.selectionDestroyed] = new ClientEvent<null>();
 
     constructor(
         private artboard: Artboard,
@@ -91,8 +97,17 @@ export class Guides {
             this.selection.setAttribute('stroke', 'blue');
             this.selection.setAttribute('stroke-width', '1');
             this.selection.setAttribute('stroke-dasharray', '1');
-            this.selectionDrawn.emit(this.selection.getBoundingClientRect());
+            // this.selectionDrawn.emit(this.selection.getBoundingClientRect());
+            this.selectionStylesIsSet();
         }
+    }
+
+    /**
+     * 
+     */
+    @connectEvent(GuidesEvents.selectionDrawn)
+    selectionStylesIsSet() {
+        return this.selection!.getBoundingClientRect();
     }
 
     /**
@@ -102,8 +117,17 @@ export class Guides {
         if (this.container && this.selection) {
             this.container.removeChild(this.selection);
             this.selection = null;
-            this.selectionDestroyed.emit(null);
+            // this.selectionDestroyed.emit(null);
+            this.selectionIsRemoved();
         }
+    }
+
+    /**
+     * 
+     */
+    @connectEvent(GuidesEvents.selectionDestroyed)
+    selectionIsRemoved() {
+        return null;
     }
 
     /**

@@ -1,3 +1,8 @@
+/**
+ * emit mehtod key - should not be exported
+ */
+const emit = Symbol();
+
 export class ClientEvent<Data> {
 
     private callbacks = new Set<(data: Data) => void>();
@@ -10,19 +15,28 @@ export class ClientEvent<Data> {
         this.callbacks.delete(callback);
     }
 
-    emit(data: Data) {
+    [emit](data: Data) {
         this.callbacks.forEach(callback => callback(data));
     }
 
 }
 
-export function fromEvent<EventData>(event: ClientEvent<EventData>) {
-    return function (_instancePrototype: {}, propertyName: string, descriptor: PropertyDescriptor) {
-        const origFn = descriptor.value;
-        if (origFn instanceof Function) {
-            
+export function connectEvent(eventName: string) {
+    return function (_instancePrototype: any, _propertyName: string, descriptor: PropertyDescriptor) {
+        const orig = descriptor.value;
+        if (orig instanceof Function) {
+            descriptor.value = function(...args: any[]) {
+                const returnValue = orig.call(this, ...args);
+                const eventEmitter = (this as any)[eventName];
+                if (eventEmitter instanceof ClientEvent) {
+                    eventEmitter[emit](returnValue);
+                } else {
+                    throw new Error('connectEvent: not an event');
+                }
+                return returnValue;
+            };
         } else {
-            throw new Error('fromEvent: decorated entity is not a method');
+            throw new Error('connectEvent: not a method');
         }
     };
 }

@@ -6,7 +6,7 @@ svg {
     position: relative;
     top: 0px;
     left: 0px;
-    outline: thin dotted #777;
+    /* outline: thin dotted #777; */
 }
 svg * {
     pointer-events: fill;
