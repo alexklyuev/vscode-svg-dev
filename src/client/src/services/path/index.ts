@@ -1,7 +1,7 @@
-import { PathDirectives } from "./path-directives";
+import { PathPoints } from "./path-directives";
 
 
-const pathDirs = new PathDirectives(
+const pathDirs = new PathPoints(
     `
     M10 315
                L 110 215

@@ -25,6 +25,8 @@ import { Fill } from "./color/fill.tool";
 import { Stroke } from "./color/stroke.tool";
 import { StrokeWidth } from "./stroke/stroke-width.tool";
 import { StrokeDasharray } from "./stroke/stroke-dasharray.tool";
+import { PathAddTool } from "./path/path-add.tool";
+import { PathEditTool } from "./path/path-edit-points.tool";
 
 export const toolbox = new Toolbox();
 
@@ -77,6 +79,11 @@ toolbox.register(
     {command: {title: 'Add Polygon', command: 'svgDevAddInteractive', arguments: ['polygon']}},
     {command: {title: 'Add Polyline', command: 'svgDevAddInteractive', arguments: ['polyline']}},
     {command: {title: 'Points', command: 'svgDevRemoteAttributeInput', arguments: ['points']}},
+);
+toolbox.register(
+    new ToolGroup('Path'),
+    new PathAddTool(),
+    new PathEditTool(),
 );
 toolbox.register(
     new ToolGroup('Text'),

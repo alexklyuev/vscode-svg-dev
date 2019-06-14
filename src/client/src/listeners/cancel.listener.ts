@@ -4,6 +4,7 @@ import { CancelPipeRequest } from "../../../shared/pipes/cancel.pipe";
 
 
 export class CancelListener {
+
     private endpoint: PipeEndpoint<CancelPipeRequest, {}, 'cancel'>;
     private callbacks = new Set<() => void>();
 

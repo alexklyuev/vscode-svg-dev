@@ -7,6 +7,12 @@ import { UserEventManager } from "../services/user-event/user-event-manager";
 import { setState } from "../decorators/set-state.decorator";
 
 
+// type UserPoint = [
+//     [number, number, number],
+//     [number, number, number]
+// ];
+
+
 export abstract class PolyFigure implements Figure<SVGElement> {
 
     abstract readonly name: string;
@@ -71,13 +77,13 @@ export abstract class PolyFigure implements Figure<SVGElement> {
     }
 
     render(points: Array<[[number, number], [number, number]]>) {
-        const poly = document.createElementNS('http://www.w3.org/2000/svg', this.name);
-        poly.setAttribute('stroke', this.stroke);
-        poly.setAttribute('fill', this.fill);
-        poly.setAttribute('points', points.map(([[cX, sX], [cY, sY]]) => {
+        const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
+        element.setAttribute('stroke', this.stroke);
+        element.setAttribute('fill', this.fill);
+        element.setAttribute('points', points.map(([[cX, sX], [cY, sY]]) => {
             return `${(cX + sX) / this.zoom.value},${(cY + sY) / this.zoom.value}`;
         }).join(' '));
-        this.artboard.svg.appendChild(poly);
+        this.artboard.svg.appendChild(element);
     }
 
     renderTools(points: Array<[[number, number], [number, number]]>) {

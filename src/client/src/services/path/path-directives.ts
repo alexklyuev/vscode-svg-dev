@@ -120,7 +120,7 @@ export class DPoint {
         this.absolute = this.command.charCodeAt(0) <= 90;
     }
 
-    specify(): {} {
+    specify(): DPoint_ANY {
         return eval(`new DPoint_${ this.command }(this)`);
     }
 
@@ -129,11 +129,15 @@ export class DPoint {
 /**
  * 
  */
-export class PathDirectives {
+export class PathPoints {
+
+    public readonly parsed: DPoint_ANY[];
 
     constructor(
         public readonly d: string,
-    ) {}
+    ) {
+        this.parsed = this.parseSpecify();
+    }
 
     /**
      * Parses `d` attribute of <path> element
@@ -156,7 +160,7 @@ export class PathDirectives {
     /**
      * //
      */
-    parseSpecify(): {}[] {
+    parseSpecify(): DPoint_ANY[] {
         return this.parse().map(base => base.specify());
     }
 
