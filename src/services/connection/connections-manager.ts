@@ -25,7 +25,7 @@ export class ConnectionsManager {
      * 
      */
     each(fn: (connection: PipeConnection<any, any, any>) => void) {
-        this.collection.forEach((connection, key) => {
+        this.collection.forEach((connection, _key) => {
             fn(connection);
         });
     }
@@ -33,7 +33,7 @@ export class ConnectionsManager {
     /**
      * 
      */
-    getByTag<T extends string>(tag: T): PipeConnection<any, any, T> | undefined {
+    getByTag<A, B, T extends string>(tag: T): PipeConnection<A, B, T> | undefined {
         return this.collection.get(tag);
     }
 
