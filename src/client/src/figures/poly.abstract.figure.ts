@@ -5,6 +5,7 @@ import { Zoom } from "../services/zoom/zoom";
 import { CancelListener } from "../listeners/cancel.listener";
 import { UserEventManager } from "../services/user-event/user-event-manager";
 import { setState } from "../decorators/set-state.decorator";
+import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 
 
 // type UserPoint = [
@@ -62,9 +63,9 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             toolsSvgRemover = this.renderTools(points);
         };
         window.addEventListener('click', pointsListener);
-        const stop = () => {
+        const stop = (_key: CancelKeys) => {
             window.removeEventListener('click', pointsListener);
-            this.cancelListener.removeCallback(stop);
+            this.cancelListener.keyEvent.off(stop);
             this.artboard.box.classList.remove('interactive-points');
             if (toolsSvgRemover instanceof Function) {
                 toolsSvgRemover();
@@ -73,7 +74,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             this.userEventMan.mode = 'pick';
             this.render(points);
         };
-        this.cancelListener.addCallback(stop);
+        this.cancelListener.keyEvent.on(stop);
     }
 
     render(points: Array<[[number, number], [number, number]]>) {

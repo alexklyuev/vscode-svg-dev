@@ -9,21 +9,28 @@ import { ClientEvent } from "../../entities/client-event";
 import { connectEvent } from "../../decorators/connect-event.decorator";
 
 
+const enum PickerEvents {
+    mouseMove = 'mouseMoveEvent',
+    mouseDown = 'mouseDownEvent',
+    mouseUp = 'mouseUpEvent',
+}
+
+
 export class Picker {
 
     private bindedMousemove: (event: MouseEvent) => void;
     private bindedMousedown: (event: MouseEvent) => void;
     private bindedMouseup: (event: MouseEvent) => void;
 
-    public readonly mouseDownEvent = new ClientEvent<MouseEvent>();
-    public readonly mouseMoveEvent = new ClientEvent<MouseEvent>();
-    public readonly mouseUpEvent = new ClientEvent<MouseEvent>();
+    public readonly [PickerEvents.mouseDown] = new ClientEvent<MouseEvent>();
+    public readonly [PickerEvents.mouseMove] = new ClientEvent<MouseEvent>();
+    public readonly [PickerEvents.mouseUp] = new ClientEvent<MouseEvent>();
 
     /**
      * 
      * @param event 
      */
-    @connectEvent('mouseMoveEvent')
+    @connectEvent(PickerEvents.mouseMove)
     onMousemove(event: MouseEvent) {
         this.controlPropagation(event);
         const { clientX, clientY } = event;
@@ -40,7 +47,7 @@ export class Picker {
     /**
      * 
      */
-    @connectEvent('mouseDownEvent')
+    @connectEvent(PickerEvents.mouseDown)
     onMousedown(event: MouseEvent) {
         this.controlPropagation(event);
         if (this.userEventMan.mode === 'interactive') {
@@ -98,7 +105,7 @@ export class Picker {
      * 
      */
     @setState
-    @connectEvent('mouseUpEvent')
+    @connectEvent(PickerEvents.mouseUp)
     onMouseup(event: MouseEvent) {
         this.controlPropagation(event);
         const { clientX, clientY } = event;

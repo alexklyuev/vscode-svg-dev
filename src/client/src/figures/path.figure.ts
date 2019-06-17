@@ -7,6 +7,7 @@ import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Zoom } from "../services/zoom/zoom";
 import { CancelListener } from "../listeners/cancel.listener";
 import { Guides } from "../services/guides/guides";
+import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 
 
 type UserPoint = [
@@ -58,17 +59,17 @@ export class PathFigure implements Figure<SVGPathElement> {
             pseudoElement = this.renderTemp(points);
         };
         window.addEventListener('click', pointsListener);
-        const stop = () => {
+        const stop = (key: CancelKeys) => {
             window.removeEventListener('click', pointsListener);
-            this.cancelListener.removeCallback(stop);
+            this.cancelListener.keyEvent.off(stop);
             this.artboard.box.classList.remove('interactive-points');
             if (pseudoElement) {
                 this.guides.guidesContainer!.removeChild(pseudoElement);
             }
             this.userEventMan.mode = 'pick';
-            this.renderFinal(points);
+            this.renderFinal(points, key === 'enter');
         };
-        this.cancelListener.addCallback(stop);
+        this.cancelListener.keyEvent.on(stop);
     }
 
     render(
@@ -119,7 +120,7 @@ export class PathFigure implements Figure<SVGPathElement> {
         return element;
     }
 
-    renderFinal(points: Array<UserPoint>) {
+    renderFinal(points: Array<UserPoint>, closed: boolean) {
         const parent = this.artboard.svg;
         const attributes: {[K: string]: string} = {
             stroke: this.stroke,
@@ -138,7 +139,7 @@ export class PathFigure implements Figure<SVGPathElement> {
             const x = (cX + sX - mX + aX*(zoom - 1)/2)/zoom;
             const y = (cY + sY - mY + aY*(zoom - 1)/2)/zoom;
             return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
-        }).join(' '));
+        }).join(' ') + (closed ? ' Z' : ''));
     }
 
     testByElement(element: any): element is SVGPathElement {

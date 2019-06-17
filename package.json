@@ -25,12 +25,14 @@
             {
                 "key": "escape",
                 "when": "svgDevAddInteractive",
-                "command": "svgDevCancel"
+                "command": "svgDevCancel",
+                "args": "escape"
             },
             {
                 "key": "enter",
                 "when": "svgDevAddInteractive",
-                "command": "svgDevCancel"
+                "command": "svgDevCancel",
+                "args": "enter"
             },
             {
                 "key": "delete",

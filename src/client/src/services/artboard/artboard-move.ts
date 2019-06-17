@@ -1,5 +1,12 @@
 import { Artboard } from "./artboard";
-import { ClientEvent } from "../../entities/client-event";
+import { ClientEvent, connectEvent } from "../../entities/client-event";
+
+
+const enum ArtboardMoveEvents {
+    mouseDownEvent = 'mouseDownEvent',
+    mouseUpEvent = 'mouseUpEvent',
+    mouseMoveEvent = 'mouseMoveEvent',
+}
 
 
 export class ArtboardMove {
@@ -8,9 +15,9 @@ export class ArtboardMove {
     private bindedOnMouseMove: (event: MouseEvent) => void;
     private bindedOnMouseUp: (event: MouseEvent) => void;
 
-    public readonly mouseDownEvent = new ClientEvent<MouseEvent>();
-    public readonly mouseUpEvent = new ClientEvent<MouseEvent>();
-    public readonly mouseMoveEvent = new ClientEvent<{left: number; top: number, event: MouseEvent}>();
+    public readonly [ArtboardMoveEvents.mouseDownEvent] = new ClientEvent<MouseEvent>();
+    public readonly [ArtboardMoveEvents.mouseUpEvent] = new ClientEvent<MouseEvent>();
+    public readonly [ArtboardMoveEvents.mouseMoveEvent] = new ClientEvent<{left: number; top: number, event: MouseEvent}>();
 
     private coords: {clientX: number, clientY: number} = {clientX: 0, clientY: 0};
 
@@ -52,6 +59,7 @@ export class ArtboardMove {
     }
 
     
+    @connectEvent(ArtboardMoveEvents.mouseDownEvent)
     onMouseDown(event: MouseEvent) {
         const { clientX, clientY } = event;
         const deltaX = clientX - this.coords.clientX;
@@ -61,10 +69,11 @@ export class ArtboardMove {
         window.addEventListener('mousemove', this.bindedOnMouseMove);
         window.addEventListener('mouseup', this.bindedOnMouseUp);
 
-        this.mouseDownEvent.emit(event);
+        // this.mouseDownEvent.emit(event);
         return event;
     }
 
+    @connectEvent(ArtboardMoveEvents.mouseMoveEvent)
     onMouseMove(event: MouseEvent) {
         const { clientX, clientY } = event;
         const box = this.artboard.box;
@@ -76,10 +85,11 @@ export class ArtboardMove {
         box.style.left = `${ this.marginLeft }px`;
         this.controlPropagation(event);
 
-        this.mouseMoveEvent.emit({ left: this.marginLeft, top: this.marginTop, event });
+        // this.mouseMoveEvent.emit({ left: this.marginLeft, top: this.marginTop, event });
         return {left: this.marginLeft, top: this.marginTop, event};
     }
 
+    @connectEvent(ArtboardMoveEvents.mouseUpEvent)
     onMouseUp(event: MouseEvent) {
         const { clientX, clientY } = event;
         const deltaX = clientX - this.coords.clientX;
@@ -89,7 +99,7 @@ export class ArtboardMove {
         window.removeEventListener('mousemove', this.bindedOnMouseMove);
         window.removeEventListener('mouseup', this.bindedOnMouseUp);
 
-        this.mouseUpEvent.emit(event);
+        // this.mouseUpEvent.emit(event);
         return event;
     }
 

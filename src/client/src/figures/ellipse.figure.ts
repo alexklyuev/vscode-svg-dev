@@ -74,14 +74,14 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         window.addEventListener('click', pointsListener);
         const cancel = () => {
             window.removeEventListener('click', pointsListener);
-            this.cancelListener.removeCallback(cancel);
+            this.cancelListener.keyEvent.off(cancel);
             this.artboard.box.classList.remove('interactive-points');
             if (pseudoElement) {
                 this.guides.guidesContainer!.removeChild(pseudoElement);
             }
             this.userEventMan.mode = 'pick';
         };
-        this.cancelListener.addCallback(cancel);
+        this.cancelListener.keyEvent.on(cancel);
     }
 
     createEditingSelection(points: [number, number][]) {

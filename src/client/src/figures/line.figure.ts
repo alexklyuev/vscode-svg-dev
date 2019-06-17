@@ -69,14 +69,14 @@ export class LineFigure implements Figure<SVGLineElement> {
         window.addEventListener('click', pointsListener);
         const cancel = () => {
             window.removeEventListener('click', pointsListener);
-            this.cancelListener.removeCallback(cancel);
+            this.cancelListener.keyEvent.off(cancel);
             this.artboard.box.classList.remove('interactive-points');
             if (toolsSvg) {
                 this.artboard.tools.removeChild(toolsSvg);
             }
             this.userEventMan.mode = 'pick';
         };
-        this.cancelListener.addCallback(cancel);
+        this.cancelListener.keyEvent.on(cancel);
     }
 
     createEditingSelection(cx: number, cy: number) {
