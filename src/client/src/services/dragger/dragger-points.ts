@@ -49,9 +49,11 @@ export class DraggerPoints implements Dragger {
     }
 
     onMouseup(
-        _element: SVGElement,
+        element: SVGElement,
         _clientX: number,
         _clientY: number,
-    ) {}
+    ) {
+        this.pointsStore.delete(element);
+    }
 
 }

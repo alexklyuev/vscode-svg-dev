@@ -26,7 +26,7 @@ const draggerCenter = new DraggerValue(['cx'], ['cy'], zoom);
 const draggerDouble = new DraggerValue(['x1', 'x2'], ['y1', 'y2'], zoom);
 const draggerPoints = new DraggerPoints(zoom);
 const draggerDelegate = new DraggerDelegate(figuresCollection);
-const draggerPath = new DraggerPath();
+const draggerPath = new DraggerPath(zoom);
 
 
 figuresCollection.add(
