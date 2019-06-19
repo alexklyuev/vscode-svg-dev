@@ -140,6 +140,27 @@ export class PathPoints {
     }
 
     /**
+     * //
+     */
+    parseStr(): string[][] {
+        const res = new Array<string>();
+        for (let char of this.d.trim()) {
+            if (char in DPointsDir) {
+                res.push(char);
+            } else {
+                res[res.length - 1] += char;
+            }
+        }
+        return res
+        .map(str => str.trim())
+        .map(str => [
+            str[0],
+            str.slice(1).trim(),
+        ])
+        ;
+    }
+
+    /**
      * Parses `d` attribute of <path> element
      */
     parse(): DPoint[] {
