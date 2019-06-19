@@ -8,12 +8,20 @@ import { Zoom } from "../services/zoom/zoom";
 import { CancelListener } from "../listeners/cancel.listener";
 import { Guides } from "../services/guides/guides";
 import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
+import { PathPoints } from "../services/path/path-points";
 
 
-type UserPoint = [
-    [number, number, number],
-    [number, number, number]
-];
+interface PointConcerns {
+    client: [number, number];
+    scroll: [number, number];
+    margin: [number, number];
+    board: [number, number];
+    zoom: number;
+
+    client2?: [number, number];
+}
+
+type PointSharedConcerns = Pick<PointConcerns, 'scroll' | 'margin' | 'board' | 'zoom'>;
 
 
 export class PathFigure implements Figure<SVGPathElement> {
@@ -29,42 +37,82 @@ export class PathFigure implements Figure<SVGPathElement> {
     readonly ctor = SVGPathElement;
 
     constructor(
-        public drag: Dragger,
+        public readonly drag: Dragger,
         private artboard: Artboard,
-        public readonly artboardMove: ArtboardMove,
-        public readonly zoom: Zoom,
-        public readonly cancelListener: CancelListener,
-        public readonly userEventMan: UserEventManager,
-        public readonly guides: Guides,
+        private artboardMove: ArtboardMove,
+        private zoom: Zoom,
+        private cancelListener: CancelListener,
+        private userEventMan: UserEventManager,
+        private guides: Guides,
+        private pathPoints: PathPoints,
     ) {}
 
+    /**
+     * //
+     */
     @setState
-    create(_elementName: string, attributes: {[K: string]: string}): void {
-        let points = Array<UserPoint>();
+    create(_elementName: string, _attributes: {[K: string]: string}): void {
+        const points = Array<PointConcerns>();
         this.artboard.box.classList.add('interactive-points');
-        let pseudoElement: SVGPathElement | null = null;
+        let destroyTempRenderFn: Function | null = null;
         this.userEventMan.mode = 'interactive';
+        const { svg } = this.artboard;
+        const aX = parseInt( svg.getAttribute('width')! );
+        const aY = parseInt( svg.getAttribute('height')! );
+        const { scrollLeft, scrollTop } = document.scrollingElement!;
+        const { left: artboardMarginLeft, top: artboardMarginTop } = this.artboardMove;
+        const { value: zoom } = this.zoom;
         const pointsListener = (event: MouseEvent) => {
-            let { clientX, clientY } = event;
-            const { scrollLeft, scrollTop } = document.scrollingElement!;
-            const { left: artboardMarginLeft, top: artboardMarginTop } = this.artboardMove;
-            const point: UserPoint = [
-                [clientX, scrollLeft, artboardMarginLeft],
-                [clientY, scrollTop, artboardMarginTop],
-            ];
+            const { clientX, clientY } = event;
+            const point: PointConcerns = {
+                client: [clientX, clientY],
+                scroll: [scrollLeft, scrollTop],
+                margin: [artboardMarginLeft, artboardMarginTop],
+                board: [aX, aY],
+                zoom,
+            };
             points.push(point);
-            if (pseudoElement) {
-                this.guides.guidesContainer!.removeChild(pseudoElement);
+            if (destroyTempRenderFn instanceof Function) {
+                destroyTempRenderFn();
             }
-            pseudoElement = this.renderTemp(points);
+            destroyTempRenderFn = this.renderTemp(
+                points,
+                {
+                    scroll: [scrollLeft, scrollTop],
+                    margin: [artboardMarginLeft, artboardMarginTop],
+                    board: [aX, aY],
+                    zoom,
+                },
+            );
         };
-        window.addEventListener('click', pointsListener);
+        const subpointsListener = (event: MouseEvent) => {
+            const { clientX, clientY } = event;
+            points[points.length - 1].client2 = [clientX, clientY];
+            if (destroyTempRenderFn instanceof Function) {
+                destroyTempRenderFn();
+            }
+            destroyTempRenderFn = this.renderTemp(
+                points,
+                {
+                    scroll: [scrollLeft, scrollTop],
+                    margin: [artboardMarginLeft, artboardMarginTop],
+                    board: [aX, aY],
+                    zoom,
+                },
+            );
+        };
+        const pointsListenerEvent = 'mousedown';
+        const subpointsListenerEvent = 'mouseup';
+        window.addEventListener(pointsListenerEvent, pointsListener);
+        window.addEventListener(subpointsListenerEvent, subpointsListener);
         const stop = (key: CancelKeys) => {
-            window.removeEventListener('click', pointsListener);
+            window.removeEventListener(pointsListenerEvent, pointsListener);
+            window.removeEventListener(subpointsListenerEvent, subpointsListener);
             this.cancelListener.keyEvent.off(stop);
             this.artboard.box.classList.remove('interactive-points');
-            if (pseudoElement) {
-                this.guides.guidesContainer!.removeChild(pseudoElement);
+            if (destroyTempRenderFn instanceof Function) {
+                destroyTempRenderFn();
+                destroyTempRenderFn = null;
             }
             this.userEventMan.mode = 'pick';
             this.renderFinal(points, key === 'enter');
@@ -72,31 +120,7 @@ export class PathFigure implements Figure<SVGPathElement> {
         this.cancelListener.keyEvent.on(stop);
     }
 
-    render(
-        points: Array<UserPoint>,
-        parent: Element,
-        attributes: {[K: string]: string},
-        zoomed: boolean,
-    ): SVGPathElement {
-        const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
-        parent.appendChild(element);
-        Object.keys(attributes).forEach((key) => {
-            element.setAttribute(key, attributes[key]);
-        });
-        const { value: zoom } = this.zoom;
-        const { svg } = this.artboard;
-        const aX = parseInt(svg.getAttribute('width')!);
-        const aY = parseInt(svg.getAttribute('height')!);
-        element.setAttribute('d', points.map(([[cX, sX, mX], [cY, sY, mY]], index) => {
-            const x = (cX + sX - mX + aX*(zoom - 1)/2) / (zoomed ? zoom : 1);
-            const y = (cY + sY - mY + aY*(zoom - 1)/2) / (zoomed ? zoom : 1);
-            return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
-        }).join(' '));
-        return element;
-    }
-
-
-    renderTemp(points: Array<UserPoint>) {
+    renderTemp(pointsConcerns: PointConcerns[], pointSharedConcerns: PointSharedConcerns): Function {
         const parent = this.guides.guidesContainer!;
         const attributes: {[K: string]: string} = {
             stroke: this.strokeTemp,
@@ -108,19 +132,38 @@ export class PathFigure implements Figure<SVGPathElement> {
         Object.keys(attributes).forEach((key) => {
             element.setAttribute(key, attributes[key]);
         });
-        const { value: zoom } = this.zoom;
-        const { svg } = this.artboard;
-        const aX = parseInt(svg.getAttribute('width')!);
-        const aY = parseInt(svg.getAttribute('height')!);
-        element.setAttribute('d', points.map(([[cX, sX, mX], [cY, sY, mY]], index) => {
-            const x = cX + sX - mX + aX*(zoom - 1)/2;
-            const y = cY + sY - mY + aY*(zoom - 1)/2;
-            return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
-        }).join(' '));
-        return element;
+        const points = [...pointsConcerns];
+        let prevPoint: PointConcerns | null = null;
+        if (points.length > 1) {
+            prevPoint = points[points.length - 1];
+            if (!prevPoint.client2) {
+                points.length -= 1;
+            }
+        }
+        const dAttr = this.renderPoints(points, false);
+        element.setAttribute('d', dAttr);
+        const { scroll, margin, board, zoom } = pointSharedConcerns;
+        const onMouseMove = (event: MouseEvent) => {
+            if (!prevPoint) {
+                const { clientX, clientY } = event;
+                const clientPoint = [clientX, clientY];
+                const [x, y] = [0, 1].map(dim => {
+                    return clientPoint[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
+                });
+                const newPoint = `L ${ x } ${ y }`;
+                element.setAttribute('d', `${ dAttr } ${ newPoint }`);
+            } else {
+                //
+            }
+        };
+        window.addEventListener('mousemove', onMouseMove);
+        return () => {
+            window.removeEventListener('mousemove', onMouseMove);
+            this.guides.guidesContainer!.removeChild(element);
+        };
     }
 
-    renderFinal(points: Array<UserPoint>, closed: boolean) {
+    renderFinal(pointsConcerns: PointConcerns[], closed: boolean) {
         const parent = this.artboard.svg;
         const attributes: {[K: string]: string} = {
             stroke: this.stroke,
@@ -131,17 +174,31 @@ export class PathFigure implements Figure<SVGPathElement> {
         Object.keys(attributes).forEach((key) => {
             element.setAttribute(key, attributes[key]);
         });
-        const { value: zoom } = this.zoom;
-        const { svg } = this.artboard;
-        const aX = parseInt(svg.getAttribute('width')!);
-        const aY = parseInt(svg.getAttribute('height')!);
-        element.setAttribute('d', points.map(([[cX, sX, mX], [cY, sY, mY]], index) => {
-            const x = (cX + sX - mX + aX*(zoom - 1)/2)/zoom;
-            const y = (cY + sY - mY + aY*(zoom - 1)/2)/zoom;
-            return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
-        }).join(' ') + (closed ? ' Z' : ''));
+        const dAbs = this.renderPoints(pointsConcerns, true);
+        const dRel = this.pathPoints.setPointsRelative(dAbs + (closed ? ' Z' : ''));
+        element.setAttribute('d', dRel);
     }
 
+    renderPoints(pointsConcerns: PointConcerns[], useZoom: boolean): string {
+        const formula = (point: number, scroll: number, margin: number, board: number, zoom: number, applyZoom: boolean) => (point + scroll - margin + board * (zoom - 1) / 2) / (applyZoom ? zoom : 1);
+        return pointsConcerns.map(({ client, scroll, margin, board, zoom, client2 }, index) => {
+            const [x, y] = [0, 1].map(dim => {
+                return formula(client[dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
+            });
+            if (index === 0 || !client2 || client2.every((i, k) => i === client[k])) {
+                return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
+            } else {
+                const [x2, y2] = [0, 1].map(dim => {
+                    return formula(client2![dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
+                });
+                return `S ${ x2 } ${ y2 }, ${ x } ${ y }`;
+            }
+        }).join(' ');
+    }
+
+    /**
+     * //
+     */
     testByElement(element: any): element is SVGPathElement {
         return element instanceof SVGPathElement;
     }

@@ -1,5 +1,6 @@
 import { Artboard } from "./artboard";
 import { ClientEvent, connectEvent } from "../../entities/client-event";
+import { UserEventManager } from "../user-event/user-event-manager";
 
 
 const enum ArtboardMoveEvents {
@@ -26,15 +27,12 @@ export class ArtboardMove {
 
     constructor(
         private artboard: Artboard,
+        private userEventMan: UserEventManager,
     ) {
         this.bindedOnMouseDown = this.onMouseDown.bind(this);
         this.bindedOnMouseMove = this.onMouseMove.bind(this);
         this.bindedOnMouseUp = this.onMouseUp.bind(this);
 
-        // const box = this.artboard.box;
-        // box.style.position = 'absolute';
-        // box.style.top = '0px';
-        // box.style.left = '0px';
         Object.assign(this.artboard.box.style, {
             position: 'absolute',
             top: '0px',
@@ -61,6 +59,9 @@ export class ArtboardMove {
     
     @connectEvent(ArtboardMoveEvents.mouseDownEvent)
     onMouseDown(event: MouseEvent) {
+        if (this.userEventMan.mode === 'interactive') {
+            return event;
+        }
         const { clientX, clientY } = event;
         const deltaX = clientX - this.coords.clientX;
         const deltaY = clientY - this.coords.clientY;
@@ -68,8 +69,6 @@ export class ArtboardMove {
         this.controlPropagation(event);
         window.addEventListener('mousemove', this.bindedOnMouseMove);
         window.addEventListener('mouseup', this.bindedOnMouseUp);
-
-        // this.mouseDownEvent.emit(event);
         return event;
     }
 
@@ -84,8 +83,6 @@ export class ArtboardMove {
         box.style.top = `${ this.marginTop }px`;
         box.style.left = `${ this.marginLeft }px`;
         this.controlPropagation(event);
-
-        // this.mouseMoveEvent.emit({ left: this.marginLeft, top: this.marginTop, event });
         return {left: this.marginLeft, top: this.marginTop, event};
     }
 
@@ -98,8 +95,6 @@ export class ArtboardMove {
         this.controlPropagation(event);
         window.removeEventListener('mousemove', this.bindedOnMouseMove);
         window.removeEventListener('mouseup', this.bindedOnMouseUp);
-
-        // this.mouseUpEvent.emit(event);
         return event;
     }
 
