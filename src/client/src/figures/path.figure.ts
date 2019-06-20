@@ -8,6 +8,7 @@ import { Zoom } from "../services/zoom/zoom";
 import { CancelListener } from "../listeners/cancel.listener";
 import { Guides } from "../services/guides/guides";
 import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
+import { PathPoints } from "../services/path/path-points";
 
 
 type UserPoint = [
@@ -36,6 +37,7 @@ export class PathFigure implements Figure<SVGPathElement> {
         public readonly cancelListener: CancelListener,
         public readonly userEventMan: UserEventManager,
         public readonly guides: Guides,
+        public readonly pathPoints: PathPoints,
     ) {}
 
     @setState
@@ -135,11 +137,13 @@ export class PathFigure implements Figure<SVGPathElement> {
         const { svg } = this.artboard;
         const aX = parseInt(svg.getAttribute('width')!);
         const aY = parseInt(svg.getAttribute('height')!);
-        element.setAttribute('d', points.map(([[cX, sX, mX], [cY, sY, mY]], index) => {
+        const dAbs = points.map(([[cX, sX, mX], [cY, sY, mY]], index) => {
             const x = (cX + sX - mX + aX*(zoom - 1)/2)/zoom;
             const y = (cY + sY - mY + aY*(zoom - 1)/2)/zoom;
             return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
-        }).join(' ') + (closed ? ' Z' : ''));
+        }).join(' ') + (closed ? ' Z' : '');
+        const dRel = this.pathPoints.setPointsRelative(dAbs);
+        element.setAttribute('d', dRel);
     }
 
     testByElement(element: any): element is SVGPathElement {

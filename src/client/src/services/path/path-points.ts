@@ -131,20 +131,12 @@ export class DPoint {
  */
 export class PathPoints {
 
-    public readonly parsed: DPoint_ANY[];
-
-    constructor(
-        public readonly d: string,
-    ) {
-        this.parsed = this.parseSpecify();
-    }
-
     /**
      * //
      */
-    parseStr(): string[][] {
+    parseStr(d: string): string[][] {
         const res = new Array<string>();
-        for (let char of this.d.trim()) {
+        for (let char of d.trim()) {
             if (char in DPointsDir) {
                 res.push(char);
             } else {
@@ -163,9 +155,9 @@ export class PathPoints {
     /**
      * Parses `d` attribute of <path> element
      */
-    parse(): DPoint[] {
+    parse(d: string): DPoint[] {
         const res = new Array<string>();
-        for (let char of this.d.trim()) {
+        for (let char of d.trim()) {
             if (char in DPointsDir) {
                 res.push(char);
             } else {
@@ -181,14 +173,41 @@ export class PathPoints {
     /**
      * //
      */
-    parseSpecify(): DPoint_ANY[] {
-        return this.parse().map(base => base.specify());
+    parseSpecify(d: string): DPoint_ANY[] {
+        return this.parse(d).map(base => base.specify());
     }
 
     /**
      * //
      */
-    setPointsRelative() {}
+    setPointsRelative(d: string): string {
+        const points = this.parseStr(d);
+        const newPoints = points.map((point, index, collection) => {
+            const [command, coords] = point;
+            switch (command) {
+                case 'Z': return command;
+                case 'm':
+                case 'l':
+                case 'M': return `${ command } ${ coords }`;
+                case 'L':
+                    let [curX, curY] = coords.split(/\s/).map(c => parseInt(c));
+                    for (let i = index - 1; index > -1; index--) {
+                        const [prevCommand, prevCoords] = collection[i];
+                        const [prevX, prevY] = prevCoords.split(/\s/).map(c => parseInt(c));
+                        switch (prevCommand) {
+                            case 'M':
+                            case 'L':
+                                return `l ${ curX - prevX } ${ curY - prevY }`;
+                            case 'l':
+                                curX -= prevX;
+                                curY -= prevY;
+                        }
+                    }
+                default: return `${ command } ${ coords }`;
+            }
+        });
+        return newPoints.join(' ');
+    }
 
     /**
      * //

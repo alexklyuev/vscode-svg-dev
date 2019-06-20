@@ -17,6 +17,7 @@ import { PolylineFigure } from "./polyline.figure";
 import { guides } from "../services/guides";
 import { PathFigure } from "./path.figure";
 import { DraggerPath } from "../services/dragger/dragger-path";
+import { pathPoints } from "../services/path";
 
 
 const figuresCollection = new FiguresCollection();
@@ -26,7 +27,7 @@ const draggerCenter = new DraggerValue(['cx'], ['cy'], zoom);
 const draggerDouble = new DraggerValue(['x1', 'x2'], ['y1', 'y2'], zoom);
 const draggerPoints = new DraggerPoints(zoom);
 const draggerDelegate = new DraggerDelegate(figuresCollection);
-const draggerPath = new DraggerPath(zoom);
+const draggerPath = new DraggerPath(zoom, pathPoints);
 
 
 figuresCollection.add(
@@ -38,7 +39,7 @@ figuresCollection.add(
     new LineFigure(draggerDouble, artboard, zoom, cancelListener, userEventMan),
     new PolygonFigure(draggerPoints, artboard, zoom, cancelListener, userEventMan),
     new PolylineFigure(draggerPoints, artboard, zoom, cancelListener, userEventMan),
-    new PathFigure(draggerPath, artboard, artboardMove, zoom, cancelListener, userEventMan, guides),
+    new PathFigure(draggerPath, artboard, artboardMove, zoom, cancelListener, userEventMan, guides, pathPoints),
 );
 
 export { figuresCollection };
