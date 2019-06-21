@@ -56,14 +56,14 @@ export class PathFigure implements Figure<SVGPathElement> {
         this.artboard.box.classList.add('interactive-points');
         let destroyTempRenderFn: Function | null = null;
         this.userEventMan.mode = 'interactive';
+        const { svg } = this.artboard;
+        const aX = parseInt( svg.getAttribute('width')! );
+        const aY = parseInt( svg.getAttribute('height')! );
+        const { scrollLeft, scrollTop } = document.scrollingElement!;
+        const { left: artboardMarginLeft, top: artboardMarginTop } = this.artboardMove;
+        const { value: zoom } = this.zoom;
         const pointsListener = (event: MouseEvent) => {
             const { clientX, clientY } = event;
-            const { scrollLeft, scrollTop } = document.scrollingElement!;
-            const { left: artboardMarginLeft, top: artboardMarginTop } = this.artboardMove;
-            const { svg } = this.artboard;
-            const aX = parseInt( svg.getAttribute('width')! );
-            const aY = parseInt( svg.getAttribute('height')! );
-            const { value: zoom } = this.zoom;
             const point: PointConcerns = {
                 client: [clientX, clientY],
                 scroll: [scrollLeft, scrollTop],
@@ -88,6 +88,18 @@ export class PathFigure implements Figure<SVGPathElement> {
         const subpointsListener = (event: MouseEvent) => {
             const { clientX, clientY } = event;
             points[points.length - 1].client2 = [clientX, clientY];
+            if (destroyTempRenderFn instanceof Function) {
+                destroyTempRenderFn();
+            }
+            destroyTempRenderFn = this.renderTemp(
+                points,
+                {
+                    scroll: [scrollLeft, scrollTop],
+                    margin: [artboardMarginLeft, artboardMarginTop],
+                    board: [aX, aY],
+                    zoom,
+                },
+            );
         };
         const pointsListenerEvent = 'mousedown';
         const subpointsListenerEvent = 'mouseup';
@@ -108,13 +120,7 @@ export class PathFigure implements Figure<SVGPathElement> {
         this.cancelListener.keyEvent.on(stop);
     }
 
-    /**
-     * //
-     */
-    renderTemp(
-        pointsConcerns: PointConcerns[],
-        pointSharedConcerns: PointSharedConcerns,
-    ): Function {
+    renderTemp(pointsConcerns: PointConcerns[], pointSharedConcerns: PointSharedConcerns): Function {
         const parent = this.guides.guidesContainer!;
         const attributes: {[K: string]: string} = {
             stroke: this.strokeTemp,
@@ -126,26 +132,29 @@ export class PathFigure implements Figure<SVGPathElement> {
         Object.keys(attributes).forEach((key) => {
             element.setAttribute(key, attributes[key]);
         });
-
-        const dAttr = pointsConcerns.map(({ client, scroll, margin, board, zoom }, index) => {
-            const [x, y] = [0, 1].map(dim => {
-                return client[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
-            });
-            return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
-        }).join(' ');
-
+        const points = [...pointsConcerns];
+        let prevPoint: PointConcerns | null = null;
+        if (points.length > 1) {
+            prevPoint = points[points.length - 1];
+            if (!prevPoint.client2) {
+                points.length -= 1;
+            }
+        }
+        const dAttr = this.renderPoints(points, false);
         element.setAttribute('d', dAttr);
-
         const { scroll, margin, board, zoom } = pointSharedConcerns;
-
         const onMouseMove = (event: MouseEvent) => {
-            const { clientX, clientY } = event;
-            const clientPoint = [clientX, clientY];
-            const [x, y] = [0, 1].map(dim => {
-                return clientPoint[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
-            });
-            const newPoint = `L ${ x } ${ y }`;
-            element.setAttribute('d', `${ dAttr } ${ newPoint }`);
+            if (!prevPoint) {
+                const { clientX, clientY } = event;
+                const clientPoint = [clientX, clientY];
+                const [x, y] = [0, 1].map(dim => {
+                    return clientPoint[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
+                });
+                const newPoint = `L ${ x } ${ y }`;
+                element.setAttribute('d', `${ dAttr } ${ newPoint }`);
+            } else {
+                //
+            }
         };
         window.addEventListener('mousemove', onMouseMove);
         return () => {
@@ -154,13 +163,7 @@ export class PathFigure implements Figure<SVGPathElement> {
         };
     }
 
-    /**
-     * //
-     */
-    renderFinal(
-        pointsConcerns: PointConcerns[],
-        closed: boolean,
-    ) {
+    renderFinal(pointsConcerns: PointConcerns[], closed: boolean) {
         const parent = this.artboard.svg;
         const attributes: {[K: string]: string} = {
             stroke: this.stroke,
@@ -171,17 +174,26 @@ export class PathFigure implements Figure<SVGPathElement> {
         Object.keys(attributes).forEach((key) => {
             element.setAttribute(key, attributes[key]);
         });
-        // pointsConcerns.forEach(({client, client2}) => {
-        //     console.log(`[${ client.join(', ') }] [${ client2 ? client2.join(', '): '--' }]`);
-        // });
-        const dAbs = pointsConcerns.map(({ client, scroll, margin, board, zoom }, index) => {
-            const [x, y] = [0, 1].map(dim => {
-                return (client[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2) / zoom;
-            });
-            return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
-        }).join(' ') + (closed ? ' Z' : '');
-        const dRel = this.pathPoints.setPointsRelative(dAbs);
+        const dAbs = this.renderPoints(pointsConcerns, true);
+        const dRel = this.pathPoints.setPointsRelative(dAbs + (closed ? ' Z' : ''));
         element.setAttribute('d', dRel);
+    }
+
+    renderPoints(pointsConcerns: PointConcerns[], useZoom: boolean): string {
+        const formula = (point: number, scroll: number, margin: number, board: number, zoom: number, applyZoom: boolean) => (point + scroll - margin + board * (zoom - 1) / 2) / (applyZoom ? zoom : 1);
+        return pointsConcerns.map(({ client, scroll, margin, board, zoom, client2 }, index) => {
+            const [x, y] = [0, 1].map(dim => {
+                return formula(client[dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
+            });
+            if (index === 0 || !client2 || client2.every((i, k) => i === client[k])) {
+                return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
+            } else {
+                const [x2, y2] = [0, 1].map(dim => {
+                    return formula(client2![dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
+                });
+                return `S ${ x2 } ${ y2 }, ${ x } ${ y }`;
+            }
+        }).join(' ');
     }
 
     /**
