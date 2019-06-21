@@ -40,11 +40,14 @@ export class PathFigure implements Figure<SVGPathElement> {
         public readonly pathPoints: PathPoints,
     ) {}
 
+    /**
+     * //
+     */
     @setState
     create(_elementName: string, attributes: {[K: string]: string}): void {
         let points = Array<UserPoint>();
         this.artboard.box.classList.add('interactive-points');
-        let pseudoElement: SVGPathElement | null = null;
+        let destroyTempRenderFn: Function | null = null;
         this.userEventMan.mode = 'interactive';
         const pointsListener = (event: MouseEvent) => {
             let { clientX, clientY } = event;
@@ -55,18 +58,19 @@ export class PathFigure implements Figure<SVGPathElement> {
                 [clientY, scrollTop, artboardMarginTop],
             ];
             points.push(point);
-            if (pseudoElement) {
-                this.guides.guidesContainer!.removeChild(pseudoElement);
+            if (destroyTempRenderFn instanceof Function) {
+                destroyTempRenderFn();
             }
-            pseudoElement = this.renderTemp(points);
+            destroyTempRenderFn = this.renderTemp(points);
         };
         window.addEventListener('click', pointsListener);
         const stop = (key: CancelKeys) => {
             window.removeEventListener('click', pointsListener);
             this.cancelListener.keyEvent.off(stop);
             this.artboard.box.classList.remove('interactive-points');
-            if (pseudoElement) {
-                this.guides.guidesContainer!.removeChild(pseudoElement);
+            if (destroyTempRenderFn instanceof Function) {
+                destroyTempRenderFn();
+                destroyTempRenderFn = null;
             }
             this.userEventMan.mode = 'pick';
             this.renderFinal(points, key === 'enter');
@@ -74,6 +78,9 @@ export class PathFigure implements Figure<SVGPathElement> {
         this.cancelListener.keyEvent.on(stop);
     }
 
+    /**
+     * //
+     */
     render(
         points: Array<UserPoint>,
         parent: Element,
@@ -97,8 +104,10 @@ export class PathFigure implements Figure<SVGPathElement> {
         return element;
     }
 
-
-    renderTemp(points: Array<UserPoint>) {
+    /**
+     * //
+     */
+    renderTemp(points: Array<UserPoint>): Function {
         const parent = this.guides.guidesContainer!;
         const attributes: {[K: string]: string} = {
             stroke: this.strokeTemp,
@@ -114,14 +123,31 @@ export class PathFigure implements Figure<SVGPathElement> {
         const { svg } = this.artboard;
         const aX = parseInt(svg.getAttribute('width')!);
         const aY = parseInt(svg.getAttribute('height')!);
-        element.setAttribute('d', points.map(([[cX, sX, mX], [cY, sY, mY]], index) => {
-            const x = cX + sX - mX + aX*(zoom - 1)/2;
-            const y = cY + sY - mY + aY*(zoom - 1)/2;
+        const d = points.map(([[cX, sX, mX], [cY, sY, mY]], index) => {
+            const x = cX + sX - mX + aX * (zoom - 1) / 2;
+            const y = cY + sY - mY + aY * (zoom - 1) / 2;
             return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
-        }).join(' '));
-        return element;
+        }).join(' ');
+        element.setAttribute('d', d);
+        const onMouseMove = (event: MouseEvent) => {
+            const { clientX, clientY } = event;
+            const { scrollLeft: sX, scrollTop: sY } = document.scrollingElement!;
+            const { left: mX, top: mY } = this.artboardMove;
+            const x = clientX + sX - mX + aX * (zoom - 1) / 2;
+            const y = clientY + sY - mY + aY * (zoom - 1) / 2;
+            const newPoint = `L ${ x } ${ y }`;
+            element.setAttribute('d', `${ d } ${ newPoint }`);
+        };
+        window.addEventListener('mousemove', onMouseMove);
+        return () => {
+            window.removeEventListener('mousemove', onMouseMove);
+            this.guides.guidesContainer!.removeChild(element);
+        };
     }
 
+    /**
+     * //
+     */
     renderFinal(points: Array<UserPoint>, closed: boolean) {
         const parent = this.artboard.svg;
         const attributes: {[K: string]: string} = {
@@ -146,6 +172,9 @@ export class PathFigure implements Figure<SVGPathElement> {
         element.setAttribute('d', dRel);
     }
 
+    /**
+     * //
+     */
     testByElement(element: any): element is SVGPathElement {
         return element instanceof SVGPathElement;
     }
