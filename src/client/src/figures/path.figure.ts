@@ -11,10 +11,17 @@ import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { PathPoints } from "../services/path/path-points";
 
 
-type UserPoint = [
-    [number, number, number],
-    [number, number, number]
-];
+interface PointConcerns {
+    client: [number, number];
+    scroll: [number, number];
+    margin: [number, number];
+    board: [number, number];
+    zoom: number;
+
+    client2?: [number, number];
+}
+
+type PointSharedConcerns = Pick<PointConcerns, 'scroll' | 'margin' | 'board' | 'zoom'>;
 
 
 export class PathFigure implements Figure<SVGPathElement> {
@@ -30,42 +37,65 @@ export class PathFigure implements Figure<SVGPathElement> {
     readonly ctor = SVGPathElement;
 
     constructor(
-        public drag: Dragger,
+        public readonly drag: Dragger,
         private artboard: Artboard,
-        public readonly artboardMove: ArtboardMove,
-        public readonly zoom: Zoom,
-        public readonly cancelListener: CancelListener,
-        public readonly userEventMan: UserEventManager,
-        public readonly guides: Guides,
-        public readonly pathPoints: PathPoints,
+        private artboardMove: ArtboardMove,
+        private zoom: Zoom,
+        private cancelListener: CancelListener,
+        private userEventMan: UserEventManager,
+        private guides: Guides,
+        private pathPoints: PathPoints,
     ) {}
 
     /**
      * //
      */
     @setState
-    create(_elementName: string, attributes: {[K: string]: string}): void {
-        let points = Array<UserPoint>();
+    create(_elementName: string, _attributes: {[K: string]: string}): void {
+        const points = Array<PointConcerns>();
         this.artboard.box.classList.add('interactive-points');
         let destroyTempRenderFn: Function | null = null;
         this.userEventMan.mode = 'interactive';
         const pointsListener = (event: MouseEvent) => {
-            let { clientX, clientY } = event;
+            const { clientX, clientY } = event;
             const { scrollLeft, scrollTop } = document.scrollingElement!;
             const { left: artboardMarginLeft, top: artboardMarginTop } = this.artboardMove;
-            const point: UserPoint = [
-                [clientX, scrollLeft, artboardMarginLeft],
-                [clientY, scrollTop, artboardMarginTop],
-            ];
+            const { svg } = this.artboard;
+            const aX = parseInt( svg.getAttribute('width')! );
+            const aY = parseInt( svg.getAttribute('height')! );
+            const { value: zoom } = this.zoom;
+            const point: PointConcerns = {
+                client: [clientX, clientY],
+                scroll: [scrollLeft, scrollTop],
+                margin: [artboardMarginLeft, artboardMarginTop],
+                board: [aX, aY],
+                zoom,
+            };
             points.push(point);
             if (destroyTempRenderFn instanceof Function) {
                 destroyTempRenderFn();
             }
-            destroyTempRenderFn = this.renderTemp(points);
+            destroyTempRenderFn = this.renderTemp(
+                points,
+                {
+                    scroll: [scrollLeft, scrollTop],
+                    margin: [artboardMarginLeft, artboardMarginTop],
+                    board: [aX, aY],
+                    zoom,
+                },
+            );
         };
-        window.addEventListener('click', pointsListener);
+        const subpointsListener = (event: MouseEvent) => {
+            const { clientX, clientY } = event;
+            points[points.length - 1].client2 = [clientX, clientY];
+        };
+        const pointsListenerEvent = 'mousedown';
+        const subpointsListenerEvent = 'mouseup';
+        window.addEventListener(pointsListenerEvent, pointsListener);
+        window.addEventListener(subpointsListenerEvent, subpointsListener);
         const stop = (key: CancelKeys) => {
-            window.removeEventListener('click', pointsListener);
+            window.removeEventListener(pointsListenerEvent, pointsListener);
+            window.removeEventListener(subpointsListenerEvent, subpointsListener);
             this.cancelListener.keyEvent.off(stop);
             this.artboard.box.classList.remove('interactive-points');
             if (destroyTempRenderFn instanceof Function) {
@@ -81,33 +111,10 @@ export class PathFigure implements Figure<SVGPathElement> {
     /**
      * //
      */
-    render(
-        points: Array<UserPoint>,
-        parent: Element,
-        attributes: {[K: string]: string},
-        zoomed: boolean,
-    ): SVGPathElement {
-        const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
-        parent.appendChild(element);
-        Object.keys(attributes).forEach((key) => {
-            element.setAttribute(key, attributes[key]);
-        });
-        const { value: zoom } = this.zoom;
-        const { svg } = this.artboard;
-        const aX = parseInt(svg.getAttribute('width')!);
-        const aY = parseInt(svg.getAttribute('height')!);
-        element.setAttribute('d', points.map(([[cX, sX, mX], [cY, sY, mY]], index) => {
-            const x = (cX + sX - mX + aX*(zoom - 1)/2) / (zoomed ? zoom : 1);
-            const y = (cY + sY - mY + aY*(zoom - 1)/2) / (zoomed ? zoom : 1);
-            return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
-        }).join(' '));
-        return element;
-    }
-
-    /**
-     * //
-     */
-    renderTemp(points: Array<UserPoint>): Function {
+    renderTemp(
+        pointsConcerns: PointConcerns[],
+        pointSharedConcerns: PointSharedConcerns,
+    ): Function {
         const parent = this.guides.guidesContainer!;
         const attributes: {[K: string]: string} = {
             stroke: this.strokeTemp,
@@ -119,24 +126,26 @@ export class PathFigure implements Figure<SVGPathElement> {
         Object.keys(attributes).forEach((key) => {
             element.setAttribute(key, attributes[key]);
         });
-        const { value: zoom } = this.zoom;
-        const { svg } = this.artboard;
-        const aX = parseInt(svg.getAttribute('width')!);
-        const aY = parseInt(svg.getAttribute('height')!);
-        const d = points.map(([[cX, sX, mX], [cY, sY, mY]], index) => {
-            const x = cX + sX - mX + aX * (zoom - 1) / 2;
-            const y = cY + sY - mY + aY * (zoom - 1) / 2;
+
+        const dAttr = pointsConcerns.map(({ client, scroll, margin, board, zoom }, index) => {
+            const [x, y] = [0, 1].map(dim => {
+                return client[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
+            });
             return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
         }).join(' ');
-        element.setAttribute('d', d);
+
+        element.setAttribute('d', dAttr);
+
+        const { scroll, margin, board, zoom } = pointSharedConcerns;
+
         const onMouseMove = (event: MouseEvent) => {
             const { clientX, clientY } = event;
-            const { scrollLeft: sX, scrollTop: sY } = document.scrollingElement!;
-            const { left: mX, top: mY } = this.artboardMove;
-            const x = clientX + sX - mX + aX * (zoom - 1) / 2;
-            const y = clientY + sY - mY + aY * (zoom - 1) / 2;
+            const clientPoint = [clientX, clientY];
+            const [x, y] = [0, 1].map(dim => {
+                return clientPoint[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
+            });
             const newPoint = `L ${ x } ${ y }`;
-            element.setAttribute('d', `${ d } ${ newPoint }`);
+            element.setAttribute('d', `${ dAttr } ${ newPoint }`);
         };
         window.addEventListener('mousemove', onMouseMove);
         return () => {
@@ -148,7 +157,10 @@ export class PathFigure implements Figure<SVGPathElement> {
     /**
      * //
      */
-    renderFinal(points: Array<UserPoint>, closed: boolean) {
+    renderFinal(
+        pointsConcerns: PointConcerns[],
+        closed: boolean,
+    ) {
         const parent = this.artboard.svg;
         const attributes: {[K: string]: string} = {
             stroke: this.stroke,
@@ -159,13 +171,13 @@ export class PathFigure implements Figure<SVGPathElement> {
         Object.keys(attributes).forEach((key) => {
             element.setAttribute(key, attributes[key]);
         });
-        const { value: zoom } = this.zoom;
-        const { svg } = this.artboard;
-        const aX = parseInt(svg.getAttribute('width')!);
-        const aY = parseInt(svg.getAttribute('height')!);
-        const dAbs = points.map(([[cX, sX, mX], [cY, sY, mY]], index) => {
-            const x = (cX + sX - mX + aX*(zoom - 1)/2)/zoom;
-            const y = (cY + sY - mY + aY*(zoom - 1)/2)/zoom;
+        // pointsConcerns.forEach(({client, client2}) => {
+        //     console.log(`[${ client.join(', ') }] [${ client2 ? client2.join(', '): '--' }]`);
+        // });
+        const dAbs = pointsConcerns.map(({ client, scroll, margin, board, zoom }, index) => {
+            const [x, y] = [0, 1].map(dim => {
+                return (client[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2) / zoom;
+            });
             return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
         }).join(' ') + (closed ? ' Z' : '');
         const dRel = this.pathPoints.setPointsRelative(dAbs);
