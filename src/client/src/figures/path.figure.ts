@@ -133,27 +133,25 @@ export class PathFigure implements Figure<SVGPathElement> {
             element.setAttribute(key, attributes[key]);
         });
         const points = [...pointsConcerns];
-        let prevPoint: PointConcerns | null = null;
-        if (points.length > 1) {
-            prevPoint = points[points.length - 1];
-            if (!prevPoint.client2) {
-                points.length -= 1;
-            }
-        }
         const dAttr = this.renderPoints(points, false);
         element.setAttribute('d', dAttr);
+        const edge = points[points.length - 1];
         const { scroll, margin, board, zoom } = pointSharedConcerns;
         const onMouseMove = (event: MouseEvent) => {
-            if (!prevPoint) {
-                const { clientX, clientY } = event;
-                const clientPoint = [clientX, clientY];
-                const [x, y] = [0, 1].map(dim => {
-                    return clientPoint[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
-                });
+            const { clientX, clientY } = event;
+            const clientPoint = [clientX, clientY];
+            const [x, y] = [0, 1].map(dim => {
+                return clientPoint[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
+            });
+            if (edge.client2) {
                 const newPoint = `L ${ x } ${ y }`;
                 element.setAttribute('d', `${ dAttr } ${ newPoint }`);
             } else {
-                //
+                const commandIndex = dAttr.lastIndexOf('L');
+                const d = dAttr.slice(0, commandIndex);
+                const remainCoords = dAttr.slice(commandIndex + 1).trim();
+                const tempS = `S ${ x } ${ y }, ${ remainCoords }`;
+                element.setAttribute('d', `${ d } ${ tempS }`);
             }
         };
         window.addEventListener('mousemove', onMouseMove);
