@@ -188,19 +188,58 @@ export class PathPoints {
                 case 'Z': return command;
                 case 'm':
                 case 'l':
+                case 's':
                 case 'M': return `${ command } ${ coords }`;
                 case 'L':
                     let [curX, curY] = coords.split(/\s/).map(c => parseInt(c));
                     for (let i = index - 1; index > -1; index--) {
                         const [prevCommand, prevCoords] = collection[i];
-                        const [prevX, prevY] = prevCoords.split(/\s/).map(c => parseInt(c));
                         switch (prevCommand) {
                             case 'M':
                             case 'L':
-                                return `l ${ curX - prevX } ${ curY - prevY }`;
+                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseInt(c));
+                                return `l ${ curX - prevXL } ${ curY - prevYL }`;
                             case 'l':
-                                curX -= prevX;
-                                curY -= prevY;
+                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseInt(c));
+                                curX -= prevXl;
+                                curY -= prevYl;
+                                break;
+                            case 'S':
+                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                return `l ${ curX - prevXS } ${ curY - prevYS }`;
+                            case 's':
+                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                curX -= prevXs;
+                                curY -= prevYs;
+                                break;
+                        }
+                    }
+                case 'S':
+                    let [ [x2, y2], [x, y] ] = coords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                    for (let i = index - 1; index > -1; index--) {
+                        const [prevCommand, prevCoords] = collection[i];
+                        switch (prevCommand) {
+                            case 'M':
+                            case 'L':
+                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseInt(c));
+                                return `s ${ x2 - prevXL } ${ y2 - prevYL }, ${ x - prevXL } ${ y - prevYL }`;
+                            case 'l':
+                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseInt(c));
+                                x -= prevXl;
+                                y -= prevYl;
+                                x2 -= prevXl;
+                                y2 -= prevYl;
+                                break;
+                            case 'S':
+                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                return `s ${ x2 - prevXS } ${ y2 - prevYS }, ${ x - prevXS } ${ y - prevYS }`;
+                            case 's':
+                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                x -= prevXs;
+                                y -= prevYs;
+                                x2 -= prevXs;
+                                y2 -= prevYs;
+                                break;
                         }
                     }
                 default: return `${ command } ${ coords }`;
