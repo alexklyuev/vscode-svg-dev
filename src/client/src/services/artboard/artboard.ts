@@ -9,10 +9,6 @@ export class Artboard {
 
     private toolsElement: HTMLElement | null = null;
 
-    constructor(
-    ) {
-    }
-
     get svg(): SVGElement {
         if (!this.svgElement) {
             this.svgElement = document.querySelector('#artboard svg')! as SVGElement;
@@ -38,6 +34,14 @@ export class Artboard {
         this.svgElement = null;
         this.containerHtmlElement = null;
         this.toolsElement = null;
+    }
+
+    get width(): number {
+        return parseInt(this.svg.getAttribute('width')!);
+    }
+
+    get height(): number {
+        return parseInt(this.svg.getAttribute('height')!);
     }
 
 }

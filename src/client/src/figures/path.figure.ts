@@ -9,19 +9,7 @@ import { CancelListener } from "../listeners/cancel.listener";
 import { Guides } from "../services/guides/guides";
 import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { PathPoints } from "../services/path/path-points";
-
-
-interface PointConcerns {
-    client: [number, number];
-    scroll: [number, number];
-    margin: [number, number];
-    board: [number, number];
-    zoom: number;
-
-    client2?: [number, number];
-}
-
-type PointSharedConcerns = Pick<PointConcerns, 'scroll' | 'margin' | 'board' | 'zoom'>;
+import { PointConcerns, PointSharedConcerns } from "./models/point-concerns.model";
 
 
 export class PathFigure implements Figure<SVGPathElement> {
@@ -161,6 +149,9 @@ export class PathFigure implements Figure<SVGPathElement> {
         };
     }
 
+    /**
+     * //
+     */
     renderFinal(pointsConcerns: PointConcerns[], closed: boolean) {
         const parent = this.artboard.svg;
         const attributes: {[K: string]: string} = {
@@ -177,6 +168,9 @@ export class PathFigure implements Figure<SVGPathElement> {
         element.setAttribute('d', dRel);
     }
 
+    /**
+     * //
+     */
     renderPoints(pointsConcerns: PointConcerns[], useZoom: boolean): string {
         const formula = (point: number, scroll: number, margin: number, board: number, zoom: number, applyZoom: boolean) => (point + scroll - margin + board * (zoom - 1) / 2) / (applyZoom ? zoom : 1);
         return pointsConcerns.map(({ client, scroll, margin, board, zoom, client2 }, index) => {
