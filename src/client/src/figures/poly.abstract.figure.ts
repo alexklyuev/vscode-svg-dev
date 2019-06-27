@@ -6,12 +6,9 @@ import { CancelListener } from "../listeners/cancel.listener";
 import { UserEventManager } from "../services/user-event/user-event-manager";
 import { setState } from "../decorators/set-state.decorator";
 import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
-
-
-// type UserPoint = [
-//     [number, number, number],
-//     [number, number, number]
-// ];
+import { PointConcerns } from "./models/point-concerns.model";
+import { Guides } from "../services/guides/guides";
+import { ArtboardMove } from "../services/artboard/artboard-move";
 
 
 export abstract class PolyFigure implements Figure<SVGElement> {
@@ -25,42 +22,53 @@ export abstract class PolyFigure implements Figure<SVGElement> {
     constructor(
         public drag: Dragger,
         private artboard: Artboard,
+        private artboardMove: ArtboardMove,
         public zoom: Zoom,
         private cancelListener: CancelListener,
         private userEventMan: UserEventManager,
+        private guides: Guides,
     ) {}
 
     abstract testByElement(element: any): element is SVGElement;
 
     @setState
     create(_elementName: string, _attributest: {[K: string]: string}) {
-        let points = Array<[[number, number], [number, number]]>();
+        // let points = Array<[[number, number], [number, number]]>();
+        let cpoints = Array<PointConcerns>();
         this.artboard.box.classList.add('interactive-points');
         let toolsSvgRemover: null | (() => void) = null;
         this.userEventMan.mode = 'interactive';
         const pointsListener = (event: MouseEvent) => {
             const { clientX, clientY, shiftKey } = event;
             const { scrollLeft, scrollTop } = document.scrollingElement!;
-            const point: [[number, number], [number, number]] = [
-                [clientX, scrollLeft],
-                [clientY, scrollTop],
-            ];
-            if (points.length > 0 && shiftKey) {
-                const [[cx,], [cy,]] = points[points.length - 1];
+            // const point: [[number, number], [number, number]] = [
+            //     [clientX, scrollLeft],
+            //     [clientY, scrollTop],
+            // ];
+            const cpoint: PointConcerns = {
+                client: [clientX, clientY],
+                scroll: [scrollLeft, scrollTop],
+                margin: [this.artboardMove.left, this.artboardMove.top],
+                board: [this.artboard.width, this.artboard.height],
+                zoom: this.zoom.value,
+            };
+            if (cpoints.length > 0 && shiftKey) {
+                // const [[cx,], [cy,]] = points[points.length - 1];
+                const { client: [cx, cy] } = cpoints[cpoints.length - 1];
                 const deltax = Math.abs(clientX - cx);
                 const deltay = Math.abs(clientY - cy);
                 if (deltax < deltay) {
-                    point[0] = [cx, scrollLeft];
+                    cpoint.client[0] = cx;
                 } else {
-                    point[1] = [cy, scrollTop];
+                    cpoint.client[1] = cy;
                 }
             }
-            points.push(point);
+            cpoints.push(cpoint);
             if (toolsSvgRemover instanceof Function) {
                 toolsSvgRemover();
                 toolsSvgRemover = null;
             }
-            toolsSvgRemover = this.renderTools(points);
+            toolsSvgRemover = this.renderTools(cpoints);
         };
         window.addEventListener('click', pointsListener);
         const stop = (_key: CancelKeys) => {
@@ -72,12 +80,12 @@ export abstract class PolyFigure implements Figure<SVGElement> {
                 toolsSvgRemover = null;
             }
             this.userEventMan.mode = 'pick';
-            this.render(points);
+            this.render(cpoints);
         };
         this.cancelListener.keyEvent.on(stop);
     }
 
-    render(points: Array<[[number, number], [number, number]]>) {
+    render(points: Array<PointConcerns>) {
         const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
         element.setAttribute('stroke', this.stroke);
         element.setAttribute('fill', this.fill);
@@ -87,7 +95,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         this.artboard.svg.appendChild(element);
     }
 
-    renderTools(points: Array<[[number, number], [number, number]]>) {
+    renderTools(points: Array<PointConcerns>) {
         const { scrollLeft, scrollTop } = document.scrollingElement!;
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         const artboardBox = this.artboard.svg.getBoundingClientRect();
