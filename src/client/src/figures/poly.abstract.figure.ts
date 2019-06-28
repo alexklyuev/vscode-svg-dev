@@ -26,7 +26,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         public zoom: Zoom,
         private cancelListener: CancelListener,
         private userEventMan: UserEventManager,
-        private guides: Guides,
+        public guides: Guides,
     ) {}
 
     abstract testByElement(element: any): element is SVGElement;
@@ -89,8 +89,14 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
         element.setAttribute('stroke', this.stroke);
         element.setAttribute('fill', this.fill);
-        element.setAttribute('points', points.map(([[cX, sX], [cY, sY]]) => {
-            return `${(cX + sX) / this.zoom.value},${(cY + sY) / this.zoom.value}`;
+        // element.setAttribute('points', points.map(([[cX, sX], [cY, sY]]) => {
+        //     return `${(cX + sX) / this.zoom.value},${(cY + sY) / this.zoom.value}`;
+        // }).join(' '));
+        element.setAttribute('points', points.map(({ client, scroll, margin, board, zoom }) => {
+            const [x, y] = [0, 1].map(dim => {
+                return (client[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2) / zoom;
+            });
+            return `${ x } ${ y }`;
         }).join(' '));
         this.artboard.svg.appendChild(element);
     }
@@ -109,25 +115,37 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             left: artboardBox.left + scrollLeft + 'px',
         });
         this.artboard.tools.appendChild(svg);
-        points.forEach(([[cX, sX], [cY, sY]], index) => {
+        points.forEach(({ client, scroll, margin, board, zoom }, index) => {
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            circle.setAttribute('cx', `${cX + sX}`);
-            circle.setAttribute('cy', `${cY + sY}`);
+            const [cx, cy] = [0, 1].map(d => {
+                return client[d] + scroll[d] - margin[d] + board[d] * (zoom - 1) / 2;
+            });
+            circle.setAttribute('cx', `${cx}`);
+            circle.setAttribute('cy', `${cy}`);
             circle.setAttribute('r', `${3}`);
             circle.setAttribute('fill', 'none');
             circle.setAttribute('stroke', '#777');
             circle.setAttribute('stroke-dasharray', '1');
             svg.appendChild(circle);
             if (index > 0) {
-                const [[cXprev, sXprev], [cYprev, sYprev]] = points[index - 1];
+                const {
+                    client: pclient,
+                    scroll: pscroll,
+                    margin: pmargin,
+                    board: pboard,
+                    zoom: pzoom,
+                } = points[index - 1];
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                const [x1, y1] = [0, 1].map(d => {
+                    return pclient[d] + pscroll[d] - pmargin[d] + pboard[d] * (pzoom - 1) / 2;
+                });
                 const attrs: {[K: string]: string} = {
                     'stroke': '#777',
                     'stroke-dasharray': '1',
-                    'x1': `${cXprev + sXprev}`,
-                    'y1': `${cYprev + sYprev}`,
-                    'x2': `${cX + sX}`,
-                    'y2': `${cY + sY}`,
+                    'x1': `${x1}`,
+                    'y1': `${y1}`,
+                    'x2': `${cx}`,
+                    'y2': `${cy}`,
                 };
                 Object.keys(attrs).forEach(key => {
                     const val = attrs[key];
@@ -138,16 +156,26 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         });
         let mousemoveRemover = () => {};
         if (points.length > 0) {
-            const [[cX, sX], [cY, sY]] = points[points.length - 1];
+            // const [[cX, sX], [cY, sY]] = points[points.length - 1];
+            const {
+                client,
+                scroll,
+                margin,
+                board,
+                zoom,
+            } = points[points.length - 1];
             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
             svg.appendChild(line);
+            const [x, y] = [0, 1].map(d => {
+                return client[d] + scroll[d] - margin[d] + board[d] * (zoom - 1) / 2;
+            });
             const attrs: {[K: string]: string} = {
                 'stroke': '#777',
                 'stroke-dasharray': '1',
-                'x1': `${cX + sX}`,
-                'y1': `${cY + sY}`,
-                'x2': `${cX + sX}`,
-                'y2': `${cY + sY}`,
+                'x1': `${x}`,
+                'y1': `${y}`,
+                'x2': `${x}`,
+                'y2': `${y}`,
             };
             Object.keys(attrs).forEach(key => {
                 const val = attrs[key];
@@ -155,18 +183,25 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             });
             const onMousemove = (event: MouseEvent) => {
                 const { clientX, clientY, shiftKey } = event;
+                const nclient = [clientX, clientY];
                 const { scrollLeft, scrollTop } = document.scrollingElement!;
+                const nscroll = [scrollLeft, scrollTop];
+                const [x2, y2] = [0, 1].map(d => {
+                    return nclient[d] + nscroll[d] - margin[d] + board[d] * (zoom - 1) / 2;
+                });
                 const points: {[K: string]: string} = {
-                    'x2': `${clientX + scrollLeft}`,
-                    'y2': `${clientY + scrollTop}`,
+                    'x2': `${ x2 }`,
+                    'y2': `${ y2 }`,
                 };
                 if (shiftKey) {
-                    const absDeltaX = Math.abs(clientX - cX);
-                    const absDeltaY = Math.abs(clientY - cY);
+                    const absDeltaX = Math.abs(clientX - client[0]);
+                    const absDeltaY = Math.abs(clientY - client[1]);
                     if (absDeltaX < absDeltaY) {
-                        points.x2 = `${cX + sX}`;
+                        const x2 = client[0] + scroll[0] - margin[0] + board[0] * (zoom - 1) / 2;
+                        points.x2 = `${ x2 }`;
                     } else {
-                        points.y2 = `${cY + sY}`;
+                        const y2 = client[1] + scroll[1] - margin[1] + board[1] * (zoom - 1) / 2;
+                        points.y2 = `${ y2 }`;
                     }
                 }
                 Object.keys(points).forEach(key => {
