@@ -96,7 +96,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             const [x, y] = [0, 1].map(dim => {
                 return (client[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2) / zoom;
             });
-            return `${ x } ${ y }`;
+            return `${ x },${ y }`;
         }).join(' '));
         this.artboard.svg.appendChild(element);
     }
