@@ -147,15 +147,15 @@ export class PathFigure implements Figure<SVGPathElement> {
                 const newPoint = `L ${ x } ${ y }`;
                 element.setAttribute('d', `${ dAttr } ${ newPoint }`);
             } else {
-                const commandIndex = dAttr.lastIndexOf('L');
+                const commandIndex = dAttr.lastIndexOf('C');
                 const d = dAttr.slice(0, commandIndex);
                 const remainCoords = dAttr.slice(commandIndex + 1).trim();
-                // const tempS = `S ${ x } ${ y }, ${ remainCoords }`;
+                const [ , , [px, py]] = remainCoords.split(',').map(pair => pair.trim().split(' ').map(s => s.trim()));
                 const prev = points[points.length - 2];
                 const [x1, y1] = [0, 1].map(dim => {
                     return prev.client[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
                 });
-                const tempC = `C ${ x1 } ${ y1 }, ${ x } ${ y }, ${ remainCoords }`;
+                const tempC = `C ${ x1 } ${ y1 }, ${ x } ${ y }, ${ px } ${ py }`;
                 element.setAttribute('d', `${ d } ${ tempC }`);
             }
         };
@@ -205,17 +205,21 @@ export class PathFigure implements Figure<SVGPathElement> {
             const [x, y] = [0, 1].map(dim => {
                 return formula(client[dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
             });
-            if (index === 0 || !client2 || client2.every((i, k) => i === client[k])) {
-                return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
+            if (index === 0) {
+                return `M ${ x } ${ y }`;
             } else {
                 const [x1, y1] = [0, 1].map(dim => {
                     const prev = pointsConcerns[index - 1];
                     return formula(prev.client[dim], prev.scroll[dim], prev.margin[dim], prev.board[dim], prev.zoom, useZoom);
                 });
-                const [x2, y2] = [0, 1].map(dim => {
-                    return formula(client2![dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
-                });
-                return `C ${ x1 } ${ y1 }, ${ x2 } ${ y2 }, ${ x } ${ y }`;
+                if (!client2) {
+                    return `C ${ x1 } ${ y1 }, ${ x } ${ y }, ${ x } ${ y }`;
+                } else {
+                    const [x2, y2] = [0, 1].map(dim => {
+                        return formula(client2![dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
+                    });
+                    return `C ${ x1 } ${ y1 }, ${ x2 } ${ y2 }, ${ x } ${ y }`;
+                }
             }
         }).join(' ');
     }
