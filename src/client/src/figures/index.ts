@@ -33,7 +33,7 @@ const draggerPath = new DraggerPath(zoom, pathPoints);
 
 figuresCollection.add(
     new CircleFigure(draggerCenter, artboard),
-    new EllipseFigure(draggerCenter, artboard, artboardMove, zoom, cancelListener, userEventMan, guides),
+    new EllipseFigure(draggerCenter, artboard, artboardMove, zoom, cancelListener, userEventMan, guides, coordinator),
     new RectFigure(draggerLeftTop, artboard),
     new TextFigure(draggerLeftTop, artboard),
     new GFigure(draggerDelegate, artboard),
