@@ -34,8 +34,8 @@ toolbox.register(
     new ToolGroup('Document'),
     new NewDocument(),
     new FlushTool(),
-    {command: {title: 'Artboard move on', command: 'svgDevArtboardMoveOn'}},
-    {command: {title: 'Artboard move off', command: 'svgDevArtboardMoveOff'}},
+    // {command: {title: 'Artboard move on', command: 'svgDevArtboardMoveOn'}},
+    // {command: {title: 'Artboard move off', command: 'svgDevArtboardMoveOff'}},
 );
 toolbox.register(
     new ToolGroup('Element'),
@@ -101,8 +101,9 @@ toolbox.register(
     new ToolGroup('Artboard'),
     new ArtboardWidth(),
     new ArtboardHeight(),
-    {command: {title: 'viewbox', command: 'svgDevArtboardViewBox'}},
-    {command: {title: 'Set style', command: 'svgDevArtboardStyleAdd'}},
+    {command: {title: 'Viewbox', command: 'svgDevArtboardViewBox'}},
+    {command: {title: 'Background', command: 'svgDevArtboardStyleBackground'}},
+    {command: {title: 'Any style', command: 'svgDevArtboardStyleAdd'}},
 );
 toolbox.register(
     new ToolGroup('Color'), 

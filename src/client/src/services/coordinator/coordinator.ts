@@ -1,6 +1,11 @@
+import { PointConcerns } from "../../figures/models/point-concerns.model";
+
 export class Coorinator {
 
-    formula1d(
+    /**
+     * //
+     */
+    render1d(
         point: number,
         scroll: number,
         margin: number,
@@ -11,8 +16,11 @@ export class Coorinator {
         return (point + scroll - margin + board * (zoom - 1) / 2) / (applyZoom ? zoom : 1);
     }
 
-    formula2d(
-        point: [number, number],
+    /**
+     * //
+     */
+    render2d(
+        client: [number, number],
         scroll: [number, number],
         margin: [number, number],
         board: [number, number],
@@ -21,8 +29,8 @@ export class Coorinator {
     ): [number, number] {
         const dims: [number, number] = [0, 1];
         const cb = (dim: number) => {
-            return this.formula1d(
-                point[dim],
+            return this.render1d(
+                client[dim],
                 scroll[dim],
                 margin[dim],
                 board[dim],
@@ -31,6 +39,14 @@ export class Coorinator {
             );
         };
         return dims.map(cb) as [number, number];
+    }
+
+    /**
+     * //
+     */
+    renderPointConcerns(point: PointConcerns, applyZoom: boolean): [number, number] {
+        const { client, scroll, margin, board, zoom } = point;
+        return this.render2d(client, scroll, margin, board, zoom, applyZoom);
     }
 
 }

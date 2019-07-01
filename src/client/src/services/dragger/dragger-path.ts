@@ -44,10 +44,11 @@ export class DraggerPath implements Dragger {
         const newPoints = points.map(([command, coords]) => {
             switch (command) {
                 case 'M':
-                case 'L':
-                    const [x, y] = coords.split(/\s/);
+                    const [x, y] = coords.split(/\s/).map(c => parseFloat(c));
                     const { value: zoomValue } = this.zoom;
-                    return `${ command } ${ parseInt(x) + dX / zoomValue } ${ parseInt(y) + dY / zoomValue }`;
+                    const nX = x + dX / zoomValue;
+                    const nY = y + dY / zoomValue;
+                    return `${ command } ${ nX } ${ nY}`;
                 case 'Z':
                     return command;
                 default:

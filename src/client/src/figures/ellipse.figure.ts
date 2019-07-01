@@ -54,7 +54,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
             if (points.length >= 2) {
                 cancel();
                 const [ [x1, y1], [x2, y2] ] = points.map(({ client, scroll, margin, board, zoom }) => {
-                    return this.coords.formula2d(client, scroll, margin, board, zoom, true);
+                    return this.coords.render2d(client, scroll, margin, board, zoom, true);
                 });
                 const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
                 const cx = Math.abs(x2 - x1) / 2 + (x2 > x1 ? x1 : x2);
@@ -92,7 +92,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
 
     createEditingSelection(point: PointConcerns) {
         const { client, scroll, margin, board, zoom } = point;
-        const [x1, y1] = this.coords.formula2d(client, scroll, margin, board, zoom, false);
+        const [x1, y1] = this.coords.render2d(client, scroll, margin, board, zoom, false);
         const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
         element.setAttribute('stroke', '#777');
         element.setAttribute('fill', 'none');
@@ -101,7 +101,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         const onMousemove = (event: MouseEvent) => {
             let { clientX, clientY, shiftKey } = event;
             const client2: [number, number] = [clientX, clientY];
-            const [x2, y2] = this.coords.formula2d(client2, scroll, margin, board, zoom, false);
+            const [x2, y2] = this.coords.render2d(client2, scroll, margin, board, zoom, false);
             const cx = Math.abs(x2 - x1) / 2 + (x2 > x1 ? x1 : x2);
             const cy = Math.abs(y2 - y1) / 2 + (y2 > y1 ? y1 : y2);
             let rx = Math.abs(x2 - x1) / 2;
