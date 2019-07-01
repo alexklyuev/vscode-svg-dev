@@ -192,68 +192,68 @@ export class PathPoints {
                 case 'c':
                 case 'M': return `${ command } ${ coords }`;
                 case 'L':
-                    let [lx, ly] = coords.split(/\s/).map(c => parseInt(c));
+                    let [lx, ly] = coords.split(/\s/).map(c => parseFloat(c));
                     for (let i = index - 1; index > -1; index--) {
                         const [prevCommand, prevCoords] = collection[i];
                         switch (prevCommand) {
                             case 'M':
                             case 'L':
-                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseInt(c));
+                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseFloat(c));
                                 return `l ${ lx - prevXL } ${ ly - prevYL }`;
                             case 'l':
-                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseInt(c));
+                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseFloat(c));
                                 lx -= prevXl;
                                 ly -= prevYl;
                                 break;
                             case 'S':
-                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 return `l ${ lx - prevXS } ${ ly - prevYS }`;
                             case 's':
-                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 lx -= prevXs;
                                 ly -= prevYs;
                                 break;
                             case 'C':
-                                let [ , , [prevXC, prevYC] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , , [prevXC, prevYC] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 return `l ${ lx - prevXC } ${ ly - prevYC }`;
                             case 'c':
-                                let [ , , [prevXc, prevYc] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , , [prevXc, prevYc] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 lx -= prevXc;
                                 ly -= prevYc;
                                 break;
                         }
                     }
                 case 'S':
-                    let [ [sx2, sy2], [sx, sy] ] = coords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                    let [ [sx2, sy2], [sx, sy] ] = coords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                     for (let i = index - 1; index > -1; index--) {
                         const [prevCommand, prevCoords] = collection[i];
                         switch (prevCommand) {
                             case 'M':
                             case 'L':
-                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseInt(c));
+                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseFloat(c));
                                 return `s ${ sx2 - prevXL } ${ sy2 - prevYL }, ${ sx - prevXL } ${ sy - prevYL }`;
                             case 'l':
-                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseInt(c));
+                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseFloat(c));
                                 sx -= prevXl;
                                 sy -= prevYl;
                                 sx2 -= prevXl;
                                 sy2 -= prevYl;
                                 break;
                             case 'S':
-                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 return `s ${ sx2 - prevXS } ${ sy2 - prevYS }, ${ sx - prevXS } ${ sy - prevYS }`;
                             case 's':
-                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 sx -= prevXs;
                                 sy -= prevYs;
                                 sx2 -= prevXs;
                                 sy2 -= prevYs;
                                 break;
                             case 'C':
-                                let [ , , [prevXC, prevYC] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , , [prevXC, prevYC] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 return `s ${ sx2 - prevXC } ${ sy2 - prevYC }, ${ sx - prevXC } ${ sy - prevYC }`;
                             case 'c':
-                                let [ , , [prevXc, prevYc] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , , [prevXc, prevYc] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 sx -= prevXc;
                                 sy -= prevYc;
                                 sx2 -= prevXc;
@@ -262,16 +262,16 @@ export class PathPoints {
                         }
                     }
                 case 'C':
-                    let [ [cx1, cy1], [cx2, cy2], [cx, cy] ] = coords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                    let [ [cx1, cy1], [cx2, cy2], [cx, cy] ] = coords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                     for (let i = index - 1; index > -1; index--) {
                         const [prevCommand, prevCoords] = collection[i];
                         switch (prevCommand) {
                             case 'M':
                             case 'L':
-                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseInt(c));
+                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseFloat(c));
                                 return `c ${ cx1 - prevXL } ${ cy1 - prevYL }, ${ cx2 - prevXL } ${ cy2 - prevYL }, ${ cx - prevXL } ${ cy - prevYL }`;
                             case 'l':
-                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseInt(c));
+                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseFloat(c));
                                 cx -= prevXl;
                                 cy -= prevYl;
                                 cx1 -= prevXl;
@@ -280,10 +280,10 @@ export class PathPoints {
                                 cy2 -= prevYl;
                                 break;
                             case 'S':
-                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 return `c ${ cx1 - prevXS } ${ cy1 - prevYS }, ${ cx2 - prevXS } ${ cy2 - prevYS }, ${ cx - prevXS } ${ cy - prevYS }`;
                             case 's':
-                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 cx -= prevXs;
                                 cy -= prevYs;
                                 cx1 -= prevXs;
@@ -292,10 +292,10 @@ export class PathPoints {
                                 cy2 -= prevYs;
                                 break;
                             case 'C':
-                                let [ , , [prevXC, prevYC] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , , [prevXC, prevYC] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 return `c ${ cx1 - prevXC } ${ cy1 - prevYC }, ${ cx2 - prevXC } ${ cy2 - prevYC }, ${ cx - prevXC } ${ cy - prevYC }`;
                             case 'c':
-                                let [ , , [prevXc, prevYc] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseInt(c)));
+                                let [ , , [prevXc, prevYc] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
                                 cx -= prevXc;
                                 cy -= prevYc;
                                 cx1 -= prevXc;
@@ -314,6 +314,8 @@ export class PathPoints {
     /**
      * //
      */
-    setPointsAbsolute() {}
+    setPointsAbsolute() {
+        throw new Error('PathPoints#setPointsAbsolute: Not implemented');
+    }
 
 }
