@@ -18,7 +18,7 @@ export class PathFigure implements Figure<SVGPathElement> {
     stroke = 'white';
     fill = 'none';
 
-    strokeTemp = 'blue';
+    strokeTemp = '#666';
     fillTemp = 'none';
 
     readonly name = 'path';
@@ -125,12 +125,24 @@ export class PathFigure implements Figure<SVGPathElement> {
         const points = [...pointsConcerns];
         const dAttr = this.renderPointsC(points, false);
         element.setAttribute('d', dAttr);
+        const circles = points.map(point => {
+            const [cx, cy] = this.coords.renderPointConcerns(point, false);
+            const el = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            el.setAttribute('cx', `${cx}`);
+            el.setAttribute('cy', `${cy}`);
+            el.setAttribute('fill', 'none');
+            el.setAttribute('stroke', `${this.strokeTemp}`);
+            el.setAttribute('stroke-dasharray', '1');
+            el.setAttribute('r', '3');
+            this.guides.guidesContainer!.appendChild(el);
+            return el;
+        });
         const edge = points[points.length - 1];
         const { scroll, margin, board, zoom } = pointSharedConcerns;
         const onMouseMove = (event: MouseEvent) => {
             const { clientX, clientY } = event;
             const clientPoint: [number, number] = [clientX, clientY];
-            const [x, y] = this.coords.formula2d(clientPoint, scroll, margin, board, zoom, false);
+            const [x, y] = this.coords.render2d(clientPoint, scroll, margin, board, zoom, false);
             if (edge.client2) {
                 const newPoint = `L ${ x } ${ y }`;
                 element.setAttribute('d', `${ dAttr } ${ newPoint }`);
@@ -140,7 +152,7 @@ export class PathFigure implements Figure<SVGPathElement> {
                 const remainCoords = dAttr.slice(commandIndex + 1).trim();
                 const [ , , [px, py]] = remainCoords.split(',').map(pair => pair.trim().split(' ').map(s => s.trim()));
                 const prev = points[points.length - 2];
-                const [x1, y1] = this.coords.formula2d(prev.client, scroll, margin, board, zoom, false);
+                const [x1, y1] = this.coords.render2d(prev.client, scroll, margin, board, zoom, false);
                 const tempC = `C ${ x1 } ${ y1 }, ${ x } ${ y }, ${ px } ${ py }`;
                 element.setAttribute('d', `${ d } ${ tempC }`);
             }
@@ -149,6 +161,7 @@ export class PathFigure implements Figure<SVGPathElement> {
         return () => {
             window.removeEventListener('mousemove', onMouseMove);
             this.guides.guidesContainer!.removeChild(element);
+            circles.forEach(circle => this.guides!.guidesContainer!.removeChild(circle));
         };
     }
 
@@ -173,11 +186,11 @@ export class PathFigure implements Figure<SVGPathElement> {
 
     renderPointsS(pointsConcerns: PointConcerns[], useZoom: boolean): string {
         return pointsConcerns.map(({ client, scroll, margin, board, zoom, client2 }, index) => {
-            const [x, y] = this.coords.formula2d(client, scroll, margin, board, zoom, useZoom);
+            const [x, y] = this.coords.render2d(client, scroll, margin, board, zoom, useZoom);
             if (index === 0 || !client2 || client2.every((i, k) => i === client[k])) {
                 return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
             } else {
-                const [x2, y2] = this.coords.formula2d(client2, scroll, margin, board, zoom, useZoom);
+                const [x2, y2] = this.coords.render2d(client2, scroll, margin, board, zoom, useZoom);
                 return `S ${ x2 } ${ y2 }, ${ x } ${ y }`;
             }
         }).join(' ');
@@ -185,16 +198,16 @@ export class PathFigure implements Figure<SVGPathElement> {
 
     renderPointsC(pointsConcerns: PointConcerns[], useZoom: boolean): string {
         return pointsConcerns.map(({ client, scroll, margin, board, zoom, client2 }, index) => {
-            const [x, y] = this.coords.formula2d(client, scroll, margin, board, zoom, useZoom);
+            const [x, y] = this.coords.render2d(client, scroll, margin, board, zoom, useZoom);
             if (index === 0) {
                 return `M ${ x } ${ y }`;
             } else {
                 const prev = pointsConcerns[index - 1];
-                const [x1, y1] = this.coords.formula2d(prev.client, prev.scroll, prev.margin, prev.board, prev.zoom, useZoom);
+                const [x1, y1] = this.coords.render2d(prev.client, prev.scroll, prev.margin, prev.board, prev.zoom, useZoom);
                 if (!client2) {
                     return `C ${ x1 } ${ y1 }, ${ x } ${ y }, ${ x } ${ y }`;
                 } else {
-                    const [x2, y2] = this.coords.formula2d(client2, scroll, margin, board, zoom, useZoom);
+                    const [x2, y2] = this.coords.render2d(client2, scroll, margin, board, zoom, useZoom);
                     return `C ${ x1 } ${ y1 }, ${ x2 } ${ y2 }, ${ x } ${ y }`;
                 }
             }
