@@ -210,6 +210,16 @@ export function activate(context: vscode.ExtensionContext) {
                 artboardStyleHost.makeSetRequest({styleName, styleValue});
             });
         }),
+        vscode.commands.registerCommand('svgDevArtboardStyleBackground', async () => {
+            artboardStyleConnection.ifConnected(async host => {
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
+                const color = await vscode.window.showInputBox();
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
+                if (color) {
+                    host.makeSetRequest({styleName: 'background', styleValue: color});
+                }
+            });
+        }),
         vscode.commands.registerCommand('svgDevArtboardMoveOn', () => {
             artboardMoveConnection.ifConnected(async host => {
                 host.makeSetRequest(true);

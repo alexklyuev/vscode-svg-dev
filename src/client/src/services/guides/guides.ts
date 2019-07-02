@@ -12,6 +12,7 @@ const enum GuidesEvents {
  * 
  */
 export class Guides {
+    private readonly borderStyle = '1px dotted #666';
 
     private container: SVGSVGElement | null = null;
     private selection: SVGRectElement | null = null;
@@ -48,7 +49,7 @@ export class Guides {
             const { left, top, width, height } = this.artboard.svg.getBoundingClientRect();
             Object.assign(this.container.style, {
                 position: 'absolute',
-                border: '1px dotted blue',
+                border: this.borderStyle,
                 left: `${ left - 0.5 }px`,
                 top: `${ top - 0.5 }px`,
                 width: `${ width }px`,
