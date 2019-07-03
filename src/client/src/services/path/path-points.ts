@@ -131,6 +131,8 @@ export class DPoint {
  */
 export class PathPoints {
 
+    private readonly delimeter = /[\s,]+/;
+
     /**
      * //
      */
@@ -182,130 +184,59 @@ export class PathPoints {
      */
     setPointsRelative(d: string): string {
         const points = this.parseStr(d);
-        const newPoints = points.map((point, index, collection) => {
-            const [command, coords] = point;
-            switch (command) {
-                case 'Z': return command;
-                case 'm':
-                case 'l':
-                case 's':
-                case 'c':
-                case 'M': return `${ command } ${ coords }`;
-                case 'L':
-                    let [lx, ly] = coords.split(/\s/).map(c => parseFloat(c));
-                    for (let i = index - 1; index > -1; index--) {
-                        const [prevCommand, prevCoords] = collection[i];
-                        switch (prevCommand) {
-                            case 'M':
-                            case 'L':
-                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseFloat(c));
-                                return `l ${ lx - prevXL } ${ ly - prevYL }`;
-                            case 'l':
-                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseFloat(c));
-                                lx -= prevXl;
-                                ly -= prevYl;
-                                break;
-                            case 'S':
-                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                return `l ${ lx - prevXS } ${ ly - prevYS }`;
-                            case 's':
-                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                lx -= prevXs;
-                                ly -= prevYs;
-                                break;
-                            case 'C':
-                                let [ , , [prevXC, prevYC] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                return `l ${ lx - prevXC } ${ ly - prevYC }`;
-                            case 'c':
-                                let [ , , [prevXc, prevYc] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                lx -= prevXc;
-                                ly -= prevYc;
-                                break;
-                        }
+        const newPoints = points
+        // .map((point, index, collection) => {
+        //     const [ command, coords ] = point;
+        //     if (command === 'V') {
+        //         let h = 0;
+        //         for (let i = index; index >= 0; index--) {
+        //             const [ prevCommand, prevCoords ] = collection[i];
+        //             if (prevCommand === 'V' || prevCommand === 'v') {
+        //                 continue;
+        //             } else {
+        //                 const prevValues = prevCoords.split(this.delimeter).slice(-2).map(c => parseFloat(c));
+        //                 if (prevValues.length === 1) {
+        //                     if (prevCommand.charCodeAt(0) <= 90) {
+        //                         return [ 'L', [ prevValues[0], coords ].join(' ') ];
+        //                     } else {
+
+        //                     }
+        //                 }
+        //                 if (prevValues.length === 2) {}
+        //             }
+        //         }
+        //     } else if (command === 'v') {
+        //         return [ command, coords ];
+        //     } else if (command === 'H') {
+        //         return [ command, coords ];
+        //     } else if (command === 'h') {
+        //         return [ command, coords ];
+        //     } else {
+        //         return [ command, coords ];
+        //     }
+        // })
+        .map((point, index, collection) => {
+            const [ command, coords ] = point!;
+            if (command === 'Z') {
+                return command;
+            }
+            else if (command === 'M') {
+                return `${ command } ${ coords }`;
+            }
+            else if (command.charCodeAt(0) <= 90) {
+                let coordValues = coords.split(this.delimeter).map(c => parseFloat(c));
+                for (let i = index - 1; index > -1; index--) {
+                    const [ prevCommand, prevCoords ] = collection[i];
+                    const prevValues = prevCoords.split(this.delimeter).slice(-2).map(c => parseFloat(c));
+                    if (prevCommand.charCodeAt(0) <= 90) {
+                        return command.toLowerCase() + ' ' + coordValues.map((cv, index) => cv - prevValues[index % 2]).join(' ');
+                    } else {
+                        coordValues = coordValues.map((cv, index) => cv - prevValues[index % 2]);
                     }
-                case 'S':
-                    let [ [sx2, sy2], [sx, sy] ] = coords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                    for (let i = index - 1; index > -1; index--) {
-                        const [prevCommand, prevCoords] = collection[i];
-                        switch (prevCommand) {
-                            case 'M':
-                            case 'L':
-                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseFloat(c));
-                                return `s ${ sx2 - prevXL } ${ sy2 - prevYL }, ${ sx - prevXL } ${ sy - prevYL }`;
-                            case 'l':
-                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseFloat(c));
-                                sx -= prevXl;
-                                sy -= prevYl;
-                                sx2 -= prevXl;
-                                sy2 -= prevYl;
-                                break;
-                            case 'S':
-                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                return `s ${ sx2 - prevXS } ${ sy2 - prevYS }, ${ sx - prevXS } ${ sy - prevYS }`;
-                            case 's':
-                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                sx -= prevXs;
-                                sy -= prevYs;
-                                sx2 -= prevXs;
-                                sy2 -= prevYs;
-                                break;
-                            case 'C':
-                                let [ , , [prevXC, prevYC] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                return `s ${ sx2 - prevXC } ${ sy2 - prevYC }, ${ sx - prevXC } ${ sy - prevYC }`;
-                            case 'c':
-                                let [ , , [prevXc, prevYc] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                sx -= prevXc;
-                                sy -= prevYc;
-                                sx2 -= prevXc;
-                                sy2 -= prevYc;
-                                break;
-                        }
-                    }
-                case 'C':
-                    let [ [cx1, cy1], [cx2, cy2], [cx, cy] ] = coords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                    for (let i = index - 1; index > -1; index--) {
-                        const [prevCommand, prevCoords] = collection[i];
-                        switch (prevCommand) {
-                            case 'M':
-                            case 'L':
-                                const [prevXL, prevYL] = prevCoords.split(/\s/).map(c => parseFloat(c));
-                                return `c ${ cx1 - prevXL } ${ cy1 - prevYL }, ${ cx2 - prevXL } ${ cy2 - prevYL }, ${ cx - prevXL } ${ cy - prevYL }`;
-                            case 'l':
-                                const [prevXl, prevYl] = prevCoords.split(/\s/).map(c => parseFloat(c));
-                                cx -= prevXl;
-                                cy -= prevYl;
-                                cx1 -= prevXl;
-                                cy1 -= prevYl;
-                                cx2 -= prevXl;
-                                cy2 -= prevYl;
-                                break;
-                            case 'S':
-                                let [ , [prevXS, prevYS] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                return `c ${ cx1 - prevXS } ${ cy1 - prevYS }, ${ cx2 - prevXS } ${ cy2 - prevYS }, ${ cx - prevXS } ${ cy - prevYS }`;
-                            case 's':
-                                let [ , [prevXs, prevYs] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                cx -= prevXs;
-                                cy -= prevYs;
-                                cx1 -= prevXs;
-                                cy1 -= prevYs;
-                                cx2 -= prevXs;
-                                cy2 -= prevYs;
-                                break;
-                            case 'C':
-                                let [ , , [prevXC, prevYC] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                return `c ${ cx1 - prevXC } ${ cy1 - prevYC }, ${ cx2 - prevXC } ${ cy2 - prevYC }, ${ cx - prevXC } ${ cy - prevYC }`;
-                            case 'c':
-                                let [ , , [prevXc, prevYc] ] = prevCoords.split(',').map(pair => pair.trim().split(/\s/).map(c => parseFloat(c)));
-                                cx -= prevXc;
-                                cy -= prevYc;
-                                cx1 -= prevXc;
-                                cy1 -= prevYc;
-                                cx2 -= prevXc;
-                                cy2 -= prevYc;
-                                break;
-                        }
-                    }
-                default: return `${ command } ${ coords }`;
+                }
+            }
+            else {
+                return `${ command } ${ coords }`;
             }
         });
         return newPoints.join(' ');

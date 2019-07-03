@@ -16,6 +16,7 @@
     ],
     "activationEvents": [
         "onCommand:svgDevNew",
+        "onCommand:svgDevFromOpen",
         "onView:svgDevToolsTreeView",
         "onWebviewPanel:svgDevPanel"
     ],
