@@ -181,66 +181,59 @@ export class PathPoints {
 
     /**
      * //
+     * M 50 50 V 150 H 150 V 50 Z
      */
     setPointsRelative(d: string): string {
         const points = this.parseStr(d);
         const newPoints = points
-        // .map((point, index, collection) => {
-        //     const [ command, coords ] = point;
-        //     if (command === 'V') {
-        //         let h = 0;
-        //         for (let i = index; index >= 0; index--) {
-        //             const [ prevCommand, prevCoords ] = collection[i];
-        //             if (prevCommand === 'V' || prevCommand === 'v') {
-        //                 continue;
-        //             } else {
-        //                 const prevValues = prevCoords.split(this.delimeter).slice(-2).map(c => parseFloat(c));
-        //                 if (prevValues.length === 1) {
-        //                     if (prevCommand.charCodeAt(0) <= 90) {
-        //                         return [ 'L', [ prevValues[0], coords ].join(' ') ];
-        //                     } else {
-
-        //                     }
-        //                 }
-        //                 if (prevValues.length === 2) {}
-        //             }
-        //         }
-        //     } else if (command === 'v') {
-        //         return [ command, coords ];
-        //     } else if (command === 'H') {
-        //         return [ command, coords ];
-        //     } else if (command === 'h') {
-        //         return [ command, coords ];
-        //     } else {
-        //         return [ command, coords ];
-        //     }
-        // })
         .map((point, index, collection) => {
             const [ command, coords ] = point!;
             if (command === 'Z') {
                 return command;
-            }
-            else if (command === 'M') {
+            } else if (command === 'M') {
                 return `${ command } ${ coords }`;
-            }
-            else if (command.charCodeAt(0) <= 90) {
+            } else if (command.charCodeAt(0) <= 90) {
                 let coordValues = coords.split(this.delimeter).map(c => parseFloat(c));
-                for (let i = index - 1; index > -1; index--) {
-                    const [ prevCommand, prevCoords ] = collection[i];
-                    const prevValues = prevCoords.split(this.delimeter).slice(-2).map(c => parseFloat(c));
-                    if (prevCommand.charCodeAt(0) <= 90) {
-                        return command.toLowerCase() + ' ' + coordValues.map((cv, index) => cv - prevValues[index % 2]).join(' ');
-                    } else {
-                        coordValues = coordValues.map((cv, index) => cv - prevValues[index % 2]);
+                if (coordValues.length === 1) {
+                    if (command === 'V') {
+                        coordValues = [ coordValues[0], 0 ];
+                    }
+                    if (command === 'H') {
+                        coordValues = [ 0, coordValues[0] ];
                     }
                 }
-            }
-            else {
+                for (let i = index - 1; index > -1; index--) {
+                    const [ prevCommand, prevCoords ] = collection[i];
+                    let prevValues = prevCoords.split(this.delimeter).slice(-2).map(c => parseFloat(c));
+                    if (prevValues.length === 1) {
+                        if (prevCommand === 'V') {
+                            prevValues = [ prevValues[0], 0 ];
+                        }
+                        if (prevCommand === 'H') {
+                            prevValues = [ 0, prevValues[0] ];
+                        }
+                    }
+                    let updatedCoords = coordValues.map((cv, index) => cv - prevValues[index % 2]);
+                    if (prevCommand.charCodeAt(0) <= 90) {
+                        let relCommand = command.toLowerCase();
+                        if (relCommand === 'v') {
+                            updatedCoords = [ updatedCoords[0] ];
+                        }
+                        if (relCommand === 'h') {
+                            updatedCoords = [ updatedCoords[1] ];
+                        }
+                        return relCommand + ' ' + updatedCoords.join(' ');
+                    } else {
+                        coordValues = updatedCoords;
+                    }
+                }
+            } else {
                 return `${ command } ${ coords }`;
             }
         });
         return newPoints.join(' ');
     }
+
 
     /**
      * //
