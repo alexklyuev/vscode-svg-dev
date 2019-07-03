@@ -9,6 +9,8 @@ const enum ArtboardMoveEvents {
     mouseMoveEvent = 'mouseMoveEvent',
 }
 
+const initialX = 50;
+const initialY = 50;
 
 export class ArtboardMove {
 
@@ -20,10 +22,13 @@ export class ArtboardMove {
     public readonly [ArtboardMoveEvents.mouseUpEvent] = new ClientEvent<MouseEvent>();
     public readonly [ArtboardMoveEvents.mouseMoveEvent] = new ClientEvent<{left: number; top: number, event: MouseEvent}>();
 
-    private coords: {clientX: number, clientY: number} = {clientX: 0, clientY: 0};
+    private coords: {clientX: number, clientY: number} = {clientX: initialX, clientY: initialY};
 
-    private marginLeft = 0;
-    private marginTop = 0;
+    private marginLeft = initialX;
+    private marginTop = initialY;
+
+    public readonly initialX = initialX;
+    public readonly initialY = initialY;
 
     constructor(
         private artboard: Artboard,
@@ -35,8 +40,8 @@ export class ArtboardMove {
 
         Object.assign(this.artboard.box.style, {
             position: 'absolute',
-            top: '0px',
-            left: '0px',
+            top: `${ initialX }px`,
+            left: `${ initialY }px`,
         });
     }
 
