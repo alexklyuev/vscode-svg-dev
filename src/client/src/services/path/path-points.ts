@@ -195,36 +195,42 @@ export class PathPoints {
             } else if (command.charCodeAt(0) <= 90) {
                 let coordValues = coords.split(this.delimeter).map(c => parseFloat(c));
                 if (coordValues.length === 1) {
-                    if (command === 'V') {
-                        coordValues = [ coordValues[0], 0 ];
-                    }
-                    if (command === 'H') {
-                        coordValues = [ 0, coordValues[0] ];
-                    }
+                    console.info('::', command);
                 }
                 for (let i = index - 1; index > -1; index--) {
                     const [ prevCommand, prevCoords ] = collection[i];
                     let prevValues = prevCoords.split(this.delimeter).slice(-2).map(c => parseFloat(c));
+                    let updatedCoords: number[] | null = null;
                     if (prevValues.length === 1) {
-                        if (prevCommand === 'V') {
-                            prevValues = [ prevValues[0], 0 ];
+                        console.info('++', prevCommand);
+                        let prevX = prevCommand === 'H' ? prevValues[0] : null;
+                        let prevY = prevCommand === 'V' ? prevValues[0] : null;
+                        if (command === 'V') {
+                            if (prevY) {
+                                updatedCoords = [ coordValues[0] - prevY ];
+                            }
                         }
-                        if (prevCommand === 'H') {
-                            prevValues = [ 0, prevValues[0] ];
+                        if (command === 'H') {
+                            if (prevX) {
+                                updatedCoords = [ coordValues[0] - prevX ];
+                            }
+                        }
+                    } else {
+                        if (command === 'V') {
+                            updatedCoords = [ coordValues[0] - prevValues[1] ];
+                        }
+                        if (command === 'H') {
+                            updatedCoords = [ coordValues[0] - prevValues[0] ];
                         }
                     }
-                    let updatedCoords = coordValues.map((cv, index) => cv - prevValues[index % 2]);
+                    if (!updatedCoords) {
+                        updatedCoords = coordValues.map((cv, index) => cv - prevValues[index % 2]);
+                    }
                     if (prevCommand.charCodeAt(0) <= 90) {
                         let relCommand = command.toLowerCase();
-                        if (relCommand === 'v') {
-                            updatedCoords = [ updatedCoords[0] ];
-                        }
-                        if (relCommand === 'h') {
-                            updatedCoords = [ updatedCoords[1] ];
-                        }
-                        return relCommand + ' ' + updatedCoords.join(' ');
+                        return relCommand + ' ' + updatedCoords!.join(' ');
                     } else {
-                        coordValues = updatedCoords;
+                        coordValues = updatedCoords!;
                     }
                 }
             } else {
