@@ -179,12 +179,51 @@ export class PathPoints {
         return this.parse(d).map(base => base.specify());
     }
 
+    getAbsDims(points: string[][]): number[][] {
+        const dims = Array<number[]>();
+        for (let i = 0; i < points.length; i++) {
+            const [ command, coords ] = points[i];
+            const coordValues = coords.split(this.delimeter).slice(-2).map(c => parseFloat(c));
+            if (command === 'M' || command === 'm') {
+                dims.push(coordValues);
+            } else if (command === 'Z') {
+                continue;
+            } else if (coordValues.length === 2) {
+                if (command.charCodeAt(0) <= 90) {
+                    dims.push(coordValues);
+                } else {
+                    dims.push( dims[dims.length - 1].map((v, index) => v + coordValues[index]) );
+                }
+            } else if (coordValues.length === 1) {
+                const [x, y] = dims[dims.length - 1];
+                switch (command) {
+                    case 'H':
+                        dims.push([coordValues[0], y]);
+                        break;
+                    case 'h':
+                        dims.push([coordValues[0] + x, y]);
+                        break;
+                    case 'V':
+                        dims.push([x, coordValues[0]]);
+                        break;
+                    case 'v':
+                        dims.push([x, y + coordValues[0]]);
+                        break;
+                }
+            } else {
+                console.error(`PathPoints#getAbsDims: unsuspected condition: ${ command } ${ coords }`);
+            }
+        }
+        return dims;
+    }
+
     /**
      * //
      * M 50 50 V 150 H 150 V 50 Z
      */
     setPointsRelative(d: string): string {
         const points = this.parseStr(d);
+        const dims = this.getAbsDims(points);
         const newPoints = points
         .map((point, index, collection) => {
             const [ command, coords ] = point!;
@@ -193,46 +232,24 @@ export class PathPoints {
             } else if (command === 'M') {
                 return `${ command } ${ coords }`;
             } else if (command.charCodeAt(0) <= 90) {
+
+                const prevValues = dims[index - 1];
                 let coordValues = coords.split(this.delimeter).map(c => parseFloat(c));
-                if (coordValues.length === 1) {
-                    console.info('::', command);
-                }
-                for (let i = index - 1; index > -1; index--) {
-                    const [ prevCommand, prevCoords ] = collection[i];
-                    let prevValues = prevCoords.split(this.delimeter).slice(-2).map(c => parseFloat(c));
-                    let updatedCoords: number[] | null = null;
-                    if (prevValues.length === 1) {
-                        console.info('++', prevCommand);
-                        let prevX = prevCommand === 'H' ? prevValues[0] : null;
-                        let prevY = prevCommand === 'V' ? prevValues[0] : null;
-                        if (command === 'V') {
-                            if (prevY) {
-                                updatedCoords = [ coordValues[0] - prevY ];
-                            }
-                        }
-                        if (command === 'H') {
-                            if (prevX) {
-                                updatedCoords = [ coordValues[0] - prevX ];
-                            }
-                        }
-                    } else {
-                        if (command === 'V') {
-                            updatedCoords = [ coordValues[0] - prevValues[1] ];
-                        }
-                        if (command === 'H') {
-                            updatedCoords = [ coordValues[0] - prevValues[0] ];
-                        }
-                    }
-                    if (!updatedCoords) {
-                        updatedCoords = coordValues.map((cv, index) => cv - prevValues[index % 2]);
-                    }
-                    if (prevCommand.charCodeAt(0) <= 90) {
-                        let relCommand = command.toLowerCase();
-                        return relCommand + ' ' + updatedCoords!.join(' ');
-                    } else {
-                        coordValues = updatedCoords!;
+                let updatedCoords = Array<number>();
+                if (coordValues.length > 1) {
+                    updatedCoords = coordValues.map((cv, index) => cv - prevValues[index % 2]);
+                } else {
+                    const [prevX, prevY] = prevValues;
+                    switch (command) {
+                        case 'H':
+                            updatedCoords = [ coordValues[0] - prevX ];
+                            break;
+                            case 'V':
+                            updatedCoords = [ coordValues[0] - prevY ];
+                            break;
                     }
                 }
+                return `${ command.toLowerCase() } ${ updatedCoords.join(' ') }`;
             } else {
                 return `${ command } ${ coords }`;
             }
