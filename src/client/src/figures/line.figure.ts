@@ -5,6 +5,10 @@ import { Zoom } from "../services/zoom/zoom";
 import { DraggerValue } from "../services/dragger/dragger-value";
 import { CancelListener } from "../listeners/cancel.listener";
 import { UserEventManager } from "../services/user-event/user-event-manager";
+import { PointConcerns } from "./models/point-concerns.model";
+import { ArtboardMove } from "../services/artboard/artboard-move";
+import { Coorinator } from "../services/coordinator/coordinator";
+import { Guides } from "../services/guides/guides";
 
 
 export class LineFigure implements Figure<SVGLineElement> {
@@ -15,9 +19,12 @@ export class LineFigure implements Figure<SVGLineElement> {
     constructor(
         public drag: DraggerValue,
         private artboard: Artboard,
+        private artboardMove: ArtboardMove,
         private zoom: Zoom,
         private cancelListener: CancelListener,
         private userEventMan: UserEventManager,
+        private coords: Coorinator,
+        private guides: Guides,
     ) {}
 
     testByElement(element: any): element is SVGLineElement {
@@ -26,32 +33,34 @@ export class LineFigure implements Figure<SVGLineElement> {
 
     @setState
     create(_elementName: string, _attributes: {[K: string]: string}) {
-        let points = Array<[number, number]>();
+        let points = Array<PointConcerns>();
         this.artboard.box.classList.add('interactive-points');
         let toolsSvg: SVGSVGElement | null = null;
         this.userEventMan.mode = 'interactive';
         const pointsListener = (event: MouseEvent) => {
-            let { clientX, clientY, shiftKey } = event;
+            let { clientX, clientY, } = event;
             const { scrollLeft, scrollTop } = document.scrollingElement!;
-            if (points.length === 1 && shiftKey) {
-                let [ [prevX, prevY] ] = points;
-                prevX -= scrollLeft;
-                prevY -= scrollTop;
-                const absDeltaX = Math.abs(clientX - prevX);
-                const absDeltaY = Math.abs(clientY - prevY);
-                if (absDeltaX < absDeltaY) {
-                    clientX = points[0][0] - scrollLeft;
-                } else {
-                    clientY = points[0][1] - scrollTop;
-                }
-            }
-            points.push([
-                clientX + scrollLeft,
-                clientY + scrollTop,
-            ]);
+            // if (points.length === 1 && shiftKey) {
+            //     let [ [prevX, prevY] ] = points;
+            //     prevX -= scrollLeft;
+            //     prevY -= scrollTop;
+            //     const absDeltaX = Math.abs(clientX - prevX);
+            //     const absDeltaY = Math.abs(clientY - prevY);
+            //     if (absDeltaX < absDeltaY) {
+            //         clientX = points[0][0] - scrollLeft;
+            //     } else {
+            //         clientY = points[0][1] - scrollTop;
+            //     }
+            // }
+            points.push({
+                client: [clientX, clientY],
+                scroll: [scrollLeft, scrollTop],
+                margin: [this.artboardMove.left, this.artboardMove.top],
+                board: [this.artboard.width, this.artboard.height],
+                zoom: this.zoom.value,
+            });
             if (points.length === 1) {
-                const [ [cx, cy] ] = points;
-                toolsSvg = this.createEditingSelection(cx, cy);
+                toolsSvg = this.createEditingSelection(points);
             }
             if (points.length >= 2) {
                 cancel();
@@ -79,16 +88,10 @@ export class LineFigure implements Figure<SVGLineElement> {
         this.cancelListener.keyEvent.on(cancel);
     }
 
-    createEditingSelection(cx: number, cy: number) {
-        const { scrollLeft, scrollTop } = document.scrollingElement!;
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    createEditingSelection(point: PointConcerns) {
+        const [ cx, cy ] = this.coords.renderPointConcerns(point,false);
         const pseudoPoint = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         const pseudoLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        const artboardBox = this.artboard.svg.getBoundingClientRect();
-        const artboardWidth = parseInt(this.artboard.svg.getAttribute('width')!);
-        const artboardHeight = parseInt(this.artboard.svg.getAttribute('height')!);
-        svg.setAttribute('width', String(this.zoom.value * artboardWidth));
-        svg.setAttribute('height', String(this.zoom.value * artboardHeight));
         pseudoPoint.setAttribute('fill', 'none');
         pseudoPoint.setAttribute('stroke', '#777');
         pseudoPoint.setAttribute('stroke-dasharray', '1');
@@ -128,10 +131,6 @@ export class LineFigure implements Figure<SVGLineElement> {
             top: artboardBox.top + scrollTop + 'px',
             left: artboardBox.left + scrollLeft + 'px',
         });
-        this.artboard.tools.appendChild(svg);
-        svg.appendChild(pseudoPoint);
-        svg.appendChild(pseudoLine);
-        return svg;
     }
 
 }

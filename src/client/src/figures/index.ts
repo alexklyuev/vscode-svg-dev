@@ -37,7 +37,7 @@ figuresCollection.add(
     new RectFigure(draggerLeftTop, artboard),
     new TextFigure(draggerLeftTop, artboard),
     new GFigure(draggerDelegate, artboard),
-    new LineFigure(draggerDouble, artboard, zoom, cancelListener, userEventMan),
+    new LineFigure(draggerDouble, artboard, artboardMove, zoom, cancelListener, userEventMan, coordinator, guides),
     new PolygonFigure(draggerPoints, artboard, artboardMove, zoom, cancelListener, userEventMan, guides),
     new PolylineFigure(draggerPoints, artboard, artboardMove, zoom, cancelListener, userEventMan, guides),
     new PathFigure(draggerPath, artboard, artboardMove, zoom, cancelListener, userEventMan, guides, pathPoints, coordinator),
