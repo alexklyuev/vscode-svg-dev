@@ -27,6 +27,7 @@ import { StrokeWidth } from "./stroke/stroke-width.tool";
 import { StrokeDasharray } from "./stroke/stroke-dasharray.tool";
 import { PathAddTool } from "./path/path-add.tool";
 import { PathEditTool } from "./path/path-edit-points.tool";
+import { PathEditInteractive } from "./path/path-edit-interactive.tool";
 
 export const toolbox = new Toolbox();
 
@@ -84,6 +85,7 @@ toolbox.register(
     new ToolGroup('Path'),
     new PathAddTool(),
     new PathEditTool(),
+    new PathEditInteractive(),
 );
 toolbox.register(
     new ToolGroup('Text'),

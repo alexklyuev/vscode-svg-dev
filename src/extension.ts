@@ -32,6 +32,7 @@ import {
     arrangeConnection,
     elementConnection,
     groupConnection,
+    editConnection,
 } from './services/connection';
 import { CancelKeys } from './shared/pipes/cancel.pipe';
 
@@ -130,6 +131,11 @@ export function activate(context: vscode.ExtensionContext) {
                 endpoint.makeSetRequest(
                     new CreatePipeRequest(name, attributes),
                 );
+            });
+        }),
+        vscode.commands.registerCommand('svgDevEdit', () => {
+            editConnection.ifConnected(endpoint => {
+                endpoint.makeSetRequest({});
             });
         }),
         vscode.commands.registerCommand('svgDevAddText', async () => {

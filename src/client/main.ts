@@ -3,6 +3,7 @@ import { artboardPipe } from '../shared/pipes/artboard.pipe';
 import { artboardStylePipe } from '../shared/pipes/artboard-style.pipe';
 import { remoteAttributePipe } from '../shared/pipes/remote-attribute.pipe';
 import { createPipe } from '../shared/pipes/create.pipe';
+import { editPipe } from '../shared/pipes/edit.pipe';
 import { flushPipe } from '../shared/pipes/flush.pipe';
 import { artboard, artboardMove } from './src/services/artboard';
 import { webviewEndpoint } from './src/services/endpoint';
@@ -25,6 +26,7 @@ import { cancelListener } from './src/listeners';
 import { ArtboardStyleListener } from './src/listeners/artboard-style.listener';
 import { CssJsNotationConverter } from '../shared/services/css/css-js-notation-converter';
 import { guides } from './src/services/guides';
+import { EditListener } from './src/listeners/edit.listener';
 
 /**
  * 
@@ -83,6 +85,9 @@ remoteAttributeListener.listen();
  */
 const createListener = new CreateListener(webviewEndpoint, createPipe, figuresCollection);
 createListener.listen();
+
+const editListener = new EditListener(webviewEndpoint, editPipe, figuresCollection, holder);
+editListener.listen();
 
 /**
  * 

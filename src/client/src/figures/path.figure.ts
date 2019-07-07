@@ -40,6 +40,13 @@ export class PathFigure implements Figure<SVGPathElement> {
     /**
      * //
      */
+    testByElement(element: any): element is SVGPathElement {
+        return element instanceof SVGPathElement;
+    }
+
+    /**
+     * //
+     */
     @setState
     create(_elementName: string, _attributes: {[K: string]: string}): void {
         const points = Array<PointConcerns>();
@@ -217,8 +224,29 @@ export class PathFigure implements Figure<SVGPathElement> {
     /**
      * //
      */
-    testByElement(element: any): element is SVGPathElement {
-        return element instanceof SVGPathElement;
+    edit(element: SVGPathElement) {
+        const d = element.getAttribute('d');
+        if (d) {
+            const points = this.pathPoints.parseStr(d);
+            const coords = this.pathPoints.getAbsDims(points);
+            const circles = coords.map((point) => {
+                const [ cx, cy ] = point;
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                this.guides.guidesContainer!.appendChild(circle);
+                circle.setAttribute('fill', 'none');
+                circle.setAttribute('stroke', '#666');
+                circle.setAttribute('stroke-dasharray', '1');
+                circle.setAttribute('cx', `${cx}`);
+                circle.setAttribute('cy', `${cy}`);
+                circle.setAttribute('r', '3');
+                return circle;
+            });
+            const cancel = (_key: CancelKeys) => {
+                circles.forEach(circle => this.guides.guidesContainer!.removeChild(circle));
+                this.cancelListener.keyEvent.off(cancel);
+            };
+            this.cancelListener.keyEvent.on(cancel);
+        }
     }
 
 }
