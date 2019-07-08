@@ -35,41 +35,45 @@ export class LineFigure implements Figure<SVGLineElement> {
     create(_elementName: string, _attributes: {[K: string]: string}) {
         let points = Array<PointConcerns>();
         this.artboard.box.classList.add('interactive-points');
-        let toolsSvg: SVGSVGElement | null = null;
+        let tempDestroyer: (() => void) | null = null;
         this.userEventMan.mode = 'interactive';
         const pointsListener = (event: MouseEvent) => {
-            let { clientX, clientY, } = event;
+            let {
+                clientX,
+                clientY,
+                shiftKey,
+            } = event;
             const { scrollLeft, scrollTop } = document.scrollingElement!;
-            // if (points.length === 1 && shiftKey) {
-            //     let [ [prevX, prevY] ] = points;
-            //     prevX -= scrollLeft;
-            //     prevY -= scrollTop;
-            //     const absDeltaX = Math.abs(clientX - prevX);
-            //     const absDeltaY = Math.abs(clientY - prevY);
-            //     if (absDeltaX < absDeltaY) {
-            //         clientX = points[0][0] - scrollLeft;
-            //     } else {
-            //         clientY = points[0][1] - scrollTop;
-            //     }
-            // }
-            points.push({
+            const point: PointConcerns = {
                 client: [clientX, clientY],
                 scroll: [scrollLeft, scrollTop],
                 margin: [this.artboardMove.left, this.artboardMove.top],
                 board: [this.artboard.width, this.artboard.height],
                 zoom: this.zoom.value,
-            });
+            };
+            if (points.length === 1 && shiftKey) {
+                const [ curX, curY ] = this.coords.renderPointConcerns(point, true);
+                const [ prevX, prevY ] = this.coords.renderPointConcerns(points[0], true);
+                const absDeltaX = Math.abs(curX - prevX);
+                const absDeltaY = Math.abs(curY - prevY);
+                if (absDeltaX < absDeltaY) {
+                    point.client[0] = points[0].client[0];
+                } else {
+                    point.client[1] = points[0].client[1];
+                }
+            }
+            points.push(point);
             if (points.length === 1) {
-                toolsSvg = this.createEditingSelection(points);
+                tempDestroyer = this.createEditingSelection(points[0]);
             }
             if (points.length >= 2) {
                 cancel();
-                const [ [x1, y1], [x2, y2] ] = points;
-                const attrs: {[K: string]: number} = {x1, y1, x2, y2};
+                const [ [x1, y1], [x2, y2] ] = points.map(point => this.coords.renderPointConcerns(point, true));
+                const attrs: {[K: string]: number} = { x1, y1, x2, y2 };
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 Object.keys(attrs).forEach(key => {
                     const value = attrs[key];
-                    line.setAttribute(key, `${Math.round(value / this.zoom.value)}`);
+                    line.setAttribute(key, `${ value }`);
                 });
                 line.setAttribute('stroke', '#777');
                 this.artboard.svg.appendChild(line);
@@ -80,8 +84,8 @@ export class LineFigure implements Figure<SVGLineElement> {
             window.removeEventListener('click', pointsListener);
             this.cancelListener.keyEvent.off(cancel);
             this.artboard.box.classList.remove('interactive-points');
-            if (toolsSvg) {
-                this.artboard.tools.removeChild(toolsSvg);
+            if (tempDestroyer instanceof Function) {
+                tempDestroyer();
             }
             this.userEventMan.mode = 'pick';
         };
@@ -96,29 +100,34 @@ export class LineFigure implements Figure<SVGLineElement> {
         pseudoPoint.setAttribute('stroke', '#777');
         pseudoPoint.setAttribute('stroke-dasharray', '1');
         pseudoPoint.setAttribute('r', '3');
-        pseudoPoint.setAttribute('cx', `${cx}`);
-        pseudoPoint.setAttribute('cy', `${cy}`);
-        pseudoLine.setAttribute('x1', `${cx}`);
-        pseudoLine.setAttribute('y1', `${cy}`);
-        pseudoLine.setAttribute('x2', `${cx}`);
-        pseudoLine.setAttribute('y2', `${cy}`);
+        pseudoPoint.setAttribute('cx', `${ cx }`);
+        pseudoPoint.setAttribute('cy', `${ cy }`);
+        pseudoLine.setAttribute('x1', `${ cx }`);
+        pseudoLine.setAttribute('y1', `${ cy }`);
+        pseudoLine.setAttribute('x2', `${ cx }`);
+        pseudoLine.setAttribute('y2', `${ cy }`);
         pseudoLine.setAttribute('stroke', '#777');
         pseudoLine.setAttribute('stroke-dasharray', '1');
+        this.guides.guidesContainer!.appendChild(pseudoLine);
+        this.guides.guidesContainer!.appendChild(pseudoPoint);
         const onMousemove = (event: MouseEvent) => {
-            let { clientX, clientY, shiftKey } = event;
-            const prevX = cx - scrollLeft;
-            const prevY = cy - scrollTop;
-            const absDeltaX = Math.abs(clientX - prevX);
-            const absDeltaY = Math.abs(clientY - prevY);
+            const {
+                clientX,
+                clientY,
+                shiftKey,
+            } = event;
+            let [ x2, y2 ] = this.coords.renderPointConcerns({...point, client: [clientX, clientY]}, false);
             if (shiftKey) {
+                const absDeltaX = Math.abs(x2 - cx);
+                const absDeltaY = Math.abs(y2 - cy);
                 if (absDeltaX < absDeltaY) {
-                    clientX = cx - scrollLeft;
+                    x2 = cx;
                 } else {
-                    clientY = cy - scrollTop;
+                    y2 = cy;
                 }
             }
-            pseudoLine.setAttribute('x2', `${clientX + scrollLeft}`);
-            pseudoLine.setAttribute('y2', `${clientY + scrollTop}`);
+            pseudoLine.setAttribute('x2', `${ x2 }`);
+            pseudoLine.setAttribute('y2', `${ y2 }`);
         };
         const onClick = (_click: MouseEvent) => {
             window.removeEventListener('mousemove', onMousemove);
@@ -126,11 +135,10 @@ export class LineFigure implements Figure<SVGLineElement> {
         };
         window.addEventListener('mousemove', onMousemove);
         window.addEventListener('click', onClick);
-        Object.assign(svg.style, {
-            position: 'absolute',
-            top: artboardBox.top + scrollTop + 'px',
-            left: artboardBox.left + scrollLeft + 'px',
-        });
+        return () => {
+            this.guides.guidesContainer!.removeChild(pseudoLine);
+            this.guides.guidesContainer!.removeChild(pseudoPoint);
+        };
     }
 
 }
