@@ -22,7 +22,9 @@ export class Guides {
 
     constructor(
         private artboard: Artboard,
-    ) {}
+    ) {
+        // this.artboard.tools.style.pointerEvents = 'none';
+    }
 
     get guidesContainer(): SVGSVGElement | null {
         return this.container;
@@ -54,6 +56,7 @@ export class Guides {
                 top: `${ top - 0.5 }px`,
                 width: `${ width }px`,
                 height: `${ height }px`,
+                // pointerEvents: 'none',
             });
         }
     }

@@ -227,10 +227,12 @@ export class PathFigure implements Figure<SVGPathElement> {
     edit(element: SVGPathElement) {
         const d = element.getAttribute('d');
         if (d) {
+            this.userEventMan.mode = 'interactive';
+            this.guides.removeSelection();
             const points = this.pathPoints.parseStr(d);
             const coords = this.pathPoints.getAbsDims(points);
             const circles = coords.map((point) => {
-                const [ cx, cy ] = point;
+                let [ cx, cy ] = point;
                 const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 this.guides.guidesContainer!.appendChild(circle);
                 circle.setAttribute('fill', 'none');
@@ -238,10 +240,46 @@ export class PathFigure implements Figure<SVGPathElement> {
                 circle.setAttribute('stroke-dasharray', '1');
                 circle.setAttribute('cx', `${cx}`);
                 circle.setAttribute('cy', `${cy}`);
-                circle.setAttribute('r', '3');
+                circle.setAttribute('r', '5');
+
+                circle.style.pointerEvents = 'fill';
+
+                let x = 0;
+                let y = 0;
+                const onMouseMove = (event: MouseEvent) => {
+                    const {
+                        clientX,
+                        clientY,
+                    } = event;
+                    const dx = clientX - x;
+                    const dy = clientY - y;
+                    cx += dx;
+                    cy += dy;
+                    circle.setAttribute('cx', `${ cx }`);
+                    circle.setAttribute('cy', `${ cy }`);
+                };
+                const onMouseUp = (event: MouseEvent) => {
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('mouseup', onMouseUp);
+                };
+                const onMouseDown = (event: MouseEvent) => {
+                    window.addEventListener('mousemove', onMouseMove);
+                    window.addEventListener('mouseup', onMouseUp);
+                    const {
+                        clientX,
+                        clientY,
+                    } = event;
+                    x = clientX;
+                    y = clientY;
+                };
+
+                circle.addEventListener('mousedown', onMouseDown);
+
                 return circle;
             });
             const cancel = (_key: CancelKeys) => {
+                this.userEventMan.mode = 'pick';
+                this.guides.drawSelection([element]);
                 circles.forEach(circle => this.guides.guidesContainer!.removeChild(circle));
                 this.cancelListener.keyEvent.off(cancel);
             };

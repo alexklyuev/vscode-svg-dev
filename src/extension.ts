@@ -135,6 +135,7 @@ export function activate(context: vscode.ExtensionContext) {
         }),
         vscode.commands.registerCommand('svgDevEdit', () => {
             editConnection.ifConnected(endpoint => {
+                vscode.commands.executeCommand('setContext', 'svgDevAddInteractive', true);
                 endpoint.makeSetRequest({});
             });
         }),
