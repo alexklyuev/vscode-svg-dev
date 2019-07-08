@@ -34,7 +34,13 @@ const draggerPath = new DraggerPath(zoom, pathPoints);
 figuresCollection.add(
     new CircleFigure(
         draggerCenter,
-        artboard
+        artboard,
+        artboardMove,
+        userEventMan,
+        zoom,
+        coordinator,
+        cancelListener,
+        guides,
     ),
     new EllipseFigure(
         draggerCenter,

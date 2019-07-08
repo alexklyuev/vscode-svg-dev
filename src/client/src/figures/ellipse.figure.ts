@@ -32,6 +32,9 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         return element instanceof SVGEllipseElement;
     }
 
+    /**
+     * //
+     */
     @setState
     create(_elementName: string, _attributes: {[K: string]: string}): void {
         let points = Array<PointConcerns>();
@@ -57,21 +60,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
                     return this.coords.render2d(client, scroll, margin, board, zoom, true);
                 });
                 const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
-                const cx = Math.abs(x2 - x1) / 2 + (x2 > x1 ? x1 : x2);
-                const cy = Math.abs(y2 - y1) / 2 + (y2 > y1 ? y1 : y2);
-                let rx = Math.abs(x2 - x1) / 2;
-                let ry = Math.abs(y2 - y1) / 2;
-                if (shiftKey) {
-                    if (rx > ry) {
-                        rx = ry;
-                    } else {
-                        ry = rx;
-                    }
-                }
-                element.setAttribute('cx', `${ cx }`);
-                element.setAttribute('cy', `${ cy }`);
-                element.setAttribute('rx', `${ rx }`);
-                element.setAttribute('ry', `${ ry }`);
+                this.renderCoordsAttributes(element, [x1, y1], [x2, y2], shiftKey);                
                 element.setAttribute('stroke', '#ffffff');
                 element.setAttribute('fill', '#ccc');
                 this.artboard.svg.appendChild(element);
@@ -90,6 +79,9 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         this.cancelListener.keyEvent.on(cancel);
     }
 
+    /**
+     * //
+     */
     createEditingSelection(point: PointConcerns) {
         const { client, scroll, margin, board, zoom } = point;
         const [x1, y1] = this.coords.render2d(client, scroll, margin, board, zoom, false);
@@ -102,21 +94,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
             let { clientX, clientY, shiftKey } = event;
             const client2: [number, number] = [clientX, clientY];
             const [x2, y2] = this.coords.render2d(client2, scroll, margin, board, zoom, false);
-            const cx = Math.abs(x2 - x1) / 2 + (x2 > x1 ? x1 : x2);
-            const cy = Math.abs(y2 - y1) / 2 + (y2 > y1 ? y1 : y2);
-            let rx = Math.abs(x2 - x1) / 2;
-            let ry = Math.abs(y2 - y1) / 2;
-            if (shiftKey) {
-                if (rx > ry) {
-                    rx = ry;
-                } else {
-                    ry = rx;
-                }
-            }
-            element.setAttribute('cx', `${ cx }`);
-            element.setAttribute('cy', `${ cy }`);
-            element.setAttribute('rx', `${ rx }`);
-            element.setAttribute('ry', `${ ry }`);
+            this.renderCoordsAttributes(element, [x1, y1], [x2, y2], shiftKey);
         };
         const onClick = (_click: MouseEvent) => {
             window.removeEventListener('mousemove', onMousemove);
@@ -125,6 +103,32 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         window.addEventListener('mousemove', onMousemove);
         window.addEventListener('click', onClick);
         return element;
+    }
+
+    /**
+     * //
+     */
+    renderCoordsAttributes(
+        element: SVGEllipseElement,
+        [x1, y1]: [number, number],
+        [x2, y2]: [number, number],
+        shiftKey: boolean,
+    ): void {
+        let rx = Math.abs(x2 - x1) / 2;
+        let ry = Math.abs(y2 - y1) / 2;
+        if (shiftKey) {
+            if (rx > ry) {
+                rx = ry;
+            } else {
+                ry = rx;
+            }
+        }
+        const cx = rx + (x2 > x1 ? x1 : x2);
+        const cy = ry + (y2 > y1 ? y1 : y2);
+        element.setAttribute('cx', `${ cx }`);
+        element.setAttribute('cy', `${ cy }`);
+        element.setAttribute('rx', `${ rx }`);
+        element.setAttribute('ry', `${ ry }`);
     }
 
 }
