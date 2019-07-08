@@ -19,6 +19,10 @@ export class ClientEvent<Data> {
         this.callbacks.forEach(callback => callback(data));
     }
 
+    get size(): number {
+        return this.callbacks.size;
+    }
+
 }
 
 export function connectEvent(eventName: string) {

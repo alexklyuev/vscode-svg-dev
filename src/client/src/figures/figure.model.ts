@@ -12,4 +12,6 @@ export interface Figure<Ctor> {
 
     create(elementName: string, attributes: {[K: string]: string}): void;
 
+    edit?(element: SVGElement): void;
+
 }
