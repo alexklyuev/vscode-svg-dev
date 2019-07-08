@@ -227,25 +227,129 @@ export class PathFigure implements Figure<SVGPathElement> {
     edit(element: SVGPathElement) {
         const d = element.getAttribute('d');
         if (d) {
+            const newD = this.pathPoints.setPointsAbsolute(d);
+            element.setAttribute('d', newD);
+
+            this.userEventMan.mode = 'interactive';
+            this.guides.removeSelection();
             const points = this.pathPoints.parseStr(d);
-            const coords = this.pathPoints.getAbsDims(points);
-            const circles = coords.map((point) => {
-                const [ cx, cy ] = point;
-                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                this.guides.guidesContainer!.appendChild(circle);
-                circle.setAttribute('fill', 'none');
-                circle.setAttribute('stroke', '#666');
-                circle.setAttribute('stroke-dasharray', '1');
-                circle.setAttribute('cx', `${cx}`);
-                circle.setAttribute('cy', `${cy}`);
-                circle.setAttribute('r', '3');
-                return circle;
+            // const coords = this.pathPoints.getAbsDims(points);
+            // const circles = coords.map((point, index) => {
+            //     let [ cx, cy ] = point;
+            //     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            //     this.guides.guidesContainer!.appendChild(circle);
+            //     circle.setAttribute('fill', 'none');
+            //     circle.setAttribute('stroke', '#666');
+            //     circle.setAttribute('stroke-dasharray', '1');
+            //     circle.setAttribute('cx', `${ cx * this.zoom.value }`);
+            //     circle.setAttribute('cy', `${ cy * this.zoom.value }`);
+            //     circle.setAttribute('r', '5');
+
+            //     circle.setAttribute('data-index', `${ index }`);
+
+            //     circle.style.pointerEvents = 'fill';
+
+            //     let d0 = element.getAttribute('d')!;
+
+            //     let x = 0;
+            //     let y = 0;
+            //     let curCx = cx;
+            //     let curCy = cy;
+            //     let rcx = cx;
+            //     let rcy = cy;
+            //     const onMouseMove = (event: MouseEvent) => {
+            //         const {
+            //             clientX,
+            //             clientY,
+            //         } = event;
+            //         const dx = (clientX - x) / this.zoom.value;
+            //         const dy = (clientY - y) / this.zoom.value;
+            //         curCx = rcx + dx;
+            //         curCy = rcy + dy;
+            //         circle.setAttribute('cx', `${ curCx * this.zoom.value }`);
+            //         circle.setAttribute('cy', `${ curCy * this.zoom.value }`);
+
+            //         const points = this.pathPoints.parseStr(d0)
+            //         .map(([command, coords], pointIndex) => {
+            //             if (pointIndex !== index) {
+            //                 return `${ command } ${ coords }`;
+            //             } else {
+            //                 const newCoords = coords.split(this.pathPoints.delimeter)
+            //                 .map(c => parseFloat(c))
+            //                 .map((n, valueIndex) => n + (valueIndex % 2 === 0 ? dx : dy))
+            //                 .join(' ');
+            //                 return `${ command } ${ newCoords }`;
+            //             }
+            //         })
+            //         .join(' ');
+
+            //         element.setAttribute('d', points);
+            //     };
+            //     const onMouseUp = (_event: MouseEvent) => {
+            //         window.removeEventListener('mousemove', onMouseMove);
+            //         window.removeEventListener('mouseup', onMouseUp);
+            //     };
+            //     const onMouseDown = (event: MouseEvent) => {
+            //         window.addEventListener('mousemove', onMouseMove);
+            //         window.addEventListener('mouseup', onMouseUp);
+            //         const {
+            //             clientX,
+            //             clientY,
+            //         } = event;
+            //         x = clientX;
+            //         y = clientY;
+            //         rcx = curCx;
+            //         rcy = curCy;
+            //         d0 = element.getAttribute('d')!;
+            //     };
+
+            //     circle.addEventListener('mousedown', onMouseDown);
+
+            //     return circle;
+            // });
+
+
+            const allDims = this.pathPoints.getAllAbsCoords(points);
+            const pseudoEls = Array<SVGElement>();
+            allDims.forEach((point, pointIndex, $points) => {
+                point.forEach((pair, pairIndex, $pairs) => {
+                    let [ cx, cy ] = pair;
+                    const isPoint = pairIndex === (point.length - 1);
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    this.guides.guidesContainer!.appendChild(circle);
+                    circle.setAttribute('fill', isPoint ? 'none' : 'red');
+                    circle.setAttribute('stroke', isPoint ? '#666' : 'red');
+                    circle.setAttribute('stroke-dasharray', '1');
+                    circle.setAttribute('cx', `${ cx * this.zoom.value }`);
+                    circle.setAttribute('cy', `${ cy * this.zoom.value }`);
+                    circle.setAttribute('r', isPoint ? '7' : '3');
+                    circle.style.pointerEvents = 'fill';
+                    circle.setAttribute('data-type', `${ isPoint ? 'point' : 'control' }`);
+                    pseudoEls.push(circle);
+                    if (!isPoint) {
+                        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                        line.setAttribute('stroke', 'red');
+                        line.setAttribute('stroke-dasharray', '1');
+                        const $prevPairs = $points[pointIndex - 1];
+                        const $pair = (pairIndex === $pairs.length - 2) ? $pairs[$pairs.length - 1] : $prevPairs[$prevPairs.length -1];
+                        const [ $x, $y ] = $pair;
+                        line.setAttribute('x1', `${ cx * this.zoom.value }`);
+                        line.setAttribute('y1', `${ cy * this.zoom.value }`);
+                        line.setAttribute('x2', `${ $x * this.zoom.value }`);
+                        line.setAttribute('y2', `${ $y * this.zoom.value }`);
+                        this.guides.guidesContainer!.appendChild(line);
+                        pseudoEls.push(line);
+                    }
+                });
             });
             const cancel = (_key: CancelKeys) => {
-                circles.forEach(circle => this.guides.guidesContainer!.removeChild(circle));
+                this.userEventMan.mode = 'pick';
+                this.guides.drawSelection([element]);
+                pseudoEls.forEach(circle => this.guides.guidesContainer!.removeChild(circle));
                 this.cancelListener.keyEvent.off(cancel);
             };
             this.cancelListener.keyEvent.on(cancel);
+
         }
     }
 
