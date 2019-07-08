@@ -32,15 +32,77 @@ const draggerPath = new DraggerPath(zoom, pathPoints);
 
 
 figuresCollection.add(
-    new CircleFigure(draggerCenter, artboard),
-    new EllipseFigure(draggerCenter, artboard, artboardMove, zoom, cancelListener, userEventMan, guides, coordinator),
-    new RectFigure(draggerLeftTop, artboard),
-    new TextFigure(draggerLeftTop, artboard),
-    new GFigure(draggerDelegate, artboard),
-    new LineFigure(draggerDouble, artboard, artboardMove, zoom, cancelListener, userEventMan, coordinator, guides),
-    new PolygonFigure(draggerPoints, artboard, artboardMove, zoom, cancelListener, userEventMan, guides),
-    new PolylineFigure(draggerPoints, artboard, artboardMove, zoom, cancelListener, userEventMan, guides),
-    new PathFigure(draggerPath, artboard, artboardMove, zoom, cancelListener, userEventMan, guides, pathPoints, coordinator),
+    new CircleFigure(
+        draggerCenter,
+        artboard
+    ),
+    new EllipseFigure(
+        draggerCenter,
+        artboard,
+        artboardMove,
+        zoom,
+        cancelListener,
+        userEventMan,
+        guides,
+        coordinator
+    ),
+    new RectFigure(
+        draggerLeftTop, 
+        artboard,
+        userEventMan,
+        artboardMove,
+        zoom,
+        guides,
+        coordinator,
+        cancelListener,
+    ),
+    new TextFigure(
+        draggerLeftTop,
+        artboard
+    ),
+    new GFigure(
+        draggerDelegate,
+        artboard,
+    ),
+    new LineFigure(
+        draggerDouble,
+        artboard,
+        artboardMove,
+        zoom,
+        cancelListener,
+        userEventMan,
+        coordinator,
+        guides,
+    ),
+    new PolygonFigure(
+        draggerPoints,
+        artboard,
+        artboardMove,
+        zoom,
+        cancelListener,
+        userEventMan,
+        guides,
+    ),
+    new PolylineFigure(
+        draggerPoints,
+        artboard,
+        artboardMove,
+        zoom,
+        cancelListener,
+        userEventMan,
+        guides,
+    ),
+    new PathFigure(
+        draggerPath,
+        artboard,
+        artboardMove,
+        zoom,
+        cancelListener,
+        userEventMan,
+        guides,
+        pathPoints,
+        coordinator,
+    ),
 );
 
 export { figuresCollection };

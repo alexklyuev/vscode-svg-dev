@@ -92,7 +92,7 @@ export class LineFigure implements Figure<SVGLineElement> {
         this.cancelListener.keyEvent.on(cancel);
     }
 
-    createEditingSelection(point: PointConcerns) {
+    createEditingSelection(point: PointConcerns): () => void {
         const [ cx, cy ] = this.coords.renderPointConcerns(point,false);
         const pseudoPoint = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         const pseudoLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
