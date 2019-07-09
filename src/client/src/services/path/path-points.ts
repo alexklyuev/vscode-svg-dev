@@ -179,6 +179,70 @@ export class PathPoints {
         return this.parse(d).map(base => base.specify());
     }
 
+    getAllAbsCoords(points: string[][]): number[][][] {
+        const dims = Array<number[][]>();
+        for (let i = 0; i < points.length; i++) {
+            const [ command, coords ] = points[i];
+            const coordValues = coords.split(this.delimeter).map(c => parseFloat(c));
+            const baseValues = coordValues.slice(-2);
+            if (command === 'M' || command === 'm') {
+                dims.push( [ baseValues ] );
+            } else if (command === 'Z' || command === 'z') {
+                continue;
+            } else if (coordValues.length === 1) {
+                const [x, y] = dims[dims.length - 1][0];
+                switch (command) {
+                    case 'H':
+                        dims.push([[coordValues[0], y]]);
+                        break;
+                    case 'h':
+                        dims.push([[coordValues[0] + x, y]]);
+                        break;
+                    case 'V':
+                        dims.push([[x, coordValues[0]]]);
+                        break;
+                    case 'v':
+                        dims.push([[x, y + coordValues[0]]]);
+                        break;
+                }
+            } else if (coordValues.length === 2) {
+                if (command.charCodeAt(0) <= 90) {
+                    dims.push( [ baseValues ] );
+                } else {
+                    dims.push( [ dims[dims.length - 1][0].map((v, index) => v + coordValues[index]) ] );
+                }
+            } else if (coordValues.length > 2) {
+                dims.push([]);
+                if (command.charCodeAt(0) <= 90) {
+                    coordValues.forEach((v, k) => {
+                        if (k % 2 === 0) {
+                            dims[dims.length - 1].push( [ v ] );
+                        } else {
+                            const last = dims[dims.length - 1];
+                            last[last.length - 1][1] = v;
+                        }
+                    });
+                } else {
+                    const prevGroup = dims[dims.length - 2];
+                    const prev = prevGroup[prevGroup.length - 1];
+                    coordValues.forEach((v, k) => {
+                        const rv = v + prev[k % 2];
+                        if (k % 2 === 0) {
+                            dims[dims.length - 1].push( [ rv ] );
+                        } else {
+                            const last = dims[dims.length - 1];
+                            last[last.length - 1][1] = rv;
+                        }
+                    });
+                }
+            }
+        }
+        return dims;
+    }
+
+    /**
+     * //
+     */
     getAbsDims(points: string[][]): number[][] {
         const dims = Array<number[]>();
         for (let i = 0; i < points.length; i++) {
@@ -186,7 +250,7 @@ export class PathPoints {
             const coordValues = coords.split(this.delimeter).slice(-2).map(c => parseFloat(c));
             if (command === 'M' || command === 'm') {
                 dims.push(coordValues);
-            } else if (command === 'Z') {
+            } else if (command === 'Z' || command === 'z') {
                 continue;
             } else if (coordValues.length === 2) {
                 if (command.charCodeAt(0) <= 90) {
@@ -227,9 +291,9 @@ export class PathPoints {
         const newPoints = points
         .map((point, index) => {
             const [ command, coords ] = point!;
-            if (command === 'Z') {
+            if (command === 'Z' || command === 'z') {
                 return command;
-            } else if (command === 'M') {
+            } else if (command === 'M' || command === 'm') {
                 return `${ command } ${ coords }`;
             } else if (command.charCodeAt(0) <= 90) {
                 const prevValues = dims[index - 1];
