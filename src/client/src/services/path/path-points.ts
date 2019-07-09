@@ -131,7 +131,7 @@ export class DPoint {
  */
 export class PathPoints {
 
-    private readonly delimeter = /[\s,]+/;
+    public readonly delimeter = /[\s,]+/;
 
     /**
      * //
@@ -225,14 +225,13 @@ export class PathPoints {
         const points = this.parseStr(d);
         const dims = this.getAbsDims(points);
         const newPoints = points
-        .map((point, index, collection) => {
+        .map((point, index) => {
             const [ command, coords ] = point!;
             if (command === 'Z') {
                 return command;
             } else if (command === 'M') {
                 return `${ command } ${ coords }`;
             } else if (command.charCodeAt(0) <= 90) {
-
                 const prevValues = dims[index - 1];
                 let coordValues = coords.split(this.delimeter).map(c => parseFloat(c));
                 let updatedCoords = Array<number>();
@@ -257,12 +256,41 @@ export class PathPoints {
         return newPoints.join(' ');
     }
 
-
     /**
      * //
      */
-    setPointsAbsolute() {
-        throw new Error('PathPoints#setPointsAbsolute: Not implemented');
+    setPointsAbsolute(d: string): string {
+        const points = this.parseStr(d);
+        const dims = this.getAbsDims(points);
+        const newPoints = points
+        .map((point, index) => {
+            const [ command, coords ] = point!;
+            if (command === 'Z' || command === 'z') {
+                return command.toUpperCase();
+            } else if (command === 'M' || command === 'm') {
+                return `${ command.toUpperCase() } ${ coords }`;
+            } else if (command.charCodeAt(0) > 90) {
+                const prevValues = dims[index - 1];
+                let coordValues = coords.split(this.delimeter).map(c => parseFloat(c));
+                let updatedCoords = Array<number>();
+                if (coordValues.length > 1) {
+                    updatedCoords = coordValues.map((cv, index) => cv + prevValues[index % 2]);
+                } else {
+                    const [prevX, prevY] = prevValues;
+                    switch (command) {
+                        case 'h':
+                            updatedCoords = [ coordValues[0] + prevX ];
+                            break;
+                        case 'v':
+                            updatedCoords = [ coordValues[0] + prevY ];
+                    }
+                }
+                return `${ command.toUpperCase() } ${ updatedCoords.join(' ') }`;
+            } else {
+                return `${ command } ${ coords }`;
+            }
+        });
+        return newPoints.join(' ');
     }
 
 }

@@ -227,38 +227,65 @@ export class PathFigure implements Figure<SVGPathElement> {
     edit(element: SVGPathElement) {
         const d = element.getAttribute('d');
         if (d) {
+            const newD = this.pathPoints.setPointsAbsolute(d);
+            element.setAttribute('d', newD);
+
             this.userEventMan.mode = 'interactive';
             this.guides.removeSelection();
             const points = this.pathPoints.parseStr(d);
             const coords = this.pathPoints.getAbsDims(points);
-            const circles = coords.map((point) => {
+            const circles = coords.map((point, index) => {
                 let [ cx, cy ] = point;
                 const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 this.guides.guidesContainer!.appendChild(circle);
                 circle.setAttribute('fill', 'none');
                 circle.setAttribute('stroke', '#666');
                 circle.setAttribute('stroke-dasharray', '1');
-                circle.setAttribute('cx', `${cx}`);
-                circle.setAttribute('cy', `${cy}`);
+                circle.setAttribute('cx', `${ cx * this.zoom.value }`);
+                circle.setAttribute('cy', `${ cy * this.zoom.value }`);
                 circle.setAttribute('r', '5');
+
+                circle.setAttribute('data-index', `${ index }`);
 
                 circle.style.pointerEvents = 'fill';
 
+                let d0 = element.getAttribute('d')!;
+
                 let x = 0;
                 let y = 0;
+                let curCx = cx;
+                let curCy = cy;
+                let rcx = cx;
+                let rcy = cy;
                 const onMouseMove = (event: MouseEvent) => {
                     const {
                         clientX,
                         clientY,
                     } = event;
-                    const dx = clientX - x;
-                    const dy = clientY - y;
-                    cx += dx;
-                    cy += dy;
-                    circle.setAttribute('cx', `${ cx }`);
-                    circle.setAttribute('cy', `${ cy }`);
+                    const dx = (clientX - x) / this.zoom.value;
+                    const dy = (clientY - y) / this.zoom.value;
+                    curCx = rcx + dx;
+                    curCy = rcy + dy;
+                    circle.setAttribute('cx', `${ curCx * this.zoom.value }`);
+                    circle.setAttribute('cy', `${ curCy * this.zoom.value }`);
+
+                    const points = this.pathPoints.parseStr(d0)
+                    .map(([command, coords], pointIndex) => {
+                        if (pointIndex !== index) {
+                            return `${ command } ${ coords }`;
+                        } else {
+                            const newCoords = coords.split(this.pathPoints.delimeter)
+                            .map(c => parseFloat(c))
+                            .map((n, valueIndex) => n + (valueIndex % 2 === 0 ? dx : dy))
+                            .join(' ');
+                            return `${ command } ${ newCoords }`;
+                        }
+                    })
+                    .join(' ');
+
+                    element.setAttribute('d', points);
                 };
-                const onMouseUp = (event: MouseEvent) => {
+                const onMouseUp = (_event: MouseEvent) => {
                     window.removeEventListener('mousemove', onMouseMove);
                     window.removeEventListener('mouseup', onMouseUp);
                 };
@@ -271,6 +298,9 @@ export class PathFigure implements Figure<SVGPathElement> {
                     } = event;
                     x = clientX;
                     y = clientY;
+                    rcx = curCx;
+                    rcy = curCy;
+                    d0 = element.getAttribute('d')!;
                 };
 
                 circle.addEventListener('mousedown', onMouseDown);
