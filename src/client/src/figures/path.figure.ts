@@ -322,7 +322,7 @@ export class PathFigure implements Figure<SVGPathElement> {
                     circle.setAttribute('stroke-dasharray', '1');
                     circle.setAttribute('cx', `${ cx * this.zoom.value }`);
                     circle.setAttribute('cy', `${ cy * this.zoom.value }`);
-                    circle.setAttribute('r', isPoint ? '7' : '3');
+                    circle.setAttribute('r', isPoint ? '10' : '3');
                     circle.style.pointerEvents = 'fill';
                     circle.setAttribute('data-type', `${ isPoint ? 'point' : 'control' }`);
                     pseudoEls.push(circle);
