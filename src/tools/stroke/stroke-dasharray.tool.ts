@@ -5,6 +5,10 @@ export class StrokeDasharray implements Tool {
 
     label = 'Dasharray';
 
-    command = {title: 'Dasharray', command: 'svgDevRemoteAttributeInput', arguments: ['stroke-dasharray']};
+    command = {
+        title: 'Dasharray',
+        command: 'svgDevRemoteAttributeInput',
+        arguments: ['stroke-dasharray'],
+    };
 
 }

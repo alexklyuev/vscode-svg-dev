@@ -3,10 +3,18 @@ import { Pipe, PipeEndpoint } from "../../../shared/services/pipe/pipe";
 import { ArtboardRequest, ArtboardResponse } from "../../../shared/pipes/artboard.pipe";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
+import { ClientEvent, connectEvent } from "../entities/client-event";
+
+
+const enum ArtboardListenerEvents {
+    changeProperty = 'changeProperty',
+}
 
 
 export class ArtboardListener {
     private artboardClient: PipeEndpoint<ArtboardRequest, ArtboardResponse, 'artboard'>;
+
+    public readonly [ArtboardListenerEvents.changeProperty] = new ClientEvent<{property: string, value: string}>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,
@@ -33,6 +41,7 @@ export class ArtboardListener {
     }
 
     @setState
+    @connectEvent(ArtboardListenerEvents.changeProperty)
     updateAttributes(svg: SVGElement, property: string, value: string) {
         svg.setAttribute(property, value!);
         if (property === 'width' || property === 'height') {
@@ -45,6 +54,7 @@ export class ArtboardListener {
             }
             svg.setAttribute('viewBox', [0, 0, width, height].join(' '));
         }
+        return {property, value};
     }
 
 }
