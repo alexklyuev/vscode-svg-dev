@@ -28,6 +28,8 @@ import { StrokeDasharray } from "./stroke/stroke-dasharray.tool";
 import { PathAddTool } from "./path/path-add.tool";
 import { PathEditTool } from "./path/path-edit-points.tool";
 import { PathEditInteractive } from "./path/path-edit-interactive.tool";
+import { StrokeLinecap } from "./stroke/stroke-linecap.tool";
+import { StrokeLinejoin } from "./stroke/stroke-linejoin.tool";
 
 export const toolbox = new Toolbox();
 
@@ -115,7 +117,9 @@ toolbox.register(
 toolbox.register(
     new ToolGroup('Stroke'),
     new StrokeWidth(),
-    new StrokeDasharray()
+    new StrokeDasharray(),
+    new StrokeLinecap(),
+    new StrokeLinejoin(),
 );
 toolbox.register(
     new ToolGroup('Order'),

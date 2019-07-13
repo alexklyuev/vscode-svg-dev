@@ -67,6 +67,9 @@ zoomListener.listen();
  */
 const artboardListener = new ArtboardListener(webviewEndpoint, artboardPipe, artboard);
 artboardListener.listen();
+artboardListener.changeProperty.on(() => {
+    guides.setContainerStyles();
+});
 
 /**
  * Webview artboard style pipe client

@@ -205,7 +205,13 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('svgDevRemoteAttributeInput', async (attribute: string) => {
             await remoteAttributeConnnection.ifConnected(async remoteAttributeHost => {
                 const remote = new RemoteAttributeInput(remoteAttributeHost, attribute);
-                await remote.change();
+                await remote.changeByInput();
+            });
+        }),
+        vscode.commands.registerCommand('svgDevRemoteAttributePick', async (attribute: string, items: string[]) => {
+            await remoteAttributeConnnection.ifConnected(async remoteAttributeHost => {
+                const remote = new RemoteAttributeInput(remoteAttributeHost, attribute);
+                await remote.changeByPick(items);
             });
         }),
         vscode.commands.registerCommand('svgDevArtboardStyleAdd', async () => {

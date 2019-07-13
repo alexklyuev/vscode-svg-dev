@@ -10,7 +10,7 @@ svg {
 svg * {
     pointer-events: fill;
 }
-svg line {
+svg line, svg path, svg polygon, svg polyline {
     pointer-events: visibleStroke;
     /* cursor: crosshair; */
 }

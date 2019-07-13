@@ -225,23 +225,25 @@ export class PathFigure implements Figure<SVGPathElement> {
      * //
      */
     edit(element: SVGPathElement) {
-        const d = element.getAttribute('d');
+        let d = element.getAttribute('d');
         if (d) {
             const newD = this.pathPoints.setPointsAbsolute(d);
             element.setAttribute('d', newD);
 
             this.userEventMan.mode = 'interactive';
             this.guides.removeSelection();
-            const points = this.pathPoints.parseStr(d);
-
+            
             const pseudoEls = Array<SVGElement>();
-
+            
             const draw = () => {
+                d = element.getAttribute('d')!;
+                const points = this.pathPoints.parseStr(d);
                 const allDims = this.pathPoints.getAllAbsCoords(points);
                 allDims.forEach((point, pointIndex$, $points) => {
                     point.forEach((pair, pairIndex, $pairs) => {
                         let [ cx, cy ] = pair;
                         const isPoint = pairIndex === (point.length - 1);
+                        const selfControl = isPoint ? false : (pairIndex === $pairs.length - 2);
                         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                         this.guides.guidesContainer!.appendChild(circle);
                         circle.setAttribute('fill', isPoint ? 'none' : 'red');
@@ -254,6 +256,65 @@ export class PathFigure implements Figure<SVGPathElement> {
                         circle.setAttribute('data-type', `${ isPoint ? 'point' : 'control' }`);
                         pseudoEls.push(circle);
                         if (!isPoint) {
+                            let d0 = element.getAttribute('d')!;
+                            let x = 0;
+                            let y = 0;
+                            let curCx = cx;
+                            let curCy = cy;
+                            let rcx = cx;
+                            let rcy = cy;
+                            const onMouseMove = (event: MouseEvent) => {
+                                const {
+                                    clientX,
+                                    clientY,
+                                } = event;
+                                const dx = (clientX - x) / this.zoom.value;
+                                const dy = (clientY - y) / this.zoom.value;
+                                curCx = rcx + dx;
+                                curCy = rcy + dy;
+                                circle.setAttribute('cx', `${ curCx * this.zoom.value }`);
+                                circle.setAttribute('cy', `${ curCy * this.zoom.value }`);
+                                const points = this.pathPoints.parseStr(d0)
+                                .map(([command, coords], pointIndex) => {
+                                    if (pointIndex !== pointIndex$) {
+                                        return `${ command } ${ coords }`;
+                                    } else {
+                                        const newCoords = coords.split(this.pathPoints.delimeter).map(c => parseFloat(c));
+                                        if (selfControl) {
+                                            newCoords[newCoords.length - 4] += dx;
+                                            newCoords[newCoords.length - 3] += dy;
+                                        } else {
+                                            newCoords[newCoords.length - 6] += dx;
+                                            newCoords[newCoords.length - 5] += dy;
+                                        }
+                                        return `${ command } ${ newCoords.join(' ') }`;
+                                    }
+                                })
+                                .join(' ');
+                                element.setAttribute('d', points);
+                                undraw();
+                                draw();
+                            };
+                            const onMouseUp = (_event: MouseEvent) => {
+                                window.removeEventListener('mousemove', onMouseMove);
+                                window.removeEventListener('mouseup', onMouseUp);
+                                undraw();
+                                draw();
+                            };
+                            const onMouseDown = (event: MouseEvent) => {
+                                window.addEventListener('mousemove', onMouseMove);
+                                window.addEventListener('mouseup', onMouseUp);
+                                const {
+                                    clientX,
+                                    clientY,
+                                } = event;
+                                x = clientX;
+                                y = clientY;
+                                rcx = curCx;
+                                rcy = curCy;
+                                d0 = element.getAttribute('d')!;
+                            };
+                            circle.addEventListener('mousedown', onMouseDown);
                             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                             line.setAttribute('stroke', 'red');
                             line.setAttribute('stroke-dasharray', '1');
@@ -291,20 +352,21 @@ export class PathFigure implements Figure<SVGPathElement> {
                                     if (pointIndex !== pointIndex$) {
                                         return `${ command } ${ coords }`;
                                     } else {
-                                        const newCoords = coords.split(this.pathPoints.delimeter)
-                                        .map(c => parseFloat(c))
-                                        .map((n, valueIndex) => n + (valueIndex % 2 === 0 ? dx : dy))
-                                        .join(' ');
-                                        return `${ command } ${ newCoords }`;
+                                        const newCoords = coords.split(this.pathPoints.delimeter).map(c => parseFloat(c));
+                                        newCoords[newCoords.length - 2] += dx;
+                                        newCoords[newCoords.length - 1] += dy;
+                                        return `${ command } ${ newCoords.join(' ') }`;
                                     }
                                 })
                                 .join(' ');
                                 element.setAttribute('d', points);
+                                undraw();
+                                draw();
                             };
                             const onMouseUp = (_event: MouseEvent) => {
                                 window.removeEventListener('mousemove', onMouseMove);
                                 window.removeEventListener('mouseup', onMouseUp);
-                                // undraw();
+                                undraw();
                                 draw();
                             };
                             const onMouseDown = (event: MouseEvent) => {
@@ -320,7 +382,6 @@ export class PathFigure implements Figure<SVGPathElement> {
                                 rcy = curCy;
                                 d0 = element.getAttribute('d')!;
                             };
-
                             circle.addEventListener('mousedown', onMouseDown);
                         }
                     });
@@ -329,16 +390,26 @@ export class PathFigure implements Figure<SVGPathElement> {
 
             const undraw = () => {
                 pseudoEls.forEach(circle => this.guides.guidesContainer!.removeChild(circle));
+                pseudoEls.length = 0;
+            };
+            
+            const redraw = () => {
+                undraw();
+                draw();
             };
 
             draw();
+
+            this.zoom.valueChange.on(redraw);
 
             const cancel = (_key: CancelKeys) => {
                 this.userEventMan.mode = 'pick';
                 this.guides.drawSelection([element]);
                 undraw();
+                this.zoom.valueChange.off(redraw);
                 this.cancelListener.keyEvent.off(cancel);
             };
+
             this.cancelListener.keyEvent.on(cancel);
 
         }

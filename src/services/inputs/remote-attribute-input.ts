@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { RemoteAttribute } from "../remote-attribute/remote-attribute";
 import { PipeEndpoint } from "../../shared/services/pipe/pipe";
 import { RemoteAttributeRequest, RemoteAttributeResponse } from "../../shared/pipes/remote-attribute.pipe";
+import { QuickPickItem } from 'vscode';
 
 
 export class RemoteAttributeInput<Attribute extends string> {
@@ -15,12 +16,27 @@ export class RemoteAttributeInput<Attribute extends string> {
         this.remoteAttribute = new RemoteAttribute(this.hostEndpoint, this.attribute);
     }
 
-    async change() {
+    async changeByInput() {
         const { value } = await this.remoteAttribute.get();
         await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
         const newValue = await vscode.window.showInputBox({value: value || ''});
         await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
         this.remoteAttribute.set(newValue || '');
+    }
+
+    async changeByPick(items: string[] | Thenable<string[]>) {
+        const { value } = await this.remoteAttribute.get();
+        await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
+        const quickPickItems: QuickPickItem[] = (await items).map(item => ({
+            label: item,
+            picked: item === value,
+        }));
+        const pick = await vscode.window.showQuickPick(quickPickItems);
+        if (pick) {
+            const newValue = pick.label;
+            await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
+            this.remoteAttribute.set(newValue || '');
+        }
     }
 
 }
