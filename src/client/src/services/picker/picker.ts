@@ -49,10 +49,10 @@ export class Picker {
      */
     @connectEvent(PickerEvents.mouseDown)
     onMousedown(event: MouseEvent) {
-        this.controlPropagation(event);
         if (this.userEventMan.mode === 'interactive') {
-            return;
+            return event;
         }
+        this.controlPropagation(event);
         let { target: eventTarget } = event;
         while (true) {
             if (eventTarget && eventTarget instanceof SVGElement && eventTarget.parentElement instanceof SVGGElement) {
