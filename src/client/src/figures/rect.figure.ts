@@ -51,12 +51,14 @@ export class RectFigure implements Figure<SVGRectElement> {
             if (points.length === 1 && shiftKey) {
                 const [ curX, curY ] = this.coords.renderPointConcerns(point, true);
                 const [ prevX, prevY ] = this.coords.renderPointConcerns(points[0], true);
-                const absDeltaX = Math.abs(curX - prevX);
-                const absDeltaY = Math.abs(curY - prevY);
+                const deltaX = curX - prevX;
+                const deltaY = curY - prevY;
+                const absDeltaX = Math.abs(deltaX);
+                const absDeltaY = Math.abs(deltaY);
                 if (absDeltaX < absDeltaY) {
-                    point.client[0] = points[0].client[0];
+                    point.client[0] = points[0].client[0] + deltaY;
                 } else {
-                    point.client[1] = points[0].client[1];
+                    point.client[1] = points[0].client[1] + deltaX;
                 }
             }
             points.push(point);
@@ -101,15 +103,16 @@ export class RectFigure implements Figure<SVGRectElement> {
             } = event;
             let [ x2, y2 ] = this.coords.renderPointConcerns({...point, client: [clientX, clientY]}, false);
             if (shiftKey) {
-                const absDeltaX = Math.abs(x2 - x1);
-                const absDeltaY = Math.abs(y2 - y1);
+                const deltaX = x2 - x1;
+                const deltaY = y2 - y1;
+                const absDeltaX = Math.abs(deltaX);
+                const absDeltaY = Math.abs(deltaY);
                 if (absDeltaX < absDeltaY) {
-                    x2 = x1;
+                    x2 = x1 + deltaY;
                 } else {
-                    y2 = y1;
+                    y2 = y1 + deltaX;
                 }
             }
-
             this.renderCoordAttributes(element, [x1, y1], [x2, y2]);
         };
 

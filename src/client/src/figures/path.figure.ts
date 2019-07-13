@@ -255,31 +255,33 @@ export class PathFigure implements Figure<SVGPathElement> {
                         circle.style.pointerEvents = 'fill';
                         circle.setAttribute('data-type', `${ isPoint ? 'point' : 'control' }`);
                         pseudoEls.push(circle);
-                        if (!isPoint) {
-                            let d0 = element.getAttribute('d')!;
-                            let x = 0;
-                            let y = 0;
-                            let curCx = cx;
-                            let curCy = cy;
-                            let rcx = cx;
-                            let rcy = cy;
-                            const onMouseMove = (event: MouseEvent) => {
-                                const {
-                                    clientX,
-                                    clientY,
-                                } = event;
-                                const dx = (clientX - x) / this.zoom.value;
-                                const dy = (clientY - y) / this.zoom.value;
-                                curCx = rcx + dx;
-                                curCy = rcy + dy;
-                                circle.setAttribute('cx', `${ curCx * this.zoom.value }`);
-                                circle.setAttribute('cy', `${ curCy * this.zoom.value }`);
-                                const points = this.pathPoints.parseStr(d0)
-                                .map(([command, coords], pointIndex) => {
-                                    if (pointIndex !== pointIndex$) {
-                                        return `${ command } ${ coords }`;
-                                    } else {
-                                        const newCoords = coords.split(this.pathPoints.delimeter).map(c => parseFloat(c));
+
+                        let d0 = element.getAttribute('d')!;
+                        let x = 0;
+                        let y = 0;
+                        let curCx = cx;
+                        let curCy = cy;
+                        let rcx = cx;
+                        let rcy = cy;
+                        const onMouseMove = (event: MouseEvent) => {
+                            const {
+                                clientX,
+                                clientY,
+                                altKey,
+                            } = event;
+                            const dx = (clientX - x) / this.zoom.value;
+                            const dy = (clientY - y) / this.zoom.value;
+                            curCx = rcx + dx;
+                            curCy = rcy + dy;
+                            circle.setAttribute('cx', `${ curCx * this.zoom.value }`);
+                            circle.setAttribute('cy', `${ curCy * this.zoom.value }`);
+                            const points = this.pathPoints.parseStr(d0)
+                            .map(([command, coords], pointIndex) => {
+                                if (pointIndex !== pointIndex$) {
+                                    return `${ command } ${ coords }`;
+                                } else {
+                                    let newCoords = coords.split(this.pathPoints.delimeter).map(c => parseFloat(c));
+                                    if (!isPoint) {
                                         if (selfControl) {
                                             newCoords[newCoords.length - 4] += dx;
                                             newCoords[newCoords.length - 3] += dy;
@@ -287,34 +289,41 @@ export class PathFigure implements Figure<SVGPathElement> {
                                             newCoords[newCoords.length - 6] += dx;
                                             newCoords[newCoords.length - 5] += dy;
                                         }
-                                        return `${ command } ${ newCoords.join(' ') }`;
+                                    } else {
+                                        if (altKey) {
+                                            newCoords[newCoords.length - 2] += dx;
+                                            newCoords[newCoords.length - 1] += dy;
+                                        } else {
+                                            newCoords = newCoords.map((c, ci) => c + [dx, dy][ci % 2]);
+                                        }
                                     }
-                                })
-                                .join(' ');
-                                element.setAttribute('d', points);
-                                undraw();
-                                draw();
-                            };
-                            const onMouseUp = (_event: MouseEvent) => {
-                                window.removeEventListener('mousemove', onMouseMove);
-                                window.removeEventListener('mouseup', onMouseUp);
-                                undraw();
-                                draw();
-                            };
-                            const onMouseDown = (event: MouseEvent) => {
-                                window.addEventListener('mousemove', onMouseMove);
-                                window.addEventListener('mouseup', onMouseUp);
-                                const {
-                                    clientX,
-                                    clientY,
-                                } = event;
-                                x = clientX;
-                                y = clientY;
-                                rcx = curCx;
-                                rcy = curCy;
-                                d0 = element.getAttribute('d')!;
-                            };
-                            circle.addEventListener('mousedown', onMouseDown);
+                                    return `${ command } ${ newCoords.join(' ') }`;
+                                }
+                            })
+                            .join(' ');
+                            element.setAttribute('d', points);
+                            redraw();
+                        };
+                        const onMouseUp = (_event: MouseEvent) => {
+                            window.removeEventListener('mousemove', onMouseMove);
+                            window.removeEventListener('mouseup', onMouseUp);
+                            redraw();
+                        };
+                        const onMouseDown = (event: MouseEvent) => {
+                            window.addEventListener('mousemove', onMouseMove);
+                            window.addEventListener('mouseup', onMouseUp);
+                            const {
+                                clientX,
+                                clientY,
+                            } = event;
+                            x = clientX;
+                            y = clientY;
+                            rcx = curCx;
+                            rcy = curCy;
+                            d0 = element.getAttribute('d')!;
+                        };
+                        circle.addEventListener('mousedown', onMouseDown);
+                        if (!isPoint) {
                             const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                             line.setAttribute('stroke', 'red');
                             line.setAttribute('stroke-dasharray', '1');
@@ -327,62 +336,6 @@ export class PathFigure implements Figure<SVGPathElement> {
                             line.setAttribute('y2', `${ $y * this.zoom.value }`);
                             this.guides.guidesContainer!.appendChild(line);
                             pseudoEls.push(line);
-                        }
-                        if (isPoint) {
-                            let d0 = element.getAttribute('d')!;
-                            let x = 0;
-                            let y = 0;
-                            let curCx = cx;
-                            let curCy = cy;
-                            let rcx = cx;
-                            let rcy = cy;
-                            const onMouseMove = (event: MouseEvent) => {
-                                const {
-                                    clientX,
-                                    clientY,
-                                } = event;
-                                const dx = (clientX - x) / this.zoom.value;
-                                const dy = (clientY - y) / this.zoom.value;
-                                curCx = rcx + dx;
-                                curCy = rcy + dy;
-                                circle.setAttribute('cx', `${ curCx * this.zoom.value }`);
-                                circle.setAttribute('cy', `${ curCy * this.zoom.value }`);
-                                const points = this.pathPoints.parseStr(d0)
-                                .map(([command, coords], pointIndex) => {
-                                    if (pointIndex !== pointIndex$) {
-                                        return `${ command } ${ coords }`;
-                                    } else {
-                                        const newCoords = coords.split(this.pathPoints.delimeter).map(c => parseFloat(c));
-                                        newCoords[newCoords.length - 2] += dx;
-                                        newCoords[newCoords.length - 1] += dy;
-                                        return `${ command } ${ newCoords.join(' ') }`;
-                                    }
-                                })
-                                .join(' ');
-                                element.setAttribute('d', points);
-                                undraw();
-                                draw();
-                            };
-                            const onMouseUp = (_event: MouseEvent) => {
-                                window.removeEventListener('mousemove', onMouseMove);
-                                window.removeEventListener('mouseup', onMouseUp);
-                                undraw();
-                                draw();
-                            };
-                            const onMouseDown = (event: MouseEvent) => {
-                                window.addEventListener('mousemove', onMouseMove);
-                                window.addEventListener('mouseup', onMouseUp);
-                                const {
-                                    clientX,
-                                    clientY,
-                                } = event;
-                                x = clientX;
-                                y = clientY;
-                                rcx = curCx;
-                                rcy = curCy;
-                                d0 = element.getAttribute('d')!;
-                            };
-                            circle.addEventListener('mousedown', onMouseDown);
                         }
                     });
                 });
