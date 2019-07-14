@@ -1,8 +1,8 @@
 {
     "name": "vscode-svg-dev",
-    "displayName": "vscode-svg-dev",
+    "displayName": "SVG dev",
     "description": "SVG visual editor",
-    "version": "0.7.7",
+    "version": "0.8.0",
     "publisher": "kontrail",
     "repository": {
         "type": "git",
@@ -73,7 +73,7 @@
                 {
                     "title": "SVG Dev",
                     "id": "svgDev",
-                    "icon": "images/svgdev0.svg"
+                    "icon": "images/svgdev1.svg"
                 }
             ]
         },

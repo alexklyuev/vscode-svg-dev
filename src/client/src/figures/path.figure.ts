@@ -54,8 +54,8 @@ export class PathFigure implements Figure<SVGPathElement> {
         let destroyTempRenderFn: Function | null = null;
         this.userEventMan.mode = 'interactive';
         const { svg } = this.artboard;
-        const aX = parseInt( svg.getAttribute('width')! );
-        const aY = parseInt( svg.getAttribute('height')! );
+        const aX = parseFloat( svg.getAttribute('width')! );
+        const aY = parseFloat( svg.getAttribute('height')! );
         const { scrollLeft, scrollTop } = document.scrollingElement!;
         const { left: artboardMarginLeft, top: artboardMarginTop } = this.artboardMove;
         const { value: zoom } = this.zoom;

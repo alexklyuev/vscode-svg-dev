@@ -40,11 +40,11 @@ export class DraggerValue implements Dragger {
     ) {
         const storeVals = this.attrsStore.get(element)!;
         this.xAttrs.forEach(key => {
-            const val = Math.round((clientX - storeVals[key]) / this.zoom.value);
+            const val = ((clientX - storeVals[key]) / this.zoom.value);
             element.setAttribute(key, `${val}`);
         });
         this.yAttrs.forEach(key => {
-            const val = Math.round((clientY - storeVals[key]) / this.zoom.value);
+            const val = ((clientY - storeVals[key]) / this.zoom.value);
             element.setAttribute(key, `${val}`);
         });
     }
@@ -62,7 +62,7 @@ export class DraggerValue implements Dragger {
         key: string,
         clientVal: number,
     ) {
-        return Math.round(clientVal - (parseInt(element.getAttribute(key)!) || 0) * this.zoom.value);
+        return (clientVal - (parseFloat(element.getAttribute(key)!) || 0) * this.zoom.value);
     }
 
     setValueAttr(
@@ -71,7 +71,7 @@ export class DraggerValue implements Dragger {
         storeValue: number,
         clientVal: number
     ) {
-        const val = Math.round((clientVal - storeValue) / this.zoom.value);
+        const val = ((clientVal - storeValue) / this.zoom.value);
         element.setAttribute(key, `${val}`);
     }
 

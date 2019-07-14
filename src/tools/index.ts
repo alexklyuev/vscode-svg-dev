@@ -4,6 +4,7 @@ import { NewDocument } from "./document/new.tool";
 import { FlushTool } from "./document/flush.tool";
 import { DeleteTool } from "./element/delete.tool";
 import { IdTool } from "./element/id.tool";
+import { TransformTool } from "./element/transform.tool";
 import { GroupTool } from "./group/group.tool";
 import { UngroupTool } from "./group/ungroup.tool";
 import { CircleAdd } from "./circle/circle-add.tool";
@@ -44,6 +45,7 @@ toolbox.register(
     new ToolGroup('Element'),
     new DeleteTool(),
     new IdTool(),
+    new TransformTool(),
 );
 toolbox.register(
     new ToolGroup('Group'),
