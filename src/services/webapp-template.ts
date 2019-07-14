@@ -29,6 +29,8 @@ export class WebappTemplate implements Template {
             </div>
             <div id="tools">
             </div>
+            <div id="hud">
+            </div>
         </div>
         ${ this.assetsManager.getScriptsUris().map(uri => `<script src="${ uri }?${ Math.random().toString().slice(2) }"></script>`).join('') }
     </body>

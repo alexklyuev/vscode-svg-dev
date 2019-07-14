@@ -114,7 +114,7 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
-        "compile": "rm -rf ./out && npm run compile:extension && npm run compile:web && npm run styles",
+        "compile": "rm -rf ./out && mkdir -p ./out/client/build && npm run compile:extension && npm run compile:web && npm run styles",
         "watch": "npm run styles && tsc -watch -p ./",
         "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "npm run compile && node ./node_modules/vscode/bin/test",

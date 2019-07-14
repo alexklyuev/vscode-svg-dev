@@ -19,6 +19,7 @@ import { PathFigure } from "./path.figure";
 import { DraggerPath } from "../services/dragger/dragger-path";
 import { pathPoints } from "../services/path";
 import { coordinator } from "../services/coordinator";
+import { hud } from "../services/hud";
 
 
 const figuresCollection = new FiguresCollection();
@@ -108,6 +109,7 @@ figuresCollection.add(
         guides,
         pathPoints,
         coordinator,
+        hud,
     ),
 );
 

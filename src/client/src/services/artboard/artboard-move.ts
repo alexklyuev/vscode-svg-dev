@@ -10,7 +10,7 @@ const enum ArtboardMoveEvents {
 }
 
 const initialX = 50;
-const initialY = 50;
+const initialY = 100;
 
 export class ArtboardMove {
 
@@ -40,8 +40,8 @@ export class ArtboardMove {
 
         Object.assign(this.artboard.box.style, {
             position: 'absolute',
-            top: `${ initialX }px`,
-            left: `${ initialY }px`,
+            top: `${ initialY }px`,
+            left: `${ initialX }px`,
         });
     }
 

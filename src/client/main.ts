@@ -27,6 +27,8 @@ import { ArtboardStyleListener } from './src/listeners/artboard-style.listener';
 import { CssJsNotationConverter } from '../shared/services/css/css-js-notation-converter';
 import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
+import './src/services/hud';
+
 
 /**
  * 

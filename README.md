@@ -23,12 +23,9 @@ Trying to build visual svg editor for developers.
 
 ## Todo
 - docs
-- path figure
 - format flush
 - free property tools
-- define default attributes in host
 - flush current selection
-- view group
 - conditional tools
 - transform tool group
 - strict position tool group

@@ -11,6 +11,7 @@ import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { PathPoints } from "../services/path/path-points";
 import { PointConcerns, PointSharedConcerns } from "./models/point-concerns.model";
 import { Coorinator } from "../services/coordinator/coordinator";
+import { Hud } from "../services/hud/hud";
 
 
 export class PathFigure implements Figure<SVGPathElement> {
@@ -35,6 +36,7 @@ export class PathFigure implements Figure<SVGPathElement> {
         private guides: Guides,
         private pathPoints: PathPoints,
         private coords: Coorinator,
+        private hud: Hud,
     ) {}
 
     /**
@@ -102,7 +104,9 @@ export class PathFigure implements Figure<SVGPathElement> {
         const subpointsListenerEvent = 'mouseup';
         window.addEventListener(pointsListenerEvent, pointsListener);
         window.addEventListener(subpointsListenerEvent, subpointsListener);
+        this.hud.hint = `Press 'esc' to finish with open path and 'enter' to finish with closed path`;
         const stop = (key: CancelKeys) => {
+            this.hud.hint = null;
             window.removeEventListener(pointsListenerEvent, pointsListener);
             window.removeEventListener(subpointsListenerEvent, subpointsListener);
             this.cancelListener.keyEvent.off(stop);
@@ -227,6 +231,8 @@ export class PathFigure implements Figure<SVGPathElement> {
     edit(element: SVGPathElement) {
         let d = element.getAttribute('d');
         if (d) {
+            this.hud.hint = `Press 'esc' or 'enter' to finish editing`;
+
             const newD = this.pathPoints.setPointsAbsolute(d);
             element.setAttribute('d', newD);
 
@@ -356,6 +362,7 @@ export class PathFigure implements Figure<SVGPathElement> {
             this.zoom.valueChange.on(redraw);
 
             const cancel = (_key: CancelKeys) => {
+                this.hud.hint = null;
                 this.userEventMan.mode = 'pick';
                 this.guides.drawSelection([element]);
                 undraw();
