@@ -9,6 +9,7 @@ import { Zoom } from "../services/zoom/zoom";
 import { Guides } from "../services/guides/guides";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { CancelListener } from "../listeners/cancel.listener";
+import { Appearance } from "../services/appearance/appearance";
 
 
 export class RectFigure implements Figure<SVGRectElement> {
@@ -26,6 +27,7 @@ export class RectFigure implements Figure<SVGRectElement> {
         private guides: Guides,
         private coords: Coorinator,
         private cancelListener: CancelListener,
+        private appearance: Appearance,
     ) {}
 
     @setState
@@ -136,8 +138,8 @@ export class RectFigure implements Figure<SVGRectElement> {
         const element = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         svg.appendChild(element);
 
-        element.setAttribute('fill', '#fff');
-        element.setAttribute('stroke', '#ccc');
+        element.setAttribute('fill', this.appearance.fill);
+        element.setAttribute('stroke', this.appearance.stroke);
 
         const [ [x1, y1], [x2, y2] ] = points.map(point => this.coords.renderPointConcerns(point, true));
         this.renderCoordAttributes(element, [x1, y1], [x2, y2]);

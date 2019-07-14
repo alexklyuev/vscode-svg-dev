@@ -14,6 +14,7 @@ import { groupPipe } from "../../shared/pipes/group.pipe";
 import { cancelPipe } from "../../shared/pipes/cancel.pipe";
 import { artboardMovePipe } from "../../shared/pipes/artboard-move.pipe";
 import { editPipe } from "../../shared/pipes/edit.pipe";
+import { appearancePipe } from "../../shared/pipes/appearance.pipe";
 
 
 export const pickConnection = new PipeConnection(pickPipe);
@@ -31,6 +32,8 @@ export const elementConnection = new PipeConnection(elementPipe);
 export const groupConnection = new PipeConnection(groupPipe);
 export const cancelConnection = new PipeConnection(cancelPipe);
 
+export const appearanceConnection = new PipeConnection(appearancePipe);
+
 const connections: PipeConnection<any, any, any>[] = [
     remoteAttributeConnnection,
     artboardConnection,
@@ -46,6 +49,7 @@ const connections: PipeConnection<any, any, any>[] = [
     pickConnection,
     groupConnection,
     cancelConnection,
+    appearanceConnection,
 ];
 
 export const connectionsManager = new ConnectionsManager();

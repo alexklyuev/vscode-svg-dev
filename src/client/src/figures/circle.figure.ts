@@ -9,6 +9,7 @@ import { Zoom } from "../services/zoom/zoom";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { CancelListener } from "../listeners/cancel.listener";
 import { Guides } from "../services/guides/guides";
+import { Appearance } from "../services/appearance/appearance";
 
 export class CircleFigure implements Figure<SVGCircleElement> {
 
@@ -25,6 +26,7 @@ export class CircleFigure implements Figure<SVGCircleElement> {
         private coords: Coorinator,
         private cancelListener: CancelListener,
         private guides: Guides,
+        private appearance: Appearance,
     ) {}
 
     testByElement(element: any): element is SVGCircleElement {
@@ -113,8 +115,8 @@ export class CircleFigure implements Figure<SVGCircleElement> {
         const element = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         svg.appendChild(element);
 
-        element.setAttribute('fill', '#fff');
-        element.setAttribute('stroke', '#ccc');
+        element.setAttribute('fill', this.appearance.fill);
+        element.setAttribute('stroke', this.appearance.stroke);
 
         const [ [x1, y1], [x2, y2] ] = points.map(point => this.coords.renderPointConcerns(point, true));
         this.renderCoordAttributes(element, [x1, y1], [x2, y2]);

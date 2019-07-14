@@ -33,6 +33,7 @@ import {
     elementConnection,
     groupConnection,
     editConnection,
+    appearanceConnection,
 } from './services/connection';
 import { CancelKeys } from './shared/pipes/cancel.pipe';
 
@@ -55,6 +56,19 @@ export function activate(context: vscode.ExtensionContext) {
                     statusBarItem.text = message;
                     statusBarItem.show();
                 }
+            },
+        );
+    });
+
+    appearanceConnection.onConnected(endpoint => {
+        endpoint.listenGetRequest(
+            _request => true,
+            async (request, _true) => {
+                const { name, value } = request;
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
+                const newValue = await vscode.window.showInputBox({ value });
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
+                return {name, value: newValue!};
             },
         );
     });

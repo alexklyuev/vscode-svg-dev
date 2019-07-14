@@ -9,6 +9,7 @@ import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Guides } from "../services/guides/guides";
 import { PointConcerns } from "./models/point-concerns.model";
 import { Coorinator } from "../services/coordinator/coordinator";
+import { Appearance } from "../services/appearance/appearance";
 
 export class EllipseFigure implements Figure<SVGEllipseElement> {
 
@@ -25,6 +26,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         public readonly userEventMan: UserEventManager,
         public readonly guides: Guides,
         private coords: Coorinator,
+        private appearance: Appearance,
     ) {
     }
 
@@ -61,8 +63,8 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
                 });
                 const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
                 this.renderCoordsAttributes(element, [x1, y1], [x2, y2], shiftKey);                
-                element.setAttribute('stroke', '#ffffff');
-                element.setAttribute('fill', '#ccc');
+                element.setAttribute('stroke', this.appearance.stroke);
+                element.setAttribute('fill', this.appearance.fill);
                 this.artboard.svg.appendChild(element);
             }
         };

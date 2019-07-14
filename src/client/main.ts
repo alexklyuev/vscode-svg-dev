@@ -27,6 +27,9 @@ import { ArtboardStyleListener } from './src/listeners/artboard-style.listener';
 import { CssJsNotationConverter } from '../shared/services/css/css-js-notation-converter';
 import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
+import './src/services/hud';
+import { hud } from './src/services/hud';
+
 
 /**
  * 
@@ -134,4 +137,11 @@ holder.addListener(elements => {
         pickEndpoint.makeSetRequest({html: null});
         guides.removeSelection();
     }
+});
+
+hud.appearanceRequest.on(async (response) => {
+    const { name, value } = await response;
+    holder.elements.forEach(el => {
+        el.setAttribute(name, value);
+    });
 });

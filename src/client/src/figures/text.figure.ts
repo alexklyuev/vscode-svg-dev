@@ -2,6 +2,7 @@ import { Figure } from "./figure.model";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 import { DraggerValue } from "../services/dragger/dragger-value";
+import { Appearance } from "../services/appearance/appearance";
 
 
 export class TextFigure implements Figure<SVGTextElement> {
@@ -13,6 +14,7 @@ export class TextFigure implements Figure<SVGTextElement> {
     constructor(
         public drag: DraggerValue,
         private artboard: Artboard,
+        private appearance: Appearance,
     ) {}
 
     @setState
@@ -22,7 +24,8 @@ export class TextFigure implements Figure<SVGTextElement> {
         svg.appendChild(text);
         text.setAttribute('x', '50');
         text.setAttribute('y', '50');
-        text.setAttribute('fill', '#ccc');
+        text.setAttribute('fill', this.appearance.fill);
+        text.setAttribute('stroke', this.appearance.stroke);
         text.setAttribute('style', 'font-family: sans-serif; font-size: 20px');
         Object.keys(attributes).forEach(attrName => {
             const attrValue = attributes[attrName];

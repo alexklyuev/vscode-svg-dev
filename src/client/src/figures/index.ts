@@ -19,6 +19,8 @@ import { PathFigure } from "./path.figure";
 import { DraggerPath } from "../services/dragger/dragger-path";
 import { pathPoints } from "../services/path";
 import { coordinator } from "../services/coordinator";
+import { hud } from "../services/hud";
+import { appearance } from "../services/appearance";
 
 
 const figuresCollection = new FiguresCollection();
@@ -41,6 +43,7 @@ figuresCollection.add(
         coordinator,
         cancelListener,
         guides,
+        appearance,
     ),
     new EllipseFigure(
         draggerCenter,
@@ -50,7 +53,8 @@ figuresCollection.add(
         cancelListener,
         userEventMan,
         guides,
-        coordinator
+        coordinator,
+        appearance,
     ),
     new RectFigure(
         draggerLeftTop, 
@@ -61,10 +65,12 @@ figuresCollection.add(
         guides,
         coordinator,
         cancelListener,
+        appearance,
     ),
     new TextFigure(
         draggerLeftTop,
-        artboard
+        artboard,
+        appearance,
     ),
     new GFigure(
         draggerDelegate,
@@ -79,6 +85,7 @@ figuresCollection.add(
         userEventMan,
         coordinator,
         guides,
+        appearance,
     ),
     new PolygonFigure(
         draggerPoints,
@@ -88,6 +95,7 @@ figuresCollection.add(
         cancelListener,
         userEventMan,
         guides,
+        appearance,
     ),
     new PolylineFigure(
         draggerPoints,
@@ -97,6 +105,7 @@ figuresCollection.add(
         cancelListener,
         userEventMan,
         guides,
+        appearance,
     ),
     new PathFigure(
         draggerPath,
@@ -108,6 +117,8 @@ figuresCollection.add(
         guides,
         pathPoints,
         coordinator,
+        hud,
+        appearance,
     ),
 );
 

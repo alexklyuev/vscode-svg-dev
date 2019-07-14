@@ -77,14 +77,17 @@ export class PipeEndpoint<
      */
     listenGetRequest<Extra>(
         preconditionFn: (request: Request) => Extra | null,
-        makeResponseFn: (request: Request, extra: Extra) => Response,
+        makeResponseFn: (request: Request, extra: Extra) => Response | Promise<Response>,
     ) {
-        const listener = this.listenerFn((data: any) => {
+        const listener = this.listenerFn(async (data: any) => {
             if (this.requestGuard(data) && data[this.tag].get) {
                 const request = data[this.tag].get;
                 const extra = preconditionFn(request);
                 if (extra) {
-                    const response = makeResponseFn(request, extra);
+                    let response = makeResponseFn(request, extra);
+                    if (response instanceof Promise) {
+                        response = await response;
+                    }
                     const payload = {[this.tag]: {'response': response}} as {[K in Tag]: {[M in Methods]: Response}};
                     this.senderFn(payload);
                 }
