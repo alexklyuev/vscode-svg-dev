@@ -1,3 +1,5 @@
+import { Appearance } from "../appearance/appearance";
+
 export class Hud {
     private element: HTMLDivElement;
 
@@ -6,7 +8,15 @@ export class Hud {
     private hintOutletEl: HTMLDivElement;
     private hintEl: HTMLDivElement | null = null;
 
-    constructor() {
+    private fillEl: HTMLElement;
+    private fillBtn: HTMLElement;
+
+    private strokeEl: HTMLElement;
+    private strokeBtn: HTMLElement;
+
+    constructor(
+        public readonly apr: Appearance,
+    ) {
         this.element = document.querySelector<HTMLDivElement>('#hud')!;
         Object.assign(this.element.style, {
             position: 'fixed',
@@ -22,32 +32,61 @@ export class Hud {
             'margin-top': '10px',
         });
 
-        const fillEl = document.createElement('span');
-        Object.assign(fillEl.style, {
-            margin: '10px',
+        this.fillEl = document.createElement('span');
+        Object.assign(this.fillEl.style, {
+            margin: '10px 2px 10px 10px',
             padding: '3px 10px 3px 10px',
             background: 'rgba(42,42,42,.7)',
             'border-radius': '5px',
             color: '#eee',
             'font-size': '10px',
-            display: 'flex',
+            display: 'inline-block',
             'user-select': 'none',
         });
-        fillEl.innerHTML = `fill: `;
-        const fillBtn = document.createElement('span');
-        Object.assign(fillBtn.style, {
+        this.fillEl.innerHTML = `fill: `;
+        this.fillBtn = document.createElement('span');
+        Object.assign(this.fillBtn.style, {
             'margin-left': '3px',
+            'margin-bottom': '-2px',
             display: 'inline-block',
             width: '10px',
             height: '10px',
-            background: '#aaa',
+            background: this.apr.fill,
             border: '1px solid white',
             'border-radius': '50%',
             cursor: 'pointer',
         });
-        fillEl.appendChild(fillBtn);
-        this.aprOutlet.appendChild(fillEl);
-    }
+        this.fillEl.appendChild(this.fillBtn);
+        this.aprOutlet.appendChild(this.fillEl);
+
+        this.strokeEl = document.createElement('span');
+        Object.assign(this.strokeEl.style, {
+            margin: '10px 10px 10px 0px',
+            padding: '3px 10px 3px 10px',
+            background: 'rgba(42,42,42,.7)',
+            'border-radius': '5px',
+            color: '#eee',
+            'font-size': '10px',
+            display: 'inline-block',
+            'user-select': 'none',
+        });
+        this.strokeEl.innerHTML = `stroke: `;
+        this.strokeBtn = document.createElement('span');
+        Object.assign(this.strokeBtn.style, {
+            'margin-left': '3px',
+            'margin-bottom': '-2px',
+            display: 'inline-block',
+            width: '10px',
+            height: '10px',
+            background: this.apr.stroke,
+            border: '1px solid white',
+            'border-radius': '50%',
+            cursor: 'pointer',
+        });
+        this.strokeEl.appendChild(this.strokeBtn);
+        this.aprOutlet.appendChild(this.strokeEl);
+
+    } // end of constructor
 
     set hint(text: string | null) {
         if (this.hintEl) {

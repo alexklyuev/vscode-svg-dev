@@ -297,10 +297,10 @@ export class PathFigure implements Figure<SVGPathElement> {
                                         }
                                     } else {
                                         if (altKey) {
+                                            newCoords = newCoords.map((c, ci) => c + [dx, dy][ci % 2]);
+                                        } else {
                                             newCoords[newCoords.length - 2] += dx;
                                             newCoords[newCoords.length - 1] += dy;
-                                        } else {
-                                            newCoords = newCoords.map((c, ci) => c + [dx, dy][ci % 2]);
                                         }
                                     }
                                     return `${ command } ${ newCoords.join(' ') }`;
