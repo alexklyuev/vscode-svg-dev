@@ -1,5 +1,8 @@
 # Change Log
 
+ - 0.8.2
+   - artboard dimensions control inside editing window
+   - fill and stroke updates on element selection
  - 0.8.1
    - fill and stroke controls inside editing window
    - hints
