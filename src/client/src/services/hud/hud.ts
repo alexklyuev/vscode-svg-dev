@@ -192,4 +192,18 @@ export class Hud {
         }
     }
 
+    updateFillBtn(value: string) {
+        Object.assign(this.fillBtn.style, {
+            background: this.representColorButtonBackground(value),
+            border: this.representColorButtonBorder(value),
+        });
+    }
+
+    updateStrokeBtn(value: string) {
+        Object.assign(this.strokeBtn.style, {
+            background: this.representColorButtonBackground(value),
+            border: this.representColorButtonBorder(value),
+        });
+    }
+
 }

@@ -29,6 +29,7 @@ import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
 import './src/services/hud';
 import { hud } from './src/services/hud';
+import { appearance } from './src/services/appearance';
 
 
 /**
@@ -136,6 +137,22 @@ holder.addListener(elements => {
     } else {
         pickEndpoint.makeSetRequest({html: null});
         guides.removeSelection();
+    }
+});
+
+holder.setElements.on(elements => {
+    if (elements.length > 0) {
+        const lastElement = elements[elements.length - 1];
+        const fill = lastElement.getAttribute('fill');
+        const stroke = lastElement.getAttribute('stroke');
+        if (fill) {
+            appearance.fill = fill;
+            hud.updateFillBtn(fill);
+        }
+        if (stroke) {
+            appearance.stroke = stroke;
+            hud.updateStrokeBtn(stroke);
+        }
     }
 });
 
