@@ -11,6 +11,9 @@ But still could be useful.
 Trying to build visual svg editor for developers.
 
 ## Changelog
+ - 0.8.1
+   - fill and stroke controls inside editing window
+   - hints
  - 0.8.0
    - movable artboard
    - create and edit path
@@ -27,8 +30,6 @@ Trying to build visual svg editor for developers.
 - free property tools
 - flush current selection
 - conditional tools
-- transform tool group
 - strict position tool group
 - visual transform
-- visual editing modes (transform/by key attrs)
-- beacon mode
+- beacons mode
