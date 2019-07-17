@@ -12,6 +12,7 @@ import { PathPoints } from "../services/path/path-points";
 import { PointConcerns, PointSharedConcerns } from "./models/point-concerns.model";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Hud } from "../services/hud/hud";
+import { Appearance } from "../services/appearance/appearance";
 
 
 export class PathFigure implements Figure<SVGPathElement> {
@@ -37,6 +38,7 @@ export class PathFigure implements Figure<SVGPathElement> {
         private pathPoints: PathPoints,
         private coords: Coorinator,
         private hud: Hud,
+        private appearance: Appearance,
     ) {}
 
     /**
@@ -182,8 +184,8 @@ export class PathFigure implements Figure<SVGPathElement> {
     renderFinal(pointsConcerns: PointConcerns[], closed: boolean) {
         const parent = this.artboard.svg;
         const attributes: {[K: string]: string} = {
-            stroke: this.stroke,
-            fill: this.fill,
+            stroke: this.appearance.stroke,
+            fill: this.appearance.fill,
         };
         const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
         parent.appendChild(element);

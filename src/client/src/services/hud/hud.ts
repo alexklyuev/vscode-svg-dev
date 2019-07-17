@@ -1,6 +1,16 @@
+import { AppearanceRequest, AppearanceResponse } from "../../../../shared/pipes/appearance.pipe";
+import { PipeEndpoint } from "../../../../shared/services/pipe/pipe";
 import { Appearance } from "../appearance/appearance";
+import { connectEvent, ClientEvent } from "../../entities/client-event";
+
+const enum HudEvents {
+    appearanceRequest = 'appearanceRequest',
+}
 
 export class Hud {
+
+    public readonly [HudEvents.appearanceRequest] = new ClientEvent<Promise<AppearanceResponse>>();
+
     private element: HTMLDivElement;
 
     private aprOutlet: HTMLDivElement;
@@ -16,6 +26,7 @@ export class Hud {
 
     constructor(
         public readonly apr: Appearance,
+        public readonly appearanceProducer: PipeEndpoint<AppearanceRequest, AppearanceResponse, 'appearance'>,
     ) {
         this.element = document.querySelector<HTMLDivElement>('#hud')!;
         Object.assign(this.element.style, {
@@ -34,7 +45,7 @@ export class Hud {
 
         this.fillEl = document.createElement('span');
         Object.assign(this.fillEl.style, {
-            margin: '10px 2px 10px 10px',
+            margin: '10px 2px 0px 10px',
             padding: '3px 10px 3px 10px',
             background: 'rgba(42,42,42,.7)',
             'border-radius': '5px',
@@ -51,17 +62,32 @@ export class Hud {
             display: 'inline-block',
             width: '10px',
             height: '10px',
-            background: this.apr.fill,
-            border: '1px solid white',
+            background: this.representColorButtonBackground(this.apr.fill),
+            border: this.representColorButtonBorder(this.apr.fill),
             'border-radius': '50%',
             cursor: 'pointer',
         });
         this.fillEl.appendChild(this.fillBtn);
         this.aprOutlet.appendChild(this.fillEl);
 
+        this.fillBtn.onclick = async (_event: MouseEvent) => {
+            const response = await this.makeAppearanceGetRequest({
+                name: 'fill',
+                value: this.apr.fill,
+            });
+            if (response) {
+                const { value } = response;
+                this.apr.fill = value;
+                Object.assign(this.fillBtn.style, {
+                    background: this.representColorButtonBackground(value),
+                    border: this.representColorButtonBorder(value),
+                });
+            }
+        };
+
         this.strokeEl = document.createElement('span');
         Object.assign(this.strokeEl.style, {
-            margin: '10px 10px 10px 0px',
+            margin: '10px 10px 0px 0px',
             padding: '3px 10px 3px 10px',
             background: 'rgba(42,42,42,.7)',
             'border-radius': '5px',
@@ -78,15 +104,35 @@ export class Hud {
             display: 'inline-block',
             width: '10px',
             height: '10px',
-            background: this.apr.stroke,
-            border: '1px solid white',
+            background: this.representColorButtonBackground(this.apr.stroke),
+            border: this.representColorButtonBorder(this.apr.stroke),
             'border-radius': '50%',
             cursor: 'pointer',
         });
         this.strokeEl.appendChild(this.strokeBtn);
         this.aprOutlet.appendChild(this.strokeEl);
 
+        this.strokeBtn.onclick = async (_event: MouseEvent) => {
+            const response = await this.makeAppearanceGetRequest({
+                name: 'stroke',
+                value: this.apr.stroke,
+            });
+            if (response) {
+                const { value } = response;
+                this.apr.stroke = value;
+                Object.assign(this.strokeBtn.style, {
+                    background: this.representColorButtonBackground(value),
+                    border: this.representColorButtonBorder(value),
+                });
+            }
+        };
+
     } // end of constructor
+
+    @connectEvent(HudEvents.appearanceRequest)
+    async makeAppearanceGetRequest(request: AppearanceRequest): Promise<AppearanceResponse> {
+        return await this.appearanceProducer.makeGetRequest(request);
+    }
 
     set hint(text: string | null) {
         if (this.hintEl) {
@@ -112,13 +158,37 @@ export class Hud {
             hintText.innerHTML = `${ text }`;
             this.hintEl.appendChild(hintText);
             Object.assign(this.hintEl.style, {
-                margin: '10px',
+                margin: '10px 10px 10px 10px',
                 padding: '3px',
                 background: 'rgba(42,42,42,.7)',
                 'border-radius': '5px',
                 color: '#eee',
                 'font-size': '10px',
             });
+        }
+    }
+
+    representColorButtonBackground(color: string): string {
+        switch (color) {
+            case '':
+            case 'none':
+            case undefined:
+            case null:
+                return `rgba(0,0,0,0)`;
+            default:
+                return color;
+        }
+    }
+
+    representColorButtonBorder(color: string): string {
+        switch (color) {
+            case '':
+            case 'none':
+            case undefined:
+            case null:
+                return `1px solid dashed`;
+            default:
+                return `1px solid white`;
         }
     }
 

@@ -9,6 +9,7 @@ import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { PointConcerns } from "./models/point-concerns.model";
 import { Guides } from "../services/guides/guides";
 import { ArtboardMove } from "../services/artboard/artboard-move";
+import { Appearance } from "../services/appearance/appearance";
 
 
 export abstract class PolyFigure implements Figure<SVGElement> {
@@ -27,6 +28,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         private cancelListener: CancelListener,
         private userEventMan: UserEventManager,
         public guides: Guides,
+        private appearance: Appearance,
     ) {}
 
     abstract testByElement(element: any): element is SVGElement;
@@ -87,8 +89,8 @@ export abstract class PolyFigure implements Figure<SVGElement> {
 
     render(points: Array<PointConcerns>) {
         const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
-        element.setAttribute('stroke', this.stroke);
-        element.setAttribute('fill', this.fill);
+        element.setAttribute('stroke', this.appearance.stroke);
+        element.setAttribute('fill', this.appearance.fill);
         // element.setAttribute('points', points.map(([[cX, sX], [cY, sY]]) => {
         //     return `${(cX + sX) / this.zoom.value},${(cY + sY) / this.zoom.value}`;
         // }).join(' '));

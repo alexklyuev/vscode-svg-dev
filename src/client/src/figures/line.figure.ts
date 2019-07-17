@@ -9,6 +9,7 @@ import { PointConcerns } from "./models/point-concerns.model";
 import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Guides } from "../services/guides/guides";
+import { Appearance } from "../services/appearance/appearance";
 
 
 export class LineFigure implements Figure<SVGLineElement> {
@@ -25,6 +26,7 @@ export class LineFigure implements Figure<SVGLineElement> {
         private userEventMan: UserEventManager,
         private coords: Coorinator,
         private guides: Guides,
+        private appearance: Appearance,
     ) {}
 
     testByElement(element: any): element is SVGLineElement {
@@ -75,7 +77,8 @@ export class LineFigure implements Figure<SVGLineElement> {
                     const value = attrs[key];
                     line.setAttribute(key, `${ value }`);
                 });
-                line.setAttribute('stroke', '#777');
+                line.setAttribute('stroke', this.appearance.stroke);
+                line.setAttribute('fill', this.appearance.fill);
                 this.artboard.svg.appendChild(line);
             }
         };
