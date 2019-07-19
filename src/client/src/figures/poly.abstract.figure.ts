@@ -10,6 +10,7 @@ import { PointConcerns } from "./models/point-concerns.model";
 import { Guides } from "../services/guides/guides";
 import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Appearance } from "../services/appearance/appearance";
+import { Hud } from "../services/hud/hud";
 
 
 export abstract class PolyFigure implements Figure<SVGElement> {
@@ -29,6 +30,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         private userEventMan: UserEventManager,
         public guides: Guides,
         private appearance: Appearance,
+        private hud: Hud,
     ) {}
 
     abstract testByElement(element: any): element is SVGElement;
@@ -218,6 +220,130 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             mousemoveRemover();
             this.artboard.tools.removeChild(svg);
         };
+    }
+
+    edit(element: SVGElement) {
+        let points = element.getAttribute('points');
+        this.hud.hint = `Press 'esc' or 'enter' to finish editing`;
+        this.userEventMan.mode = 'interactive';
+        this.guides.removeSelection();
+        const pseudoEls = Array<SVGElement>();
+        const draw = () => {
+            points = element.getAttribute('points')!;
+            return points.split(/[,\s]+/).map(c => parseFloat(c))
+            .reduce((acc, coord, index) => {
+                if (index % 2 === 0) {
+                    acc.push([coord, NaN]);
+                } else {
+                    acc[acc.length - 1][1] = coord;
+                }
+                return acc;
+            }, Array<[number, number]>())
+            .map((pair, pairIndex) => {
+                const [ cx, cy ] = pair;
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                this.guides.guidesContainer!.appendChild(circle);
+                circle.setAttribute('fill', 'none');
+                circle.setAttribute('stroke', '#666');
+                circle.setAttribute('stroke-dasharray', '1');
+                circle.setAttribute('cx', `${ cx * this.zoom.value }`);
+                circle.setAttribute('cy', `${ cy * this.zoom.value }`);
+                circle.setAttribute('r', '10');
+                circle.style.pointerEvents = 'fill';
+
+                // let d0 = element.getAttribute('d')!;
+                let p0 = element.getAttribute('points')!;
+                let x = 0;
+                let y = 0;
+                let curCx = cx;
+                let curCy = cy;
+                let rcx = cx;
+                let rcy = cy;
+                const onMouseMove = (event: MouseEvent) => {
+                    const {
+                        clientX,
+                        clientY,
+                    } = event;
+                    const dx = (clientX - x) / this.zoom.value;
+                    const dy = (clientY - y) / this.zoom.value;
+                    curCx = rcx + dx;
+                    curCy = rcy + dy;
+                    circle.setAttribute('cx', `${ curCx * this.zoom.value }`);
+                    circle.setAttribute('cy', `${ curCy * this.zoom.value }`);
+                    const points$ = p0.split(/[,\s]+/).map(c => parseFloat(c))
+                    .reduce((acc, coord, index) => {
+                        if (index % 2 === 0) {
+                            acc.push([coord, NaN]);
+                        } else {
+                            acc[acc.length - 1][1] = coord;
+                        }
+                        return acc;
+                    }, Array<[number, number]>())
+                    .map((pair1, pairIndex1) => {
+                        if (pairIndex !== pairIndex1) {
+                            return pair1.join(',');
+                        } else {
+                            const [x, y] = pair;
+                            return [
+                                x + dx,
+                                y + dy,
+                            ].join(',');
+                        }
+                    })
+                    .join(' ');
+                    element.setAttribute('points', points$);
+                    redraw();
+                };
+                const onMouseUp = (_event: MouseEvent) => {
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('mouseup', onMouseUp);
+                    redraw();
+                };
+                const onMouseDown = (event: MouseEvent) => {
+                    window.addEventListener('mousemove', onMouseMove);
+                    window.addEventListener('mouseup', onMouseUp);
+                    const {
+                        clientX,
+                        clientY,
+                    } = event;
+                    x = clientX;
+                    y = clientY;
+                    rcx = curCx;
+                    rcy = curCy;
+                };
+
+                circle.addEventListener('mousedown', onMouseDown);
+
+
+                return circle;
+            })
+            .forEach(circle => pseudoEls.push(circle));
+        };
+
+        const undraw = () => {
+            pseudoEls.forEach(circle => this.guides.guidesContainer!.removeChild(circle));
+            pseudoEls.length = 0;
+        };
+
+        const redraw = () => {
+            undraw();
+            draw();
+        };
+
+        draw();
+
+        this.zoom.valueChange.on(redraw);
+
+        const cancel = (_key: CancelKeys) => {
+            this.hud.hint = null;
+            this.userEventMan.mode = 'pick';
+            this.guides.drawSelection([element]);
+            undraw();
+            this.zoom.valueChange.off(redraw);
+            this.cancelListener.keyEvent.off(cancel);
+        };
+
+        this.cancelListener.keyEvent.on(cancel);
     }
 
 }
