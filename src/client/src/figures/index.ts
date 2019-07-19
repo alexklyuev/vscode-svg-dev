@@ -96,6 +96,7 @@ figuresCollection.add(
         userEventMan,
         guides,
         appearance,
+        hud,
     ),
     new PolylineFigure(
         draggerPoints,
@@ -106,6 +107,7 @@ figuresCollection.add(
         userEventMan,
         guides,
         appearance,
+        hud,
     ),
     new PathFigure(
         draggerPath,

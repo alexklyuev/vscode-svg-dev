@@ -83,7 +83,8 @@ toolbox.register(
     new ToolGroup('Poly'),
     {command: {title: 'Add Polygon', command: 'svgDevAddInteractive', arguments: ['polygon']}},
     {command: {title: 'Add Polyline', command: 'svgDevAddInteractive', arguments: ['polyline']}},
-    {command: {title: 'Points', command: 'svgDevRemoteAttributeInput', arguments: ['points']}},
+    {command: {title: 'Edit points attribute', command: 'svgDevRemoteAttributeInput', arguments: ['points']}},
+    {command: {title: 'Edit points visually', command: 'svgDevEdit'}},
 );
 toolbox.register(
     new ToolGroup('Path'),
