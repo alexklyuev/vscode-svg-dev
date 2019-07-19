@@ -35,6 +35,7 @@ import {
     editConnection,
     appearanceConnection,
     artboardInverseConnection,
+    artboardStyleInverseConnection,
 } from './services/connection';
 import { CancelKeys } from './shared/pipes/cancel.pipe';
 
@@ -83,6 +84,19 @@ export function activate(context: vscode.ExtensionContext) {
                 const newValue = await vscode.window.showInputBox({ value, prompt: property });
                 await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                 return {value: (newValue || value)!};
+            },
+        );
+    });
+
+    artboardStyleInverseConnection.onConnected(endpoint => {
+        endpoint.listenGetRequest(
+            _request => true,
+            async (request, _true) => {
+                const { styleName, styleValue } = request;
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
+                const newValue = await vscode.window.showInputBox({ value: styleValue, prompt: styleName });
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
+                return {styleValue: (newValue || styleValue)!};
             },
         );
     });

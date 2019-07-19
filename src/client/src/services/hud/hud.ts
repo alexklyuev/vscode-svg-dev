@@ -5,6 +5,8 @@ import { connectEvent, ClientEvent } from "../../entities/client-event";
 import { Artboard } from "../artboard/artboard";
 import { ArtboardListener } from "../../listeners/artboard.listener";
 import { ArtboardRequest, ArtboardResponse } from "../../../../shared/pipes/artboard.pipe";
+import { ArtboardStyleResponse, ArtboardStyleRequest } from "../../../../shared/pipes/artboard-style.pipe";
+import { ArtboardStyleListener } from "../../listeners/artboard-style.listener";
 
 const enum HudEvents {
     appearanceRequest = 'appearanceRequest',
@@ -30,6 +32,7 @@ export class Hud {
     private artboardEl: HTMLElement;
     private abWidth: HTMLElement;
     private abHeight: HTMLElement;
+    private abColor: HTMLElement;
 
     constructor(
         public readonly apr: Appearance,
@@ -37,6 +40,8 @@ export class Hud {
         public readonly artboard: Artboard,
         public readonly artboardListener: ArtboardListener,
         public readonly artboardInverseEndpoint: PipeEndpoint<ArtboardRequest, ArtboardResponse, 'artboard-inverse'>,
+        public readonly artboardStyleConsumer: ArtboardStyleListener,
+        public readonly artboardStyleProducer: PipeEndpoint<ArtboardStyleRequest, ArtboardStyleResponse, 'artboard-style-inverse'>,
     ) {
         this.element = document.querySelector<HTMLElement>('#hud')!;
         Object.assign(this.element.style, {
@@ -92,6 +97,33 @@ export class Hud {
                 'border-radius': '5px',
             });
         });
+
+        this.abColor = document.createElement('span');
+        this.artboardEl.appendChild(this.abColor);
+        const bg = this.artboard.svg.style.backgroundColor!;
+        Object.assign(this.abColor.style, {
+            'margin-left': '3px',
+            'margin-bottom': '-2px',
+            display: 'inline-block',
+            width: '10px',
+            height: '10px',
+            background: this.representColorButtonBackground(bg),
+            border: this.representColorButtonBorder(bg),
+            'border-radius': '50%',
+            cursor: 'pointer',
+        });
+        this.abColor.onclick = async (_event: MouseEvent) => {
+            const { styleValue } = await this.artboardStyleProducer.makeGetRequest({
+                styleName: 'background',
+                styleValue: bg,
+            });
+            this.artboardStyleConsumer.setStyle(this.artboard.svg, 'background', styleValue!);
+            Object.assign(this.abColor.style, {
+                background: this.representColorButtonBackground(styleValue!),
+                border: this.representColorButtonBorder(styleValue!),
+            });
+        };
+
 
         this.fillEl = document.createElement('span');
         Object.assign(this.fillEl.style, {
@@ -261,7 +293,7 @@ export class Hud {
             case 'none':
             case undefined:
             case null:
-                return `1px solid dashed`;
+                return `1px dashed white`;
             default:
                 return `1px solid white`;
         }

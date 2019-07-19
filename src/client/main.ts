@@ -1,5 +1,4 @@
 import { zoomPipe } from '../shared/pipes/zoom.pipe';
-import { artboardStylePipe } from '../shared/pipes/artboard-style.pipe';
 import { remoteAttributePipe } from '../shared/pipes/remote-attribute.pipe';
 import { createPipe } from '../shared/pipes/create.pipe';
 import { editPipe } from '../shared/pipes/edit.pipe';
@@ -20,9 +19,7 @@ import { holder, picker } from './src/services/picker';
 import { zoom } from './src/services/zoom';
 import { figuresCollection } from './src/figures';
 import { GroupListener } from './src/listeners/group.listener';
-import { cancelListener, artboardListener } from './src/listeners';
-import { ArtboardStyleListener } from './src/listeners/artboard-style.listener';
-import { CssJsNotationConverter } from '../shared/services/css/css-js-notation-converter';
+import { cancelListener, artboardListener, artboardStyleListener } from './src/listeners';
 import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
 import { hud } from './src/services/hud';
@@ -74,7 +71,7 @@ artboardListener.changeProperty.on(() => {
 /**
  * Webview artboard style pipe client
  */
-const artboardStyleListener = new ArtboardStyleListener(webviewEndpoint, artboardStylePipe, artboard, new CssJsNotationConverter());
+// const artboardStyleListener = new ArtboardStyleListener(webviewEndpoint, artboardStylePipe, artboard, new CssJsNotationConverter());
 artboardStyleListener.listen();
 
 /**
