@@ -102,7 +102,7 @@ export class Hud {
         this.artboardEl.appendChild(this.abColor);
         const bg = this.artboard.svg.style.backgroundColor!;
         Object.assign(this.abColor.style, {
-            'margin-left': '3px',
+            'margin-left': '7px',
             'margin-bottom': '-2px',
             display: 'inline-block',
             width: '10px',
