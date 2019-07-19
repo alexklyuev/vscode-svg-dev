@@ -260,10 +260,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
                 let rcx = cx;
                 let rcy = cy;
                 const onMouseMove = (event: MouseEvent) => {
-                    const {
-                        clientX,
-                        clientY,
-                    } = event;
+                    const { clientX, clientY} = event;
                     const dx = (clientX - x) / this.zoom.value;
                     const dy = (clientY - y) / this.zoom.value;
                     curCx = rcx + dx;
@@ -313,7 +310,6 @@ export abstract class PolyFigure implements Figure<SVGElement> {
                 };
 
                 circle.addEventListener('mousedown', onMouseDown);
-
 
                 return circle;
             })

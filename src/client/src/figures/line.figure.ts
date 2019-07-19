@@ -10,6 +10,8 @@ import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Guides } from "../services/guides/guides";
 import { Appearance } from "../services/appearance/appearance";
+import { Hud } from "../services/hud/hud";
+import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 
 
 export class LineFigure implements Figure<SVGLineElement> {
@@ -27,6 +29,7 @@ export class LineFigure implements Figure<SVGLineElement> {
         private coords: Coorinator,
         private guides: Guides,
         private appearance: Appearance,
+        private hud: Hud,
     ) {}
 
     testByElement(element: any): element is SVGLineElement {
@@ -142,6 +145,105 @@ export class LineFigure implements Figure<SVGLineElement> {
             this.guides.guidesContainer!.removeChild(pseudoLine);
             this.guides.guidesContainer!.removeChild(pseudoPoint);
         };
+    }
+
+    edit(element: SVGLineElement) {
+        this.hud.hint = `Press 'esc' or 'enter' to finish editing`;
+        this.userEventMan.mode = 'interactive';
+        this.guides.removeSelection();
+        const pseudoEls = Array<SVGElement>();
+        const draw = () => {
+            const x1 = element.getAttribute('x1')!;
+            const y1 = element.getAttribute('y1')!;
+            const x2 = element.getAttribute('x2')!;
+            const y2 = element.getAttribute('y2')!;
+            [[x1, y1], [x2, y2]].forEach((coords, pairIndex) => {
+                const [cx, cy] = coords.map(c => parseFloat(c));
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                this.guides.guidesContainer!.appendChild(circle);
+                circle.setAttribute('fill', 'none');
+                circle.setAttribute('stroke', '#666');
+                circle.setAttribute('stroke-dasharray', '1');
+                circle.setAttribute('cx', `${ cx * this.zoom.value }`);
+                circle.setAttribute('cy', `${ cy * this.zoom.value }`);
+                circle.setAttribute('r', '10');
+                circle.style.pointerEvents = 'fill';
+                
+                const x1$ = parseFloat(element.getAttribute('x1')!);
+                const y1$ = parseFloat(element.getAttribute('y1')!);
+                const x2$ = parseFloat(element.getAttribute('x2')!);
+                const y2$ = parseFloat(element.getAttribute('y2')!);
+                let x = 0;
+                let y = 0;
+                let curCx = cx;
+                let curCy = cy;
+                let rcx = cx;
+                let rcy = cy;
+                const onMouseMove = (event: MouseEvent) => {
+                    const { clientX, clientY} = event;
+                    const dx = (clientX - x) / this.zoom.value;
+                    const dy = (clientY - y) / this.zoom.value;
+                    curCx = rcx + dx;
+                    curCy = rcy + dy;
+                    circle.setAttribute('cx', `${ curCx * this.zoom.value }`);
+                    circle.setAttribute('cy', `${ curCy * this.zoom.value }`);
+                    if (pairIndex === 0) {
+                        element.setAttribute('x1', `${ x1$ + dx }`);
+                        element.setAttribute('y1', `${ y1$ + dy }`);
+                    }
+                    if (pairIndex === 1) {
+                        element.setAttribute('x2', `${ x2$ + dx }`);
+                        element.setAttribute('y2', `${ y2$ + dy }`);
+                    }
+                    redraw();
+                };
+                const onMouseUp = (_event: MouseEvent) => {
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('mouseup', onMouseUp);
+                    redraw();
+                };
+                const onMouseDown = (event: MouseEvent) => {
+                    window.addEventListener('mousemove', onMouseMove);
+                    window.addEventListener('mouseup', onMouseUp);
+                    const {
+                        clientX,
+                        clientY,
+                    } = event;
+                    x = clientX;
+                    y = clientY;
+                    rcx = curCx;
+                    rcy = curCy;
+                };
+                circle.addEventListener('mousedown', onMouseDown);
+                pseudoEls.push(circle);
+            });
+        };
+
+        const undraw = () => {
+            pseudoEls.forEach(circle => this.guides.guidesContainer!.removeChild(circle));
+            pseudoEls.length = 0;
+        };
+
+        const redraw = () => {
+            undraw();
+            draw();
+        };
+
+        draw();
+
+        this.zoom.valueChange.on(redraw);
+
+        const cancel = (_key: CancelKeys) => {
+            this.hud.hint = null;
+            this.userEventMan.mode = 'pick';
+            this.guides.drawSelection([element]);
+            undraw();
+            this.zoom.valueChange.off(redraw);
+            this.cancelListener.keyEvent.off(cancel);
+        };
+
+        this.cancelListener.keyEvent.on(cancel);
+
     }
 
 }
