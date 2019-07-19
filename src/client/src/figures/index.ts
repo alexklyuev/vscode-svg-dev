@@ -86,6 +86,7 @@ figuresCollection.add(
         coordinator,
         guides,
         appearance,
+        hud,
     ),
     new PolygonFigure(
         draggerPoints,

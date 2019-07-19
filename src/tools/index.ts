@@ -78,6 +78,7 @@ toolbox.register(
     {command: {title: 'Y1', command: 'svgDevRemoteAttributeInput', arguments: ['y1']}},
     {command: {title: 'X2', command: 'svgDevRemoteAttributeInput', arguments: ['x2']}},
     {command: {title: 'Y2', command: 'svgDevRemoteAttributeInput', arguments: ['y2']}},
+    {command: {title: 'Edit points visually', command: 'svgDevEdit'}},
 );
 toolbox.register(
     new ToolGroup('Poly'),
