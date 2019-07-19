@@ -2,7 +2,7 @@ import { ConnectionsManager } from "./connections-manager";
 import { PipeConnection } from "./pipe-connection";
 import { pickPipe } from "../../shared/pipes/pick.pipe";
 import { remoteAttributePipe } from "../../shared/pipes/remote-attribute.pipe";
-import { artboardPipe } from "../../shared/pipes/artboard.pipe";
+import { artboardPipe, artboardInversePipe } from "../../shared/pipes/artboard.pipe";
 import { artboardStylePipe } from "../../shared/pipes/artboard-style.pipe";
 import { loggerPipe } from "../../shared/pipes/logger.pipe";
 import { zoomPipe } from "../../shared/pipes/zoom.pipe";
@@ -20,6 +20,7 @@ import { appearancePipe } from "../../shared/pipes/appearance.pipe";
 export const pickConnection = new PipeConnection(pickPipe);
 export const remoteAttributeConnnection = new PipeConnection(remoteAttributePipe);
 export const artboardConnection = new PipeConnection(artboardPipe);
+export const artboardInverseConnection = new PipeConnection(artboardInversePipe);
 export const artboardStyleConnection = new PipeConnection(artboardStylePipe);
 export const artboardMoveConnection = new PipeConnection(artboardMovePipe);
 export const loggerConnection = new PipeConnection(loggerPipe);
@@ -37,6 +38,7 @@ export const appearanceConnection = new PipeConnection(appearancePipe);
 const connections: PipeConnection<any, any, any>[] = [
     remoteAttributeConnnection,
     artboardConnection,
+    artboardInverseConnection,
     artboardStyleConnection,
     artboardMoveConnection,
     loggerConnection,

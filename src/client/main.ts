@@ -1,5 +1,4 @@
 import { zoomPipe } from '../shared/pipes/zoom.pipe';
-import { artboardPipe } from '../shared/pipes/artboard.pipe';
 import { artboardStylePipe } from '../shared/pipes/artboard-style.pipe';
 import { remoteAttributePipe } from '../shared/pipes/remote-attribute.pipe';
 import { createPipe } from '../shared/pipes/create.pipe';
@@ -8,7 +7,6 @@ import { flushPipe } from '../shared/pipes/flush.pipe';
 import { artboard, artboardMove } from './src/services/artboard';
 import { webviewEndpoint } from './src/services/endpoint';
 import { RemoteAttributeListener } from './src/listeners/remote-attribute.listener';
-import { ArtboardListener } from './src/listeners/artboard.listener';
 import { CreateListener } from './src/listeners/create.listener';
 import { FlushListener } from './src/listeners/flush.listener';
 import { ZoomListener } from './src/listeners/zoom.listener';
@@ -22,12 +20,11 @@ import { holder, picker } from './src/services/picker';
 import { zoom } from './src/services/zoom';
 import { figuresCollection } from './src/figures';
 import { GroupListener } from './src/listeners/group.listener';
-import { cancelListener } from './src/listeners';
+import { cancelListener, artboardListener } from './src/listeners';
 import { ArtboardStyleListener } from './src/listeners/artboard-style.listener';
 import { CssJsNotationConverter } from '../shared/services/css/css-js-notation-converter';
 import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
-import './src/services/hud';
 import { hud } from './src/services/hud';
 import { appearance } from './src/services/appearance';
 
@@ -69,7 +66,6 @@ zoomListener.listen();
 /**
  * 
  */
-const artboardListener = new ArtboardListener(webviewEndpoint, artboardPipe, artboard);
 artboardListener.listen();
 artboardListener.changeProperty.on(() => {
     guides.setContainerStyles();

@@ -2,6 +2,9 @@ import { AppearanceRequest, AppearanceResponse } from "../../../../shared/pipes/
 import { PipeEndpoint } from "../../../../shared/services/pipe/pipe";
 import { Appearance } from "../appearance/appearance";
 import { connectEvent, ClientEvent } from "../../entities/client-event";
+import { Artboard } from "../artboard/artboard";
+import { ArtboardListener } from "../../listeners/artboard.listener";
+import { ArtboardRequest, ArtboardResponse } from "../../../../shared/pipes/artboard.pipe";
 
 const enum HudEvents {
     appearanceRequest = 'appearanceRequest',
@@ -11,12 +14,12 @@ export class Hud {
 
     public readonly [HudEvents.appearanceRequest] = new ClientEvent<Promise<AppearanceResponse>>();
 
-    private element: HTMLDivElement;
+    private element: HTMLElement;
 
-    private aprOutlet: HTMLDivElement;
+    private aprOutlet: HTMLElement;
 
-    private hintOutletEl: HTMLDivElement;
-    private hintEl: HTMLDivElement | null = null;
+    private hintOutletEl: HTMLElement;
+    private hintEl: HTMLElement | null = null;
 
     private fillEl: HTMLElement;
     private fillBtn: HTMLElement;
@@ -24,11 +27,18 @@ export class Hud {
     private strokeEl: HTMLElement;
     private strokeBtn: HTMLElement;
 
+    private artboardEl: HTMLElement;
+    private abWidth: HTMLElement;
+    private abHeight: HTMLElement;
+
     constructor(
         public readonly apr: Appearance,
         public readonly appearanceProducer: PipeEndpoint<AppearanceRequest, AppearanceResponse, 'appearance'>,
+        public readonly artboard: Artboard,
+        public readonly artboardListener: ArtboardListener,
+        public readonly artboardInverseEndpoint: PipeEndpoint<ArtboardRequest, ArtboardResponse, 'artboard-inverse'>,
     ) {
-        this.element = document.querySelector<HTMLDivElement>('#hud')!;
+        this.element = document.querySelector<HTMLElement>('#hud')!;
         Object.assign(this.element.style, {
             position: 'fixed',
             left: '0',
@@ -41,11 +51,51 @@ export class Hud {
 
         Object.assign(this.aprOutlet.style, {
             'margin-top': '10px',
+            'margin-left': '10px',
+        });
+
+        this.artboardEl = document.createElement('div');
+        this.abWidth = document.createElement('span');
+        this.abHeight = document.createElement('span');
+
+        this.aprOutlet.appendChild(this.artboardEl);
+        this.artboardEl.innerHTML = 'artboard: ';
+        this.artboardEl.appendChild(this.abWidth);
+        const x = document.createElement('span');
+        x.innerHTML = 'x';
+        Object.assign(x.style, {
+            'padding-left': '2px',
+            'padding-right': '2px',
+        });
+        this.artboardEl.appendChild(x);
+        this.artboardEl.appendChild(this.abHeight);
+
+        Object.assign(this.artboardEl.style, {
+            margin: '10px 2px 0px 0px',
+            padding: '3px 10px 3px 10px',
+            background: 'rgba(42,42,42,.7)',
+            'border-radius': '5px',
+            color: '#eee',
+            'font-size': '10px',
+            display: 'inline-block',
+            'user-select': 'none',
+        });
+
+        this.abHeight.innerHTML = `${ this.artboard.height }`;
+        this.abWidth.innerHTML = `${ this.artboard.width }`;
+
+        [this.abHeight, this.abWidth].forEach(el => {
+            Object.assign(el.style, {
+                cursor: 'pointer',
+                padding: '1px 3px',
+                border: '1px solid rgba(255,255,255,.1)',
+                'border-radius': '5px',
+            });
         });
 
         this.fillEl = document.createElement('span');
         Object.assign(this.fillEl.style, {
-            margin: '10px 2px 0px 10px',
+            margin: '10px 2px 0px 0px',
             padding: '3px 10px 3px 10px',
             background: 'rgba(42,42,42,.7)',
             'border-radius': '5px',
@@ -127,6 +177,31 @@ export class Hud {
             }
         };
 
+        this.abWidth.onclick = async (_event: MouseEvent) => {
+            const { value } = await this.artboardInverseEndpoint.makeGetRequest({
+                property: 'width',
+                value: `${this.artboard.width}`,
+            });
+            this.artboardListener.updateAttributes(this.artboard.svg, 'width', value!);
+        };
+
+        this.abHeight.onclick = async (_event: MouseEvent) => {
+            const { value } = await this.artboardInverseEndpoint.makeGetRequest({
+                property: 'height',
+                value: `${this.artboard.height}`,
+            });
+            this.artboardListener.updateAttributes(this.artboard.svg, 'height', value!);
+        };
+
+        this.artboardListener.changeProperty.on(({property, value}) => {
+            if (property === 'width') {
+                this.updateArtboardWidth(value);
+            }
+            if (property === 'height') {
+                this.updateArtboardHeight(value);
+            }
+        });
+
     } // end of constructor
 
     @connectEvent(HudEvents.appearanceRequest)
@@ -204,6 +279,14 @@ export class Hud {
             background: this.representColorButtonBackground(value),
             border: this.representColorButtonBorder(value),
         });
+    }
+
+    updateArtboardWidth(value: string | number) {
+        this.abWidth.innerHTML = `${ value }`;
+    }
+
+    updateArtboardHeight(value: string | number) {
+        this.abHeight.innerHTML = `${ value }`;
     }
 
 }
