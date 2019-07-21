@@ -1,4 +1,5 @@
 import { Hud } from "./hud";
+import { ColorRepresenterService } from "./color-representer.service";
 import { appearance } from "../appearance";
 import { appearanceEndpoint } from "../../producers/appearance.producer";
 import { artboard } from "../artboard";

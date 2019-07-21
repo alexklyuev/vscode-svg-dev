@@ -2,6 +2,7 @@ import { Artboard } from "../artboard/artboard";
 import { ArtboardStyleListener } from "../../listeners/artboard-style.listener";
 import { PipeEndpoint } from "../../../../shared/services/pipe/pipe";
 import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../../../shared/pipes/artboard-style.pipe";
+import { ColorRepresenterService } from "./color-representer.service";
 
 
 export class ArtboardControls {
@@ -15,6 +16,7 @@ export class ArtboardControls {
         private readonly artboard: Artboard,
         private readonly artboardStyleConsumer: ArtboardStyleListener,
         private readonly artboardStyleProducer: PipeEndpoint<ArtboardStyleRequest, ArtboardStyleResponse, 'artboard-style-inverse'>,
+        private readonly colorRepresenter: ColorRepresenterService,
 
     ) {
         this.artboardEl = document.createElement('div');
@@ -64,8 +66,8 @@ export class ArtboardControls {
             display: 'inline-block',
             width: '10px',
             height: '10px',
-            background: this.representColorButtonBackground(bg),
-            border: this.representColorButtonBorder(bg),
+            background: this.colorRepresenter.representColorButtonBackground(bg),
+            border: this.colorRepresenter.representColorButtonBorder(bg),
             'border-radius': '50%',
             cursor: 'pointer',
         });
@@ -76,38 +78,14 @@ export class ArtboardControls {
             });
             this.artboardStyleConsumer.setStyle(this.artboard.svg, 'background', styleValue!);
             Object.assign(this.abColor.style, {
-                background: this.representColorButtonBackground(styleValue!),
-                border: this.representColorButtonBorder(styleValue!),
+                background: this.colorRepresenter.representColorButtonBackground(styleValue!),
+                border: this.colorRepresenter.representColorButtonBorder(styleValue!),
             });
         };
     }
 
     appendTo(parentElement: HTMLElement) {
         parentElement.appendChild(this.artboardEl);
-    }
-
-    representColorButtonBackground(color: string): string {
-        switch (color) {
-            case '':
-            case 'none':
-            case undefined:
-            case null:
-                return `rgba(0,0,0,0)`;
-            default:
-                return color;
-        }
-    }
-
-    representColorButtonBorder(color: string): string {
-        switch (color) {
-            case '':
-            case 'none':
-            case undefined:
-            case null:
-                return `1px dashed white`;
-            default:
-                return `1px solid white`;
-        }
     }
 
 }
