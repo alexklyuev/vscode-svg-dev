@@ -6,6 +6,8 @@ import { artboardListener, artboardStyleListener } from "../../listeners";
 import { artboardInverseEndpoint } from "../../producers/artboard-inverse.producer";
 import { artboardStyleInverseProducer } from "../../producers/artboard-style-inverse.producer";
 
+export const colorRepresenter = new ColorRepresenterService();
+
 export const hud = new Hud(
   appearance,
   appearanceEndpoint,
