@@ -22,8 +22,10 @@ import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener, artboardListener, artboardStyleListener } from './src/listeners';
 import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
-import { hud } from './src/services/hud';
+import { hud, shapesOutlet, editPointsControl } from './src/services/hud';
 import { appearance } from './src/services/appearance';
+import { AppearanceResponse } from '../shared/pipes/appearance.pipe';
+import { inverseInteractiveEndpoint } from './src/producers/inverse-interactive.producer';
 
 
 /**
@@ -140,18 +142,48 @@ holder.setElements.on(elements => {
         const stroke = lastElement.getAttribute('stroke');
         if (fill) {
             appearance.fill = fill;
-            hud.updateFillBtn(fill);
+            hud.appearanceOutlet.fillControl.updateFillBtn(fill);
         }
         if (stroke) {
             appearance.stroke = stroke;
-            hud.updateStrokeBtn(stroke);
+            hud.appearanceOutlet.strokeControl.updateStrokeBtn(stroke);
         }
     }
 });
 
-hud.appearanceRequest.on(async (response) => {
+/**
+ * //
+ */
+const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) => {
     const { name, value } = await response;
     holder.elements.forEach(el => {
         el.setAttribute(name, value);
     });
+};
+hud.appearanceOutlet.fillControl.appearanceRequest.on(appearanceRequestCallback);
+hud.appearanceOutlet.strokeControl.appearanceRequest.on(appearanceRequestCallback);
+
+/**
+ * Create elements by hud shape tools
+ */
+shapesOutlet.createShapeEvent.on(shapeName => {
+    inverseInteractiveEndpoint.makeSetRequest({});
+    figuresCollection.delegate(shapeName)!.create(shapeName, {});
+});
+
+editPointsControl.editPointsEvent.on(_event => {
+    inverseInteractiveEndpoint.makeSetRequest({});
+    editListener.editElement();
+});
+
+holder.setElements.on(elements => {
+    if (elements.length > 0) {
+        const element = elements[0];
+        const delegate = figuresCollection.delegate(element);
+        if (delegate && delegate.edit instanceof Function) {
+            editPointsControl.show();
+            return;
+        }
+    }
+    editPointsControl.hide();
 });

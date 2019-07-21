@@ -2,6 +2,9 @@ import { Artboard } from "../artboard/artboard";
 import { ArtboardStyleListener } from "../../listeners/artboard-style.listener";
 import { PipeEndpoint } from "../../../../shared/services/pipe/pipe";
 import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../../../shared/pipes/artboard-style.pipe";
+import { ColorRepresenterService } from "./color-representer.service";
+import { ArtboardListener } from "../../listeners/artboard.listener";
+import { ArtboardRequest, ArtboardResponse } from "../../../../shared/pipes/artboard.pipe";
 
 
 export class ArtboardControls {
@@ -15,6 +18,9 @@ export class ArtboardControls {
         private readonly artboard: Artboard,
         private readonly artboardStyleConsumer: ArtboardStyleListener,
         private readonly artboardStyleProducer: PipeEndpoint<ArtboardStyleRequest, ArtboardStyleResponse, 'artboard-style-inverse'>,
+        private readonly colorRepresenter: ColorRepresenterService,
+        private readonly artboardListener: ArtboardListener,
+        private readonly artboardInverseEndpoint: PipeEndpoint<ArtboardRequest, ArtboardResponse, 'artboard-inverse'>,
 
     ) {
         this.artboardEl = document.createElement('div');
@@ -34,7 +40,7 @@ export class ArtboardControls {
 
         Object.assign(this.artboardEl.style, {
             margin: '10px 2px 0px 0px',
-            padding: '3px 10px 3px 10px',
+            padding: '4px 10px',
             background: 'rgba(42,42,42,.7)',
             'border-radius': '5px',
             color: '#eee',
@@ -64,8 +70,8 @@ export class ArtboardControls {
             display: 'inline-block',
             width: '10px',
             height: '10px',
-            background: this.representColorButtonBackground(bg),
-            border: this.representColorButtonBorder(bg),
+            background: this.colorRepresenter.representColorButtonBackground(bg),
+            border: this.colorRepresenter.representColorButtonBorder(bg),
             'border-radius': '50%',
             cursor: 'pointer',
         });
@@ -76,38 +82,46 @@ export class ArtboardControls {
             });
             this.artboardStyleConsumer.setStyle(this.artboard.svg, 'background', styleValue!);
             Object.assign(this.abColor.style, {
-                background: this.representColorButtonBackground(styleValue!),
-                border: this.representColorButtonBorder(styleValue!),
+                background: this.colorRepresenter.representColorButtonBackground(styleValue!),
+                border: this.colorRepresenter.representColorButtonBorder(styleValue!),
             });
         };
+        this.abWidth.onclick = async (_event: MouseEvent) => {
+            const { value } = await this.artboardInverseEndpoint.makeGetRequest({
+                property: 'width',
+                value: `${this.artboard.width}`,
+            });
+            this.artboardListener.updateAttributes(this.artboard.svg, 'width', value!);
+        };
+
+        this.abHeight.onclick = async (_event: MouseEvent) => {
+            const { value } = await this.artboardInverseEndpoint.makeGetRequest({
+                property: 'height',
+                value: `${this.artboard.height}`,
+            });
+            this.artboardListener.updateAttributes(this.artboard.svg, 'height', value!);
+        };
+
+        this.artboardListener.changeProperty.on(({property, value}) => {
+            if (property === 'width') {
+                this.updateArtboardWidth(value);
+            }
+            if (property === 'height') {
+                this.updateArtboardHeight(value);
+            }
+        });
     }
 
     appendTo(parentElement: HTMLElement) {
         parentElement.appendChild(this.artboardEl);
     }
 
-    representColorButtonBackground(color: string): string {
-        switch (color) {
-            case '':
-            case 'none':
-            case undefined:
-            case null:
-                return `rgba(0,0,0,0)`;
-            default:
-                return color;
-        }
+    updateArtboardWidth(value: string | number) {
+        this.abWidth.innerHTML = `${ value }`;
     }
 
-    representColorButtonBorder(color: string): string {
-        switch (color) {
-            case '':
-            case 'none':
-            case undefined:
-            case null:
-                return `1px dashed white`;
-            default:
-                return `1px solid white`;
-        }
+    updateArtboardHeight(value: string | number) {
+        this.abHeight.innerHTML = `${ value }`;
     }
 
 }

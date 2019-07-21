@@ -21,6 +21,7 @@ import { pathPoints } from "../services/path";
 import { coordinator } from "../services/coordinator";
 import { hud } from "../services/hud";
 import { appearance } from "../services/appearance";
+import { textReverseEndpoint } from "../producers/text-reverse.producer";
 
 
 const figuresCollection = new FiguresCollection();
@@ -31,6 +32,21 @@ const draggerDouble = new DraggerValue(['x1', 'x2'], ['y1', 'y2'], zoom);
 const draggerPoints = new DraggerPoints(zoom);
 const draggerDelegate = new DraggerDelegate(figuresCollection);
 const draggerPath = new DraggerPath(zoom, pathPoints);
+
+
+export const pathFigure = new PathFigure(
+    draggerPath,
+    artboard,
+    artboardMove,
+    zoom,
+    cancelListener,
+    userEventMan,
+    guides,
+    pathPoints,
+    coordinator,
+    hud,
+    appearance,
+);
 
 
 figuresCollection.add(
@@ -71,6 +87,7 @@ figuresCollection.add(
         draggerLeftTop,
         artboard,
         appearance,
+        textReverseEndpoint,
     ),
     new GFigure(
         draggerDelegate,
@@ -110,19 +127,7 @@ figuresCollection.add(
         appearance,
         hud,
     ),
-    new PathFigure(
-        draggerPath,
-        artboard,
-        artboardMove,
-        zoom,
-        cancelListener,
-        userEventMan,
-        guides,
-        pathPoints,
-        coordinator,
-        hud,
-        appearance,
-    ),
+    pathFigure,
 );
 
 export { figuresCollection };

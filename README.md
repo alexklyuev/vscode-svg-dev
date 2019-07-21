@@ -1,16 +1,16 @@
 # SVG dev
 
-## Warning
-
-Project is in very early preview.
-
-But still could be useful.
-
 ## Description
 
-Trying to build visual svg editor.
+Visual svg editor.
+
+Create and edit vector graphic.
 
 ## Changelog
+ - 0.8.4
+   - edit points tool appears in editing window if editable element selected
+ - 0.8.3
+   - Shape tools inside edition window
  - 0.8.2
    - artboard dimensions control inside editing window
    - fill and stroke updates on element selection
@@ -31,6 +31,8 @@ Trying to build visual svg editor.
 
 ## Todo
 - docs
+- moving shapes by keybord arrows
+- strict vertical and horizontal moving
 - format flush
 - free property tools
 - flush current selection

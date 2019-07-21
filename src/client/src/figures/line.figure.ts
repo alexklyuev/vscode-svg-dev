@@ -148,7 +148,7 @@ export class LineFigure implements Figure<SVGLineElement> {
     }
 
     edit(element: SVGLineElement) {
-        this.hud.hint = `Press 'esc' or 'enter' to finish editing`;
+        this.hud.hintOutlet.hint = `Press 'esc' or 'enter' to finish editing`;
         this.userEventMan.mode = 'interactive';
         this.guides.removeSelection();
         const pseudoEls = Array<SVGElement>();
@@ -234,7 +234,7 @@ export class LineFigure implements Figure<SVGLineElement> {
         this.zoom.valueChange.on(redraw);
 
         const cancel = (_key: CancelKeys) => {
-            this.hud.hint = null;
+            this.hud.hintOutlet.hint = null;
             this.userEventMan.mode = 'pick';
             this.guides.drawSelection([element]);
             undraw();
