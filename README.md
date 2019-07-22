@@ -4,6 +4,8 @@
 
 Visual svg editor.
 
+Create and edit vector graphic.
+
 ## Changelog
  - 0.8.3
    - Shape tools inside edition window
@@ -27,6 +29,8 @@ Visual svg editor.
 
 ## Todo
 - docs
+- moving shapes by keybord arrows
+- strict vertical and horizontal moving
 - format flush
 - free property tools
 - flush current selection
