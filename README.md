@@ -1,16 +1,12 @@
 # SVG dev
 
-## Warning
-
-Project is in very early preview.
-
-But still could be useful.
-
 ## Description
 
-Trying to build visual svg editor.
+Visual svg editor.
 
 ## Changelog
+ - 0.8.3
+   - Shape tools inside edition window
  - 0.8.2
    - artboard dimensions control inside editing window
    - fill and stroke updates on element selection

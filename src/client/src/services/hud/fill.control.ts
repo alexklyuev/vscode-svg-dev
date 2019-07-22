@@ -24,7 +24,7 @@ export class FillControl {
         this.fillEl = document.createElement('span');
         Object.assign(this.fillEl.style, {
             margin: '10px 2px 0px 0px',
-            padding: '5px 10px',
+            padding: '4px 10px',
             background: 'rgba(42,42,42,.7)',
             'border-radius': '5px',
             color: '#eee',

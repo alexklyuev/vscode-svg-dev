@@ -97,6 +97,8 @@ toolbox.register(
     new ToolGroup('Text'),
     {command: {title: 'Add', command: 'svgDevAddText'}},
     {command: {title: 'Edit', command: 'svgDevRemoteAttributeInput', arguments: ['innerText']}},
+    {command: {title: 'Font size', command: 'svgDevRemoteAttributeInput', arguments: ['font-size']}},
+    {command: {title: 'Font family', command: 'svgDevRemoteAttributeInput', arguments: ['font-family']}},
 );
 toolbox.register(
     new ToolGroup('Zoom'),

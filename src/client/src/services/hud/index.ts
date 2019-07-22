@@ -12,7 +12,7 @@ import { artboardStyleInverseProducer } from "../../producers/artboard-style-inv
 import { appearance } from "../appearance";
 import { appearanceEndpoint } from "../../producers/appearance.producer";
 import { ShapesOutlet } from "./shapes.outlet";
-import { pathShape, polygonShape, polylineShape, rectShape, circleShape, ellipseShape } from "./shapes";
+import { pathShape, polygonShape, polylineShape, rectShape, circleShape, ellipseShape, textShape, lineShape } from "./shapes";
 
 export const colorRepresenter = new ColorRepresenterService();
 export const artboardControls = new ArtboardControls(
@@ -37,9 +37,11 @@ export const shapesOutlet = new ShapesOutlet(
   pathShape,
   polygonShape,
   polylineShape,
+  lineShape,
   rectShape,
   circleShape,
   ellipseShape,
+  textShape,
 );
 export const appearanceOutlet = new AppearanceOutlet(
   artboardControls,

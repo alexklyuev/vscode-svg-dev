@@ -1,6 +1,6 @@
 export class Appearance {
 
-    public fill = '#666';
+    public fill = 'green';
     public stroke = '#aaa';
 
 }

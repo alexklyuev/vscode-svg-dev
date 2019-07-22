@@ -16,6 +16,11 @@ const polylineIcon = `
 <polyline stroke="white" fill="none" points="1.8666666666666667,3.1 4.133333333333334,5.566666666666666 6.266666666666667,3.1" stroke-width=".5" stroke-linecap="round" stroke-linejoin="round"></polyline><circle fill="none" stroke="white" cx="4.133333333333334" cy="6.716666666666667" r="1" stroke-width=".5"></circle><circle fill="none" stroke="white" cx="6.4833333333333325" cy="2.066666666666667" r="1" stroke-width=".5"></circle><circle fill="none" stroke="white" cx="1.8333333333333333" cy="2.066666666666667" r="1" stroke-width=".5"></circle></svg>
 `;
 
+const lineIcon = `
+<svg width="8" height="8" viewBox="0 0 8 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none;">
+<circle fill="none" stroke="white" cx="1.776666666666665" cy="6.756666666666665" r="1" stroke-width=".5"></circle><circle fill="none" stroke="white" cx="6.476666666666667" cy="2.006666666666666" r="1" stroke-width=".5"></circle><line x1="2.36" y1="6.14" x2="5.88" y2="2.64" stroke="white" fill="none" stroke-width=".5"></line></svg>
+`;
+
 const rectIcon = `
 <svg width="8" height="8" viewBox="0 0 8 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="background: none;">
         <rect fill="none" stroke="white" x="1.6333333333333333" y="2.75" width="5" height="5" stroke-width=".5"></rect></svg>
@@ -32,12 +37,14 @@ const ellipseIcon = `
 `;
 
 const textIcon = `
-
+<svg width="8" height="8" viewBox="0 0 8 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <rect fill="none" stroke="white" x="1.06" y="2.74" width="6" height="5" stroke-width=".5"></rect><line x1="2.84" y1="6.899999999999998" x2="2.82" y2="3.6400000000000006" stroke="white" fill="none" stroke-width=".5"></line></svg>
 `;
 
 export const pathShape = new Shape('path', pathIcon);
 export const polygonShape = new Shape('polygon', polygonIcon);
 export const polylineShape = new Shape('polyline', polylineIcon);
+export const lineShape = new Shape('line', lineIcon);
 export const rectShape = new Shape('rect', rectIcon);
 export const circleShape = new Shape('circle', circleIcon);
 export const ellipseShape = new Shape('ellipse', ellipseIcon);

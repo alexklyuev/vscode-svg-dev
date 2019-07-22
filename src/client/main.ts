@@ -151,6 +151,9 @@ holder.setElements.on(elements => {
     }
 });
 
+/**
+ * //
+ */
 const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) => {
     const { name, value } = await response;
     holder.elements.forEach(el => {
@@ -160,12 +163,10 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
 hud.appearanceOutlet.fillControl.appearanceRequest.on(appearanceRequestCallback);
 hud.appearanceOutlet.strokeControl.appearanceRequest.on(appearanceRequestCallback);
 
-// pathShape.createEvent.on(_event => {
-//     inverseInteractiveEndpoint.makeSetRequest({});
-//     figuresCollection.delegate('path')!.create('path', {});
-// });
-
-shapesOutlet.createShapeEvent.on(name => {
+/**
+ * Create elements by hud shape tools
+ */
+shapesOutlet.createShapeEvent.on(shapeName => {
     inverseInteractiveEndpoint.makeSetRequest({});
-    figuresCollection.delegate(name)!.create(name, {});
+    figuresCollection.delegate(shapeName)!.create(shapeName, {});
 });

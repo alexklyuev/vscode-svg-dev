@@ -21,6 +21,7 @@ import { pathPoints } from "../services/path";
 import { coordinator } from "../services/coordinator";
 import { hud } from "../services/hud";
 import { appearance } from "../services/appearance";
+import { textReverseEndpoint } from "../producers/text-reverse.producer";
 
 
 const figuresCollection = new FiguresCollection();
@@ -86,6 +87,7 @@ figuresCollection.add(
         draggerLeftTop,
         artboard,
         appearance,
+        textReverseEndpoint,
     ),
     new GFigure(
         draggerDelegate,

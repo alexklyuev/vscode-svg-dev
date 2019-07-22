@@ -3,6 +3,7 @@ import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 import { DraggerValue } from "../services/dragger/dragger-value";
 import { Appearance } from "../services/appearance/appearance";
+import { PipeEndpoint } from "../../../shared/services/pipe/pipe";
 
 
 export class TextFigure implements Figure<SVGTextElement> {
@@ -15,10 +16,16 @@ export class TextFigure implements Figure<SVGTextElement> {
         public drag: DraggerValue,
         private artboard: Artboard,
         private appearance: Appearance,
+        private textReverseEndpoint: PipeEndpoint<{}, {text: string}, 'text-reverse'>,
     ) {}
 
     @setState
-    create(_elementName: string, attributes: {[K: string]: string}): void {
+    async create(_elementName: string, attributes: {[K: string]: string}) {
+        const { innerText } = attributes;
+        if (!innerText) {
+            const { text } = await this.textReverseEndpoint.makeGetRequest({});
+            Object.assign(attributes, { innerText: text });
+        }
         const svg = this.artboard.svg;
         const text = document.createElementNS('http://www.w3.org/2000/svg', this.name) as SVGTextElement;
         svg.appendChild(text);
@@ -26,7 +33,9 @@ export class TextFigure implements Figure<SVGTextElement> {
         text.setAttribute('y', '50');
         text.setAttribute('fill', this.appearance.fill);
         text.setAttribute('stroke', this.appearance.stroke);
-        text.setAttribute('style', 'font-family: sans-serif; font-size: 20px');
+        // text.setAttribute('style', 'font-family: sans-serif; font-size: 20px');
+        text.setAttribute('font-size', '21');
+        text.setAttribute('font-family', 'sans-serif');
         Object.keys(attributes).forEach(attrName => {
             const attrValue = attributes[attrName];
             switch (attrName) {

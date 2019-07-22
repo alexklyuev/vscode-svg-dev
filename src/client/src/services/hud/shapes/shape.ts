@@ -14,11 +14,15 @@ export class Shape {
     this.el = document.createElement('div');
     Object.assign(this.el.style, {
       display: 'inline-block',
-      padding: '1px 3px',
-      marginRight: '3px',
+      padding: '3px 3px',
+      margin: '2px',
       border: '1px solid rgba(255,255,255,.1)',
       borderRadius: '3px',
       cursor: 'pointer',
+      background: 'rgba(42,42,42,.7)',
+      color: '#eee',
+      'font-size': '10px',
+      'user-select': 'none',
     });
     const nameEl = document.createElement('span');
     nameEl.innerText = this.name;
