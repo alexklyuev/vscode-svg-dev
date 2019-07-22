@@ -1,22 +1,31 @@
 import { ArtboardControls } from "./artboard.controls";
+import { FillControl } from "./fill.control";
+import { StrokeControl } from "./stroke.control";
+import { ShapesOutlet } from "./shapes.outlet";
 
 export class AppearanceOutlet {
 
-    private aprOutlet: HTMLElement;
+    private aprOutletEl: HTMLElement;
 
     constructor(
-        private artboardControls: ArtboardControls,
+        public readonly artboardControls: ArtboardControls,
+        public readonly fillControl: FillControl,
+        public readonly strokeControl: StrokeControl,
+        public readonly shapesOutlet: ShapesOutlet,
     ) {
-        this.aprOutlet = document.createElement('div');
-        Object.assign(this.aprOutlet.style, {
+        this.aprOutletEl = document.createElement('div');
+        Object.assign(this.aprOutletEl.style, {
             'margin-top': '10px',
             'margin-left': '10px',
         });
-        this.artboardControls.appendTo(this.aprOutlet);
+        this.artboardControls.appendTo(this.aprOutletEl);
+        this.fillControl.appendTo(this.aprOutletEl);
+        this.strokeControl.appendTo(this.aprOutletEl);
+        this.shapesOutlet.appendTo(this.aprOutletEl);
     }
 
     appendTo(parentElement: HTMLElement) {
-        parentElement.appendChild(this.aprOutlet);
+        parentElement.appendChild(this.aprOutletEl);
     }
 
 }

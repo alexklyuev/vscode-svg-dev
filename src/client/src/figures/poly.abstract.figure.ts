@@ -224,7 +224,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
 
     edit(element: SVGElement) {
         let points = element.getAttribute('points');
-        this.hud.hint = `Press 'esc' or 'enter' to finish editing`;
+        this.hud.hintOutlet.hint = `Press 'esc' or 'enter' to finish editing`;
         this.userEventMan.mode = 'interactive';
         this.guides.removeSelection();
         const pseudoEls = Array<SVGElement>();
@@ -331,7 +331,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         this.zoom.valueChange.on(redraw);
 
         const cancel = (_key: CancelKeys) => {
-            this.hud.hint = null;
+            this.hud.hintOutlet.hint = null;
             this.userEventMan.mode = 'pick';
             this.guides.drawSelection([element]);
             undraw();

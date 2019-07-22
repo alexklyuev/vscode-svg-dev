@@ -33,6 +33,21 @@ const draggerDelegate = new DraggerDelegate(figuresCollection);
 const draggerPath = new DraggerPath(zoom, pathPoints);
 
 
+export const pathFigure = new PathFigure(
+    draggerPath,
+    artboard,
+    artboardMove,
+    zoom,
+    cancelListener,
+    userEventMan,
+    guides,
+    pathPoints,
+    coordinator,
+    hud,
+    appearance,
+);
+
+
 figuresCollection.add(
     new CircleFigure(
         draggerCenter,
@@ -110,19 +125,7 @@ figuresCollection.add(
         appearance,
         hud,
     ),
-    new PathFigure(
-        draggerPath,
-        artboard,
-        artboardMove,
-        zoom,
-        cancelListener,
-        userEventMan,
-        guides,
-        pathPoints,
-        coordinator,
-        hud,
-        appearance,
-    ),
+    pathFigure,
 );
 
 export { figuresCollection };

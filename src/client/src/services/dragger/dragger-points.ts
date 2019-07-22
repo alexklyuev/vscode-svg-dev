@@ -23,7 +23,7 @@ export class DraggerPoints implements Dragger {
                 pair => pair
                     .trim()
                     .split(',')
-                    .map(val => parseInt(val))
+                    .map(val => parseFloat(val))
             )
             .map(([pX, pY]) => [
                 Math.round(clientX - (pX * this.zoom.value)),

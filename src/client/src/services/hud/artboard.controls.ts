@@ -3,6 +3,8 @@ import { ArtboardStyleListener } from "../../listeners/artboard-style.listener";
 import { PipeEndpoint } from "../../../../shared/services/pipe/pipe";
 import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../../../shared/pipes/artboard-style.pipe";
 import { ColorRepresenterService } from "./color-representer.service";
+import { ArtboardListener } from "../../listeners/artboard.listener";
+import { ArtboardRequest, ArtboardResponse } from "../../../../shared/pipes/artboard.pipe";
 
 
 export class ArtboardControls {
@@ -17,6 +19,8 @@ export class ArtboardControls {
         private readonly artboardStyleConsumer: ArtboardStyleListener,
         private readonly artboardStyleProducer: PipeEndpoint<ArtboardStyleRequest, ArtboardStyleResponse, 'artboard-style-inverse'>,
         private readonly colorRepresenter: ColorRepresenterService,
+        private readonly artboardListener: ArtboardListener,
+        private readonly artboardInverseEndpoint: PipeEndpoint<ArtboardRequest, ArtboardResponse, 'artboard-inverse'>,
 
     ) {
         this.artboardEl = document.createElement('div');
@@ -36,7 +40,7 @@ export class ArtboardControls {
 
         Object.assign(this.artboardEl.style, {
             margin: '10px 2px 0px 0px',
-            padding: '3px 10px 3px 10px',
+            padding: '5px 10px',
             background: 'rgba(42,42,42,.7)',
             'border-radius': '5px',
             color: '#eee',
@@ -82,10 +86,42 @@ export class ArtboardControls {
                 border: this.colorRepresenter.representColorButtonBorder(styleValue!),
             });
         };
+        this.abWidth.onclick = async (_event: MouseEvent) => {
+            const { value } = await this.artboardInverseEndpoint.makeGetRequest({
+                property: 'width',
+                value: `${this.artboard.width}`,
+            });
+            this.artboardListener.updateAttributes(this.artboard.svg, 'width', value!);
+        };
+
+        this.abHeight.onclick = async (_event: MouseEvent) => {
+            const { value } = await this.artboardInverseEndpoint.makeGetRequest({
+                property: 'height',
+                value: `${this.artboard.height}`,
+            });
+            this.artboardListener.updateAttributes(this.artboard.svg, 'height', value!);
+        };
+
+        this.artboardListener.changeProperty.on(({property, value}) => {
+            if (property === 'width') {
+                this.updateArtboardWidth(value);
+            }
+            if (property === 'height') {
+                this.updateArtboardHeight(value);
+            }
+        });
     }
 
     appendTo(parentElement: HTMLElement) {
         parentElement.appendChild(this.artboardEl);
+    }
+
+    updateArtboardWidth(value: string | number) {
+        this.abWidth.innerHTML = `${ value }`;
+    }
+
+    updateArtboardHeight(value: string | number) {
+        this.abHeight.innerHTML = `${ value }`;
     }
 
 }
