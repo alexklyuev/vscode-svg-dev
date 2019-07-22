@@ -1,5 +1,7 @@
 # Change Log
 
+ - 0.8.3
+   - Shape tools inside edition window
  - 0.8.2
    - artboard dimensions control inside editing window
    - fill and stroke updates on element selection
