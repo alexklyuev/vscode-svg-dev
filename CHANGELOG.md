@@ -1,5 +1,7 @@
 # Change Log
 
+ - 0.8.4
+   - edit points tool appears in editing window if editable element selected
  - 0.8.3
    - Shape tools inside edition window
  - 0.8.2
@@ -19,3 +21,4 @@
    - webpack production mode for client (webview) bundle
  - 0.7.6
    - fix assets path, so now it works not only in development mode but also as regularly installed extension
+   
