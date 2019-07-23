@@ -6,6 +6,8 @@ Visual svg editor.
 
 Create and edit vector graphic.
 
+![SVG dev](https://raw.githubusercontent.com/alexklyuev/svg-dev/master/docs/images/screenshot1.png)
+
 ## Changelog
  - 0.8.4
    - edit points tool appears in editing window if editable element selected
