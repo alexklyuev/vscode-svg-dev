@@ -22,7 +22,7 @@ import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener, artboardListener, artboardStyleListener } from './src/listeners';
 import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
-import { hud, shapesOutlet } from './src/services/hud';
+import { hud, shapesOutlet, editPointsControl } from './src/services/hud';
 import { appearance } from './src/services/appearance';
 import { AppearanceResponse } from '../shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from './src/producers/inverse-interactive.producer';
@@ -169,4 +169,21 @@ hud.appearanceOutlet.strokeControl.appearanceRequest.on(appearanceRequestCallbac
 shapesOutlet.createShapeEvent.on(shapeName => {
     inverseInteractiveEndpoint.makeSetRequest({});
     figuresCollection.delegate(shapeName)!.create(shapeName, {});
+});
+
+editPointsControl.editPointsEvent.on(_event => {
+    inverseInteractiveEndpoint.makeSetRequest({});
+    editListener.editElement();
+});
+
+holder.setElements.on(elements => {
+    if (elements.length > 0) {
+        const element = elements[0];
+        const delegate = figuresCollection.delegate(element);
+        if (delegate && delegate.edit instanceof Function) {
+            editPointsControl.show();
+            return;
+        }
+    }
+    editPointsControl.hide();
 });

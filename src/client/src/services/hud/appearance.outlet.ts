@@ -2,6 +2,7 @@ import { ArtboardControls } from "./artboard.controls";
 import { FillControl } from "./fill.control";
 import { StrokeControl } from "./stroke.control";
 import { ShapesOutlet } from "./shapes.outlet";
+import { EditPointsControl } from "./edit-points.control";
 
 export class AppearanceOutlet {
 
@@ -12,6 +13,7 @@ export class AppearanceOutlet {
         public readonly fillControl: FillControl,
         public readonly strokeControl: StrokeControl,
         public readonly shapesOutlet: ShapesOutlet,
+        public readonly editPointsControl: EditPointsControl,
     ) {
         this.aprOutletEl = document.createElement('div');
         Object.assign(this.aprOutletEl.style, {
@@ -22,6 +24,7 @@ export class AppearanceOutlet {
         this.fillControl.appendTo(this.aprOutletEl);
         this.strokeControl.appendTo(this.aprOutletEl);
         this.shapesOutlet.appendTo(this.aprOutletEl);
+        this.editPointsControl.appendTo(this.aprOutletEl);
     }
 
     appendTo(parentElement: HTMLElement) {
