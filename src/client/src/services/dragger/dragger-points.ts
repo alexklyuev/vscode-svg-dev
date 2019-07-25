@@ -4,7 +4,7 @@ import { Dragger } from "./dragger.interface";
 
 export class DraggerPoints implements Dragger {
 
-    private pointsStore = new Map<SVGElement, number[][]>();
+    private pointsStore = new Map<SVGElement, {points: number[][], initial: [number, number]}>();
 
     constructor(
         private zoom: Zoom,
@@ -12,33 +12,44 @@ export class DraggerPoints implements Dragger {
 
     onMousedown(
         element: SVGElement,
-        clientX: number,
-        clientY: number,
+        event: MouseEvent,
     ) {
+        const { clientX, clientY } = event;
+        const points = element.getAttribute('points')!
+        .split(/\s/)
+        .map(
+            pair => pair
+                .trim()
+                .split(',')
+                .map(val => parseFloat(val))
+        )
+        .map(([pX, pY]) => [
+            Math.round(clientX - (pX * this.zoom.value)),
+            Math.round(clientY - (pY * this.zoom.value)),
+        ]);
         this.pointsStore.set(
             element,
-            element.getAttribute('points')!
-            .split(/\s/)
-            .map(
-                pair => pair
-                    .trim()
-                    .split(',')
-                    .map(val => parseFloat(val))
-            )
-            .map(([pX, pY]) => [
-                Math.round(clientX - (pX * this.zoom.value)),
-                Math.round(clientY - (pY * this.zoom.value)),
-            ])
+            {points, initial: [clientX, clientY]},
         );
     }
 
     onMousemove(
         element: SVGElement,
-        clientX: number,
-        clientY: number,
+        event: MouseEvent,
     ) {
-        const storePoints = this.pointsStore.get(element)!;
-        const newPoints = storePoints
+        let { clientX, clientY, shiftKey } = event;
+        const storeValue = this.pointsStore.get(element)!;
+        const { points, initial: [initialX, initialY] } = storeValue;
+        if (shiftKey) {
+            const absDX = Math.abs(clientX - initialX);
+            const absDY = Math.abs(clientY - initialY);
+            if (absDX > absDY) {
+                clientY = initialY;
+            } else {
+                clientX = initialX;
+            }
+        }
+        const newPoints = points
         .map(([sX, sY]) => [
             Math.round((clientX - sX) / this.zoom.value),
             Math.round((clientY - sY) / this.zoom.value),
@@ -50,8 +61,7 @@ export class DraggerPoints implements Dragger {
 
     onMouseup(
         element: SVGElement,
-        _clientX: number,
-        _clientY: number,
+        _event: MouseEvent,
     ) {
         this.pointsStore.delete(element);
     }

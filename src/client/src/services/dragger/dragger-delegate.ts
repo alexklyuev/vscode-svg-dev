@@ -10,39 +10,36 @@ export class DraggerDelegate implements Dragger {
 
     onMousedown(
         element: SVGElement,
-        clientX: number,
-        clientY: number,
+        event: MouseEvent,
     ) {
         Array.from(element.children).forEach(child => {
             const delegate = this.figuresCollection.delegate(child);
             if (delegate) {
-                delegate.drag.onMousedown(child as SVGElement, clientX, clientY);
+                delegate.drag.onMousedown(child as SVGElement, event);
             }
         });
     }
 
     onMousemove(
         element: SVGElement,
-        clientX: number,
-        clientY: number,
+        event: MouseEvent,
     ) {
         Array.from(element.children).forEach(child => {
             const delegate = this.figuresCollection.delegate(child);
             if (delegate) {
-                delegate.drag.onMousemove(child as SVGElement, clientX, clientY);
+                delegate.drag.onMousemove(child as SVGElement, event);
             }
         });
     }
 
     onMouseup(
         element: SVGElement,
-        clientX: number,
-        clientY: number,
+        event: MouseEvent,
     ) {
         Array.from(element.children).forEach(child => {
             const delegate = this.figuresCollection.delegate(child);
             if (delegate) {
-                delegate.drag.onMouseup(child as SVGElement, clientX, clientY);
+                delegate.drag.onMouseup(child as SVGElement, event);
             }
         });
     }

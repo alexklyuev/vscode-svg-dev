@@ -1,17 +1,14 @@
 export interface Dragger {
     onMousedown(
         element: SVGElement,
-        clientX: number,
-        clientY: number,
+        event: MouseEvent,
     ): void;
     onMousemove(
         element: SVGElement,
-        clientX: number,
-        clientY: number,
+        event: MouseEvent,
     ): void;
     onMouseup(
         element: SVGElement,
-        clientX: number,
-        clientY: number,
+        event: MouseEvent,
     ): void;
 }

@@ -4,7 +4,7 @@ import { Dragger } from "./dragger.interface";
 
 export class DraggerValue implements Dragger {
 
-    private attrsStore = new Map<SVGElement, {[K: string]: number}>();
+    private attrsStore = new Map<SVGElement, {keys: {[K: string]: number}, initial: [number, number]}>();
 
     constructor(
         private xAttrs: string[],
@@ -14,45 +14,58 @@ export class DraggerValue implements Dragger {
 
     onMousedown(
         element: SVGElement,
-        clientX: number,
-        clientY: number,
+        event: MouseEvent,
     ) {
+        const { clientX, clientY } = event;
         this.attrsStore.set(
             element,
-            Object.assign(
-                {},
-                this.xAttrs.reduce((akk, key) => {
-                    akk[key] = this.getValueAttr(element, key, clientX);
-                    return akk;
-                }, {} as {[K: string]: number}),
-                this.yAttrs.reduce((akk, key) => {
-                    akk[key] = this.getValueAttr(element, key, clientY);
-                    return akk;
-                }, {} as {[K: string]: number}),
-            ),
+            {
+                keys: Object.assign(
+                    {},
+                    this.xAttrs.reduce((akk, key) => {
+                        akk[key] = this.getValueAttr(element, key, clientX);
+                        return akk;
+                    }, {} as {[K: string]: number}),
+                    this.yAttrs.reduce((akk, key) => {
+                        akk[key] = this.getValueAttr(element, key, clientY);
+                        return akk;
+                    }, {} as {[K: string]: number}),
+                ),
+                initial: [clientX, clientY],
+            }
+
         );
     }
 
     onMousemove(
         element: SVGElement,
-        clientX: number,
-        clientY: number,
+        event: MouseEvent,
     ) {
+        let { clientX, clientY, shiftKey } = event;
         const storeVals = this.attrsStore.get(element)!;
+        const { keys, initial: [ initialX, initialY ] } = storeVals;
+        if (shiftKey) {
+            const absDX = Math.abs(clientX - initialX);
+            const absDY = Math.abs(clientY - initialY);
+            if (absDX > absDY) {
+                clientY = initialY;
+            } else {
+                clientX = initialX;
+            }
+        }
         this.xAttrs.forEach(key => {
-            const val = ((clientX - storeVals[key]) / this.zoom.value);
-            element.setAttribute(key, `${val}`);
+            const val = ((clientX - keys[key]) / this.zoom.value);
+            element.setAttribute(key, `${ val }`);
         });
         this.yAttrs.forEach(key => {
-            const val = ((clientY - storeVals[key]) / this.zoom.value);
-            element.setAttribute(key, `${val}`);
+            const val = ((clientY - keys[key]) / this.zoom.value);
+            element.setAttribute(key, `${ val }`);
         });
     }
 
     onMouseup(
         element: SVGElement,
-        _clientX: number,
-        _clientY: number,
+        _event: MouseEvent,
     ) {
         this.attrsStore.delete(element);
     }

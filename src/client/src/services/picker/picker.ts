@@ -33,12 +33,10 @@ export class Picker {
     @connectEvent(PickerEvents.mouseMove)
     onMousemove(event: MouseEvent) {
         this.controlPropagation(event);
-        const { clientX, clientY } = event;
         this.holder.elements.forEach(element => {
             this.figuresCollection.delegate(element)!.drag.onMousemove(
                 element,
-                clientX,
-                clientY,
+                event,
             );
         });
         return event;
@@ -86,12 +84,10 @@ export class Picker {
                 const svg = this.artboard.svg;
                 svg.insertBefore(copy, target);
             }
-            const { clientX, clientY } = event;
             this.holder.elements.forEach(element => {
                 this.figuresCollection.delegate(element)!.drag.onMousedown(
                     element,
-                    clientX,
-                    clientY,
+                    event,
                 );
             });
             this.artboard.svg.addEventListener('mousemove', this.bindedMousemove);
@@ -108,12 +104,10 @@ export class Picker {
     @connectEvent(PickerEvents.mouseUp)
     onMouseup(event: MouseEvent) {
         this.controlPropagation(event);
-        const { clientX, clientY } = event;
         this.holder.elements.forEach(element => {
             this.figuresCollection.delegate(element)!.drag.onMouseup(
                 element,
-                clientX,
-                clientY,
+                event,
             );
         });
         this.artboard.svg.removeEventListener('mousemove', this.bindedMousemove);
