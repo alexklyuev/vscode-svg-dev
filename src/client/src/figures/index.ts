@@ -22,6 +22,8 @@ import { coordinator } from "../services/coordinator";
 import { hud } from "../services/hud";
 import { appearance } from "../services/appearance";
 import { textReverseEndpoint } from "../producers/text-reverse.producer";
+import { MoverPath } from "../services/mover/mover-path";
+import { MoverPoints } from "../services/mover/mover-points";
 
 
 const figuresCollection = new FiguresCollection();
@@ -34,8 +36,13 @@ const draggerDelegate = new DraggerDelegate(figuresCollection);
 const draggerPath = new DraggerPath(zoom, pathPoints);
 
 
+const moverPath = new MoverPath(pathPoints);
+const moverPoints = new MoverPoints();
+
+
 export const pathFigure = new PathFigure(
     draggerPath,
+    moverPath,
     artboard,
     artboardMove,
     zoom,
@@ -107,6 +114,7 @@ figuresCollection.add(
     ),
     new PolygonFigure(
         draggerPoints,
+        moverPoints,
         artboard,
         artboardMove,
         zoom,
@@ -118,6 +126,7 @@ figuresCollection.add(
     ),
     new PolylineFigure(
         draggerPoints,
+        moverPoints,
         artboard,
         artboardMove,
         zoom,

@@ -1,4 +1,5 @@
 import { Dragger } from "../services/dragger/dragger.interface";
+import { Mover } from "../services/mover/mover.model";
 
 export interface Figure<Ctor> {
 
@@ -13,5 +14,7 @@ export interface Figure<Ctor> {
     create(elementName: string, attributes: {[K: string]: string}): void;
 
     edit?(element: SVGElement): void;
+
+    move?: Mover;
 
 }

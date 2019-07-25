@@ -38,8 +38,10 @@ import {
     artboardStyleInverseConnection,
     inverseInteractiveConnection,
     textReverseConnection,
+    moveKeyConnection,
 } from './services/connection';
 import { CancelKeys } from './shared/pipes/cancel.pipe';
+import { MoveArrowKeys } from './shared/pipes/move-key.pipe';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -403,6 +405,11 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('svgDevGroup', async (command: 'group' | 'ungroup') => {
             groupConnection.ifConnected(endpoint => {
                 endpoint.makeSetRequest(command);
+            });
+        }),
+        vscode.commands.registerCommand('svgDevMoveKey', ([key, shift]: [MoveArrowKeys, boolean]) => {
+            moveKeyConnection.ifConnected(endpoint => {
+                endpoint.makeSetRequest({ key, shift });
             });
         }),
     );

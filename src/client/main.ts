@@ -26,6 +26,8 @@ import { hud, shapesOutlet, editPointsControl } from './src/services/hud';
 import { appearance } from './src/services/appearance';
 import { AppearanceResponse } from '../shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from './src/producers/inverse-interactive.producer';
+import { MoveKeyListener } from './src/listeners/move-key.listener';
+import { moveKeyPipe } from '../shared/pipes/move-key.pipe';
 
 
 /**
@@ -119,6 +121,16 @@ groupListener.listen();
  * 
  */
 cancelListener.listen();
+
+/**
+ * 
+ */
+const moveKeyListener = new MoveKeyListener(webviewEndpoint, moveKeyPipe, holder, figuresCollection);
+moveKeyListener.listen();
+moveKeyListener.moveEvent.on(_key => {
+    guides.setContainerStyles();
+    guides.setSelectionStyles(holder.elements);
+});
 
 /**
  * 

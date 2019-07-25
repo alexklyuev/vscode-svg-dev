@@ -9,10 +9,12 @@ Create and edit vector graphic.
 ![SVG dev](https://raw.githubusercontent.com/alexklyuev/svg-dev/master/docs/images/screenshot1.png)
 
 ## Changelog
+ - 0.8.5
+   - strict vertical/horizontal shape moving with shift key pressed
  - 0.8.4
    - edit points tool appears in editing window if editable element selected
  - 0.8.3
-   - Shape tools inside edition window
+   - shape tools inside edition window
  - 0.8.2
    - artboard dimensions control inside editing window
    - fill and stroke updates on element selection
@@ -34,7 +36,6 @@ Create and edit vector graphic.
 ## Todo
 - docs
 - moving shapes by keybord arrows
-- strict vertical and horizontal moving
 - format flush
 - free property tools
 - flush current selection

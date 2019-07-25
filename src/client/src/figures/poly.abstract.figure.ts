@@ -11,6 +11,7 @@ import { Guides } from "../services/guides/guides";
 import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Appearance } from "../services/appearance/appearance";
 import { Hud } from "../services/hud/hud";
+import { MoverPoints } from "../services/mover/mover-points";
 
 
 export abstract class PolyFigure implements Figure<SVGElement> {
@@ -22,7 +23,8 @@ export abstract class PolyFigure implements Figure<SVGElement> {
     abstract fill: string;
 
     constructor(
-        public drag: Dragger,
+        public readonly drag: Dragger,
+        public readonly move: MoverPoints,
         private artboard: Artboard,
         private artboardMove: ArtboardMove,
         public zoom: Zoom,

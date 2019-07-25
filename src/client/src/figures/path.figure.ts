@@ -13,6 +13,7 @@ import { PointConcerns, PointSharedConcerns } from "./models/point-concerns.mode
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Hud } from "../services/hud/hud";
 import { Appearance } from "../services/appearance/appearance";
+import { Mover } from "../services/mover/mover.model";
 
 
 export class PathFigure implements Figure<SVGPathElement> {
@@ -29,6 +30,7 @@ export class PathFigure implements Figure<SVGPathElement> {
 
     constructor(
         public readonly drag: Dragger,
+        public readonly move: Mover,
         private artboard: Artboard,
         private artboardMove: ArtboardMove,
         private zoom: Zoom,

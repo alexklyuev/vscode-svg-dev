@@ -3,7 +3,7 @@
     "displayName": "SVG dev",
     "description": "SVG visual editor",
     "preview": true,
-    "version": "0.8.4",
+    "version": "0.8.5",
     "icon": "images/line-7_big.png",
     "publisher": "kontrail",
     "repository": {
@@ -42,6 +42,54 @@
                 "mac": "backspace",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevElementCommandDelete"
+            },
+            {
+                "key": "alt+left",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevMoveKey",
+                "args": ["left", false]
+            },
+            {
+                "key": "alt+up",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevMoveKey",
+                "args": ["up", false]
+            },
+            {
+                "key": "alt+right",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevMoveKey",
+                "args": ["right", false]
+            },
+            {
+                "key": "alt+down",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevMoveKey",
+                "args": ["down", false]
+            },
+            {
+                "key": "shift+alt+left",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevMoveKey",
+                "args": ["left", true]
+            },
+            {
+                "key": "shift+alt+up",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevMoveKey",
+                "args": ["up", true]
+            },
+            {
+                "key": "shift+alt+right",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevMoveKey",
+                "args": ["right", true]
+            },
+            {
+                "key": "shift+alt+down",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevMoveKey",
+                "args": ["down", true]
             }
         ],
         "commands": [
