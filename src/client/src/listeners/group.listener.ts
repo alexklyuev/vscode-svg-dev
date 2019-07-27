@@ -42,6 +42,19 @@ export class GroupListener {
      */
     @setState
     group() {
+        const map = new Map<SVGElement, number>();
+        this.holder.elements.forEach(el => map.set(el, 0));
+        const parent = this.holder.elements[0].parentElement!;
+        Array.from(parent.children).forEach((child, index) => {
+            if (this.holder.elements.indexOf(child as SVGElement) !== -1) {
+                map.set(child as SVGElement, index);
+            }
+        });
+        this.holder.elements.sort((a, b) => {
+            const ai = map.get(a) || 0;
+            const bi = map.get(b) || 0;
+            return ai === bi ? 0 : ai - bi;
+        });
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         this.artboard.svg.appendChild(g);
         this.holder.elements.forEach(el => g.appendChild(el));

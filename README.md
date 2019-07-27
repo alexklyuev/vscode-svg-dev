@@ -11,6 +11,7 @@ Create and edit vector graphic.
 ## What`s new
  - 0.8.7
    - copy and copy-in-place commands in element menu (also keybindings cmd+d and cmd+shift+d)
+   - attributes menu - add any attribute to element, get list of attributes to edit
  - 0.8.6
    - group/ungroup tool in editor window
  - 0.8.5
@@ -34,13 +35,12 @@ Create and edit vector graphic.
    - visual create all elements (circle, ellipse, rect, polygon, polyline, path)
    - new view and extension icons
 
-_...(more in changelog)_
+_(more in changelog)_
 
 
 ## Todo
 - docs
 - format flush
-- free property tools
 - flush current selection
 - conditional tools
 - strict position tool group

@@ -39,6 +39,7 @@ import {
     inverseInteractiveConnection,
     textReverseConnection,
     moveKeyConnection,
+    listAttributesConnection,
 } from './services/connection';
 import { CancelKeys } from './shared/pipes/cancel.pipe';
 import { MoveArrowKeys } from './shared/pipes/move-key.pipe';
@@ -410,6 +411,35 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('svgDevMoveKey', ([key, shift]: [MoveArrowKeys, boolean]) => {
             moveKeyConnection.ifConnected(endpoint => {
                 endpoint.makeSetRequest({ key, shift });
+            });
+        }),
+        vscode.commands.registerCommand('svgDevAddAttribute', async () => {
+            await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
+            const attribute = await vscode.window.showInputBox({prompt: 'Input attribute name'});
+            await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
+            if (attribute) {
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
+                const value = await vscode.window.showInputBox({prompt: 'Input attribute value'});
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
+                if (attribute && value) {
+                    remoteAttributeConnnection.ifConnected(async conn => {
+                        conn.makeSetRequest({ attribute, value });
+                    });
+                }
+            }
+        }),
+        vscode.commands.registerCommand('svgDevListAttributes', () => {
+            listAttributesConnection.ifConnected(async endpoint => {
+                const names = await endpoint.makeGetRequest({});
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
+                const pick = await vscode.window.showQuickPick(names);
+                await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
+                if (pick) {
+                    remoteAttributeConnnection.ifConnected(async conn => {
+                        const remote = new RemoteAttributeInput(conn, pick);
+                        await remote.changeByInput();
+                    });
+                }
             });
         }),
     );

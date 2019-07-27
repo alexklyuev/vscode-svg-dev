@@ -33,6 +33,8 @@ import { StrokeLinecap } from "./stroke/stroke-linecap.tool";
 import { StrokeLinejoin } from "./stroke/stroke-linejoin.tool";
 import { CopyInPlaceTool } from "./element/copy-in-place.tool";
 import { CopyTool } from "./element/copy.tool";
+import { ListAttributesTool } from "./attributes/list-attributes.tool";
+import { AddAttributeTool } from "./attributes/add-attribute.tool";
 
 export const toolbox = new Toolbox();
 
@@ -50,6 +52,11 @@ toolbox.register(
     new DeleteTool(),
     new IdTool(),
     new TransformTool(),
+);
+toolbox.register(
+    new ToolGroup('Attributes'),
+    new AddAttributeTool(),
+    new ListAttributesTool(),
 );
 toolbox.register(
     new ToolGroup('Group'),

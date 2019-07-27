@@ -28,6 +28,8 @@ import { AppearanceResponse } from '../shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from './src/producers/inverse-interactive.producer';
 import { MoveKeyListener } from './src/listeners/move-key.listener';
 import { moveKeyPipe } from '../shared/pipes/move-key.pipe';
+import { ListAttributesListener } from './src/listeners/list-attributes.listener';
+import { listAttributesPipe } from '../shared/pipes/list-attributes.pipe';
 
 
 /**
@@ -216,3 +218,6 @@ elementListener.copyElementEvent.on(_element => {
         guides.setSelectionStyles(holder.elements);
     }, 0);
 });
+
+const listAttributesListener = new ListAttributesListener(webviewEndpoint, listAttributesPipe, holder);
+listAttributesListener.listen();

@@ -18,6 +18,7 @@ import { appearancePipe } from "../../shared/pipes/appearance.pipe";
 import { inverseInteractivePipe } from "../../shared/pipes/inverse-interactive.pipe";
 import { textReversePipe } from "../../shared/pipes/text-reverse.pipe";
 import { moveKeyPipe } from "../../shared/pipes/move-key.pipe";
+import { listAttributesPipe } from "../../shared/pipes/list-attributes.pipe";
 
 
 export const pickConnection = new PipeConnection(pickPipe);
@@ -39,6 +40,7 @@ export const cancelConnection = new PipeConnection(cancelPipe);
 export const inverseInteractiveConnection = new PipeConnection(inverseInteractivePipe);
 export const textReverseConnection = new PipeConnection(textReversePipe);
 export const moveKeyConnection = new PipeConnection(moveKeyPipe);
+export const listAttributesConnection = new PipeConnection(listAttributesPipe);
 
 export const appearanceConnection = new PipeConnection(appearancePipe);
 
@@ -63,6 +65,7 @@ const connections: PipeConnection<any, any, any>[] = [
     inverseInteractiveConnection,
     textReverseConnection,
     moveKeyConnection,
+    listAttributesConnection,
 ];
 
 export const connectionsManager = new ConnectionsManager();
