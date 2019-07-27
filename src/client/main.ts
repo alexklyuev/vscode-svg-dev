@@ -22,7 +22,7 @@ import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener, artboardListener, artboardStyleListener } from './src/listeners';
 import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
-import { hud, shapesOutlet, editPointsControl } from './src/services/hud';
+import { hud, shapesOutlet, editPointsControl, groupControls } from './src/services/hud';
 import { appearance } from './src/services/appearance';
 import { AppearanceResponse } from '../shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from './src/producers/inverse-interactive.producer';
@@ -198,4 +198,14 @@ holder.setElements.on(elements => {
         }
     }
     editPointsControl.hide();
+});
+
+groupControls.groupEvent.on(_event => {
+    if (holder.elements.length > 0) {
+        groupListener.group();
+    }
+});
+
+groupControls.ungroupEvent.on(_event => {
+    groupListener.ungroup();
 });
