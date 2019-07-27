@@ -5,6 +5,6 @@ export class FlushTool implements Tool {
 
     label = 'Flush';
 
-    command = {title: 'Flush', command: 'svgDevFlush'};
+    command = {title: 'Show svg code', command: 'svgDevFlush'};
 
 }

@@ -9,6 +9,10 @@ Create and edit vector graphic.
 ![SVG dev](https://raw.githubusercontent.com/alexklyuev/svg-dev/master/docs/images/screenshot1.png)
 
 ## What`s new
+ - 0.8.7
+   - copy and copy-in-place commands in element menu (also keybindings cmd+d and cmd+shift+d)
+ - 0.8.6
+   - group/ungroup tool in editor window
  - 0.8.5
    - move shapes by alt+arrows (and shift+alt+arrows)
    - strict vertical/horizontal shape moving with shift key pressed

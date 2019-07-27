@@ -3,7 +3,7 @@
     "displayName": "SVG dev",
     "description": "SVG visual editor",
     "preview": true,
-    "version": "0.8.5",
+    "version": "0.8.7",
     "icon": "images/line-7_big.png",
     "publisher": "kontrail",
     "repository": {
@@ -90,6 +90,20 @@
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
                 "args": ["down", true]
+            },
+            {
+                "key": "ctrl+d",
+                "mac": "cmd+d",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevElementCommand",
+                "args": "copy"
+            },
+            {
+                "key": "ctrl+shift+d",
+                "mac": "cmd+shift+d",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevElementCommand",
+                "args": "copy-in-place"
             }
         ],
         "commands": [

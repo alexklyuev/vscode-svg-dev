@@ -108,7 +108,7 @@ arrangeListener.listen();
 /**
  * 
  */
-const elementListener = new ElementListener(webviewEndpoint, elementPipe, holder);
+const elementListener = new ElementListener(webviewEndpoint, elementPipe, holder, figuresCollection);
 elementListener.listen();
 
 /**
@@ -208,4 +208,11 @@ groupControls.groupEvent.on(_event => {
 
 groupControls.ungroupEvent.on(_event => {
     groupListener.ungroup();
+});
+
+elementListener.copyElementEvent.on(_element => {
+    setTimeout(() => {
+        guides.setContainerStyles();
+        guides.setSelectionStyles(holder.elements);
+    }, 0);
 });

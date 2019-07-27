@@ -31,6 +31,8 @@ import { PathEditTool } from "./path/path-edit-points.tool";
 import { PathEditInteractive } from "./path/path-edit-interactive.tool";
 import { StrokeLinecap } from "./stroke/stroke-linecap.tool";
 import { StrokeLinejoin } from "./stroke/stroke-linejoin.tool";
+import { CopyInPlaceTool } from "./element/copy-in-place.tool";
+import { CopyTool } from "./element/copy.tool";
 
 export const toolbox = new Toolbox();
 
@@ -43,6 +45,8 @@ toolbox.register(
 );
 toolbox.register(
     new ToolGroup('Element'),
+    new CopyTool(),
+    new CopyInPlaceTool(),
     new DeleteTool(),
     new IdTool(),
     new TransformTool(),

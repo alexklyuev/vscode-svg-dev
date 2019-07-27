@@ -1,5 +1,9 @@
 # Change Log
 
+ - 0.8.7
+   - copy and copy-in-place commands in element menu (also keybindings cmd+d and cmd+shift+d)
+ - 0.8.6
+   - group/ungroup tool in editor window
  - 0.8.5
    - move shapes by alt+arrows (and shift+alt+arrows)
    - strict vertical/horizontal shape moving with shift key pressed
