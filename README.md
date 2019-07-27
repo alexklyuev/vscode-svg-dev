@@ -8,8 +8,9 @@ Create and edit vector graphic.
 
 ![SVG dev](https://raw.githubusercontent.com/alexklyuev/svg-dev/master/docs/images/screenshot1.png)
 
-## Changelog
+## What`s new
  - 0.8.5
+   - move shapes by alt+arrows (and shift+alt+arrows)
    - strict vertical/horizontal shape moving with shift key pressed
  - 0.8.4
    - edit points tool appears in editing window if editable element selected
@@ -28,14 +29,12 @@ Create and edit vector graphic.
    - create and edit path
    - visual create all elements (circle, ellipse, rect, polygon, polyline, path)
    - new view and extension icons
- - 0.7.7
-   - webpack production mode for client (webview) bundle
- - 0.7.6
-   - fix assets path, so now it works not only in development mode but also as regularly installed extension
+
+_...(more in changelog)_
+
 
 ## Todo
 - docs
-- moving shapes by keybord arrows
 - format flush
 - free property tools
 - flush current selection
