@@ -30,7 +30,6 @@ export class GroupListener {
     /**
      * 
      */
-    @setState
     processCommand(command: 'group' | 'ungroup') {
         switch (command) {
             case 'group': this.group(); break;
@@ -41,6 +40,7 @@ export class GroupListener {
     /**
      * 
      */
+    @setState
     group() {
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         this.artboard.svg.appendChild(g);
@@ -51,6 +51,7 @@ export class GroupListener {
     /**
      * 
      */
+    @setState
     ungroup() {
         this.holder.elements
         .filter(el => el instanceof SVGGElement)

@@ -14,6 +14,7 @@ import { appearanceEndpoint } from "../../producers/appearance.producer";
 import { ShapesOutlet } from "./shapes.outlet";
 import { pathShape, polygonShape, polylineShape, rectShape, circleShape, ellipseShape, textShape, lineShape } from "./shapes";
 import { EditPointsControl } from "./edit-points.control";
+import { GroupControls } from "./group.controls";
 
 export const colorRepresenter = new ColorRepresenterService();
 export const artboardControls = new ArtboardControls(
@@ -44,12 +45,14 @@ export const shapesOutlet = new ShapesOutlet(
   ellipseShape,
   textShape,
 );
+export const groupControls = new GroupControls();
 export const editPointsControl = new EditPointsControl();
 export const appearanceOutlet = new AppearanceOutlet(
   artboardControls,
   fillControl,
   strokeControl,
   shapesOutlet,
+  groupControls,
   editPointsControl,
 );
 export const hintsOutlet = new HintsOutlet();

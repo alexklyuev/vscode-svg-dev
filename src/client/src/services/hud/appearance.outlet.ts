@@ -3,6 +3,7 @@ import { FillControl } from "./fill.control";
 import { StrokeControl } from "./stroke.control";
 import { ShapesOutlet } from "./shapes.outlet";
 import { EditPointsControl } from "./edit-points.control";
+import { GroupControls } from "./group.controls";
 
 export class AppearanceOutlet {
 
@@ -13,6 +14,7 @@ export class AppearanceOutlet {
         public readonly fillControl: FillControl,
         public readonly strokeControl: StrokeControl,
         public readonly shapesOutlet: ShapesOutlet,
+        public readonly groupControls: GroupControls,
         public readonly editPointsControl: EditPointsControl,
     ) {
         this.aprOutletEl = document.createElement('div');
@@ -24,6 +26,7 @@ export class AppearanceOutlet {
         this.fillControl.appendTo(this.aprOutletEl);
         this.strokeControl.appendTo(this.aprOutletEl);
         this.shapesOutlet.appendTo(this.aprOutletEl);
+        this.groupControls.appendTo(this.aprOutletEl);
         this.editPointsControl.appendTo(this.aprOutletEl);
     }
 
