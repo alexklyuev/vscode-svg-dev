@@ -12,6 +12,7 @@ import { Guides } from "../services/guides/guides";
 import { Appearance } from "../services/appearance/appearance";
 import { Hud } from "../services/hud/hud";
 import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
+import { Mover } from "../services/mover/mover.model";
 
 
 export class LineFigure implements Figure<SVGLineElement> {
@@ -21,6 +22,7 @@ export class LineFigure implements Figure<SVGLineElement> {
 
     constructor(
         public drag: DraggerValue,
+        public readonly move: Mover,
         private artboard: Artboard,
         private artboardMove: ArtboardMove,
         private zoom: Zoom,

@@ -4,6 +4,7 @@ import { setState } from "../decorators/set-state.decorator";
 import { DraggerValue } from "../services/dragger/dragger-value";
 import { Appearance } from "../services/appearance/appearance";
 import { PipeEndpoint } from "../../../shared/services/pipe/pipe";
+import { Mover } from "../services/mover/mover.model";
 
 
 export class TextFigure implements Figure<SVGTextElement> {
@@ -14,6 +15,7 @@ export class TextFigure implements Figure<SVGTextElement> {
 
     constructor(
         public drag: DraggerValue,
+        public readonly move: Mover,
         private artboard: Artboard,
         private appearance: Appearance,
         private textReverseEndpoint: PipeEndpoint<{}, {text: string}, 'text-reverse'>,

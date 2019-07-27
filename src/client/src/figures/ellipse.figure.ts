@@ -10,6 +10,7 @@ import { Guides } from "../services/guides/guides";
 import { PointConcerns } from "./models/point-concerns.model";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Appearance } from "../services/appearance/appearance";
+import { Mover } from "../services/mover/mover.model";
 
 export class EllipseFigure implements Figure<SVGEllipseElement> {
 
@@ -19,6 +20,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
 
     constructor(
         public readonly drag: DraggerValue,
+        public readonly move: Mover,
         public readonly artboard: Artboard,
         public readonly artboardMove: ArtboardMove,
         public readonly zoom: Zoom,

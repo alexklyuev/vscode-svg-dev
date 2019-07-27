@@ -2,6 +2,7 @@ import { Figure } from "./figure.model";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 import { DraggerDelegate } from "../services/dragger/dragger-delegate";
+import { Mover } from "../services/mover/mover.model";
 
 export class GFigure implements Figure<SVGGElement> {
 
@@ -11,7 +12,8 @@ export class GFigure implements Figure<SVGGElement> {
 
 
     constructor(
-        public drag: DraggerDelegate,
+        public readonly drag: DraggerDelegate,
+        public readonly move: Mover,
         private artboard: Artboard,
     ) {}
 

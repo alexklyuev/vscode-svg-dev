@@ -10,6 +10,7 @@ import { Coorinator } from "../services/coordinator/coordinator";
 import { CancelListener } from "../listeners/cancel.listener";
 import { Guides } from "../services/guides/guides";
 import { Appearance } from "../services/appearance/appearance";
+import { Mover } from "../services/mover/mover.model";
 
 export class CircleFigure implements Figure<SVGCircleElement> {
 
@@ -19,6 +20,7 @@ export class CircleFigure implements Figure<SVGCircleElement> {
 
     constructor(
         public readonly drag: DraggerValue,
+        public readonly move: Mover,
         private artboard: Artboard,
         private artboardMove: ArtboardMove,
         private userEventMan: UserEventManager,

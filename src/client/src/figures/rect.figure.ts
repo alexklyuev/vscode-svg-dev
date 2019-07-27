@@ -10,6 +10,7 @@ import { Guides } from "../services/guides/guides";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { CancelListener } from "../listeners/cancel.listener";
 import { Appearance } from "../services/appearance/appearance";
+import { Mover } from "../services/mover/mover.model";
 
 
 export class RectFigure implements Figure<SVGRectElement> {
@@ -20,6 +21,7 @@ export class RectFigure implements Figure<SVGRectElement> {
 
     constructor(
         public drag: DraggerValue,
+        public readonly move: Mover,
         private artboard: Artboard,
         private userEventMan: UserEventManager,
         private artboardMove: ArtboardMove,
