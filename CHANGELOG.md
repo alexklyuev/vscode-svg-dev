@@ -2,6 +2,7 @@
 
  - 0.8.7
    - copy and copy-in-place commands in element menu (also keybindings cmd+d and cmd+shift+d)
+   - attributes menu - add any attribute to element, get list of attributes to edit
  - 0.8.6
    - group/ungroup tool in editor window
  - 0.8.5
