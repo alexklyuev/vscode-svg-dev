@@ -16,28 +16,28 @@ Create and edit vector graphic.
 
 ### Creating and editing svg documents
 
-To create new svg document go to "SVG dev" activity bar menu and press `Document -> New` menu item. Or start typing "SVG dev: new document" in command prompt. New svg visual document would be opened with empty artboard on it.
+To create new svg document go to "SVG dev" activity bar "Tools" menu and press `Document -> New` menu item. Or start typing "SVG dev: new document" in command prompt. New svg visual document would be opened with empty artboard on it.
 
 To edit existing document open it and click `SVG dev: Edit` top context menu button. Or start typing "SVG dev: Edit" in command prompt.
 
 
 ### View svg code
 
-To view svg code select `Document -> Show svg code` menu item at "SVG dev" activity bar menu. Or start typing "SVG dev: show code".
+To view svg code select `Document -> Show svg code` menu item at "SVG dev" activity bar "Tools" menu. Or start typing "SVG dev: show code".
 
 ### Artboard moving and zooming
 
 You can move artboard by click, hold and drag outside of artboard, or click hold and drag inside artboard, outside of any shape.
 
-You can zoom artboard using buttons in top context menu, or using commands from 'Zoom' section of 'SVG dev' activity bar menu.
+You can zoom artboard using buttons in top context menu, or using commands from "Zoom" section of "SVG dev" activity bar "Tools" menu.
 
 ### Artboard size and background
 
-You can change artboard size or background clicking on tools inside editor window or using "Artboard" section of 'SVG dev' activity bar menu.
+You can change artboard size or background clicking on tools inside editor window or using "Artboard" section of "SVG dev" activity bar "Tools" menu.
 
 ### Creating shapes
 
-You can create shapes using tools from editor window or "Add" items from correponding sections of "SVG dev" activity bar menu.
+You can create shapes using tools from editor window or "Add" items from correponding sections of "SVG dev" activity bar "Tools" menu.
 
 Select tool, click some points and shape would be created. Circle, ellipse, rect, line requires two points. Polygon, polyline and path can have any quantity of points, so to stop adding them press `esc` or `enter`.
 
@@ -51,7 +51,7 @@ You can change shape appearance using menu items from corresponding to this shap
 
 ### Deleting shapes
 
-You can delete shapes by clicking `delete` / `backspace` (mac) keys or using `Element -> Delete` item from 'SVG dev' activity bar menu.
+You can delete shapes by clicking `ctrl+delete` (mac: `cmd+backspace`) keys or using `Element -> Delete` item from "SVG dev" activity bar "Tools" menu.
 
 ### Selecting shapes
 
@@ -63,11 +63,13 @@ You can move shapes by selecting and dragging them.
 Pressing `alt` while moving shape would create copy of this shape.
 Pressing `shift` while moving would force strict vertical or horizontal moving.
 
-Selected shapes can be grouped to move or copy them together. Use "group/ungroup" tools in editor window or "Group" section from 'SVG dev' activity bar menu.
+You can move shapes by with __keyboard arrows__ holding `ctrl` (mac: `cmd`) by 1px, holding `ctrl+shift` (mac: `cmd+shift`) by 10px.
+
+Selected shapes can be grouped to move or copy them together. Use "group/ungroup" tools in editor window or "Group" section from "SVG dev" activity ba "Tools"r menu. Keyboard shortcut `ctrl+g` (mac: `cmd+g`) would also group selected shapes, keyboard shortcut `ctrl+shift+g` (mac: `cmd+shift+g`) would ungroup selected group.
 
 ### Copying shapes
 
-You can copy shapes by `ctrl+d` (or `cmd+d` for mac), adding `shift` would make copy with the same coordinates as original shape. Also you can use `Element -> Copy` or `Element -> Copy in place` items from 'SVG dev' activity bar menu.
+You can copy shapes by `ctrl+d` (or `cmd+d` for mac), adding `shift` would make copy with the same coordinates as original shape. Also you can use `Element -> Copy` or `Element -> Copy in place` items from "SVG dev" activity bar "Tools" menu.
 
 Also you can hold `alt` while moving shape to make copy of this shape.
 
@@ -76,6 +78,13 @@ Also you can hold `alt` while moving shape to make copy of this shape.
 You can edit existing shapes (path, polygon, polyline, line) point by point clicking on "edit points" button in editor window (button would appear if editable shape selected), editing mode would be entered and editable points would be shown, you can drag them and see shape changes - when you done editing press `esc` or `enter` to exit point editing mode.
 
 ## What`s new
+ - 0.8.9
+   - formatted svg code view
+   - keyboard shortcuts changes and fixes
+     - `ctrl+g` (mac: `cmd+g`) to group selected shapes
+     - `ctrl+shift+g` (mac: `cmd+shift+g`) to ungroup selected shapes group
+     - `ctrl+delete` (mac: `cmd+backspace`) to delete selected shapes
+     - `ctrl+arrows` and `ctrl+shift+arrows` (mac: `cmd+arrows` and `cmd+shift+arrows`) to move shapes
  - 0.8.8
    - documentation updated
  - 0.8.7

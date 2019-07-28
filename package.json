@@ -3,7 +3,7 @@
     "displayName": "SVG dev",
     "description": "SVG visual editor",
     "preview": true,
-    "version": "0.8.8",
+    "version": "0.8.9",
     "icon": "images/line-7_big.png",
     "publisher": "kontrail",
     "repository": {
@@ -38,55 +38,63 @@
                 "args": "enter"
             },
             {
-                "key": "delete",
-                "mac": "backspace",
+                "key": "ctrl+delete",
+                "mac": "cmd+backspace",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevElementCommandDelete"
             },
             {
-                "key": "alt+left",
+                "key": "ctrl+left",
+                "mac": "cmd+left",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
                 "args": ["left", false]
             },
             {
-                "key": "alt+up",
+                "key": "ctrl+up",
+                "mac": "cmd+up",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
                 "args": ["up", false]
             },
             {
-                "key": "alt+right",
+                "key": "ctrl+right",
+                "mac": "cmd+right",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
                 "args": ["right", false]
             },
             {
-                "key": "alt+down",
+                "key": "ctrl+down",
+                "mac": "cmd+down",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
                 "args": ["down", false]
             },
             {
-                "key": "shift+alt+left",
+                "key": "shift+ctrl+left",
+                "mac": "shift+cmd+left",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
                 "args": ["left", true]
             },
             {
-                "key": "shift+alt+up",
+                "key": "shift+ctrl+up",
+                "mac": "shift+cmd+up",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
                 "args": ["up", true]
             },
             {
-                "key": "shift+alt+right",
+                "key": "shift+ctrl+right",
+                "mac": "shift+cmd+right",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
                 "args": ["right", true]
             },
             {
-                "key": "shift+alt+down",
+                "key": "shift+ctrl+down",
+                "mac": "shift+cmd+down",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
                 "args": ["down", true]
@@ -104,6 +112,20 @@
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevElementCommand",
                 "args": "copy-in-place"
+            },
+            {
+                "key": "ctrl+g",
+                "mac": "cmd+g",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevGroup",
+                "args": "group"
+            },
+            {
+                "key": "ctrl+shift+g",
+                "mac": "cmd+shift+g",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevGroup",
+                "args": "ungroup"
             }
         ],
         "commands": [

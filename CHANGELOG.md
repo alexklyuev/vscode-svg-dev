@@ -1,5 +1,14 @@
 # Change Log
 
+ - 0.8.9
+   - formatted svg code view
+   - keyboard shortcuts changes and fixes
+     - `ctrl+g` (mac: `cmd+g`) to group selected shapes
+     - `ctrl+shift+g` (mac: `cmd+shift+g`) to ungroup selected shapes group
+     - `ctrl+delete` (mac: `cmd+backspace`) to delete selected shapes
+     - `ctrl+arrows` and `ctrl+shift+arrows` (mac: `cmd+arrows` and `cmd+shift+arrows`) to move shapes
+ - 0.8.8
+   - documentation updated
  - 0.8.7
    - copy and copy-in-place commands in element menu (also keybindings cmd+d and cmd+shift+d)
    - attributes menu - add any attribute to element, get list of attributes to edit

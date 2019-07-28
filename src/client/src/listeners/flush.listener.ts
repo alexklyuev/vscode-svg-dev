@@ -19,9 +19,22 @@ export class FlushListener {
         this.flushEndpoint.listenGetRequest(
             _request => this.artboard.svg,
             ({}, svg) => {
-                return {content: svg.outerHTML};
+                const content = this.format(svg.outerHTML);
+                return { content };
             },
         );
+    }
+
+    format(html: string): string {
+        const tab = '  ';
+        let repeat = 0;
+        return html.replace(/\<\/?/g, (search) => {
+            switch (search) {
+                case '<': return `\n${ tab.repeat(repeat++) }${ search }`;
+                case '</': return `\n${ tab.repeat(--repeat) }${ search }`;
+                default: return '';
+            }
+        }).trim();
     }
 
 }
