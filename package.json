@@ -3,7 +3,7 @@
     "displayName": "SVG dev",
     "description": "SVG visual editor",
     "preview": true,
-    "version": "0.8.7",
+    "version": "0.8.8",
     "icon": "images/line-7_big.png",
     "publisher": "kontrail",
     "repository": {
@@ -109,11 +109,15 @@
         "commands": [
             {
                 "command": "svgDevNew",
-                "title": "SVG Dev: New"
+                "title": "SVG dev: New Document"
             },
             {
-                "command": "svgDevAddCircle",
-                "title": "SVG Dev: Add Circle"
+                "command": "svgDevFromOpen",
+                "title": "SVG dev: Edit"
+            },
+            {
+                "command": "svgDevFlush",
+                "title": "SVG dev: show code"
             },
             {
                 "command": "svgDevZoomIn",
