@@ -37,19 +37,39 @@ You can change artboard size or background clicking on tools inside editor windo
 
 ### Creating shapes
 
-...
+You can create shapes using tools from editor window or "Add" items from correponding sections of "SVG dev" activity bar menu.
+
+Select tool, click some points and shape would be created. Circle, ellipse, rect, line requires two points. Polygon, polyline and path can have any quantity of points, so to stop adding them press `esc` or `enter`.
+
+While adding path points you can click, hold and drag - to curve the line between previous and current point.
+
+While drawing path you can press `esc` to finish path as not closed, and press `enter` to finish path as closed.
+
+### Styling shapes
+
+You can change shape appearance using menu items from corresponding to this shape section from "SVG dev" activiry bar menu. Common properties like fill, stroke and stoke style could be changed in corresponding section of the same menu. Fill and stroke also could be changed using editor window buttons.
+
+### Deleting shapes
+
+You can delete shapes by clicking `delete` / `backspace` (mac) keys or using `Element -> Delete` item from 'SVG dev' activity bar menu.
 
 ### Selecting shapes
 
 You can select shapes by clicking on them. To select multiple shapes `shift+click` on them. To deselect selected shape `shift+click` on it too. To deselect all click on artboard outside of any shape.
 
-### Styling shapes
-
-...
-
 ### Moving and grouping shapes
 
-...
+You can move shapes by selecting and dragging them.
+Pressing `alt` while moving shape would create copy of this shape.
+Pressing `shift` while moving would force strict vertical or horizontal moving.
+
+Selected shapes can be grouped to move or copy them together. Use "group/ungroup" tools in editor window or "Group" section from 'SVG dev' activity bar menu.
+
+### Copying shapes
+
+You can copy shapes by `ctrl+d` (or `cmd+d` for mac), adding `shift` would make copy with the same coordinates as original shape. Also you can use `Element -> Copy` or `Element -> Copy in place` items from 'SVG dev' activity bar menu.
+
+Also you can hold `alt` while moving shape to make copy of this shape.
 
 ### Editing shapes by points
 
