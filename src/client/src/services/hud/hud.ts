@@ -1,5 +1,4 @@
 import { AppearanceOutlet } from "./appearance.outlet";
-import { HintsOutlet } from "./hints.outlet";
 
 
 export class Hud {
@@ -8,7 +7,6 @@ export class Hud {
 
     constructor(
         public readonly appearanceOutlet: AppearanceOutlet,
-        public readonly hintOutlet: HintsOutlet,
     ) {
         this.element = document.querySelector<HTMLElement>('#hud')!;
         Object.assign(this.element.style, {
@@ -17,7 +15,6 @@ export class Hud {
             top: '0',
         });
         this.appearanceOutlet.appendTo(this.element);
-        this.hintOutlet.appendTo(this.element);
     }
 
 }

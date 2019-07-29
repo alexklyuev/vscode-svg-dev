@@ -3,7 +3,7 @@
     "displayName": "SVG dev",
     "description": "SVG visual editor",
     "preview": true,
-    "version": "0.8.9",
+    "version": "0.8.10",
     "icon": "images/line-7_big.png",
     "publisher": "kontrail",
     "repository": {
@@ -126,6 +126,12 @@
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevGroup",
                 "args": "ungroup"
+            },
+            {
+                "key": "ctrl+e",
+                "mac": "cmd+e",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevEdit"
             }
         ],
         "commands": [
@@ -198,7 +204,26 @@
                     "group": "navigation"
                 }
             ]
-        }
+        },
+        "configuration":[
+            {
+                "title": "SVG dev",
+                "properties": {
+                    "SVGdev.showHint.finishCreate": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Show create shape hint",
+                        "scope": "window"
+                    },
+                    "SVGdev.showHint.finishEdit": {
+                        "type": "boolean",
+                        "default": true,
+                        "description": "Show edit shape hint",
+                        "scope": "window"
+                    }
+                }
+            }
+        ]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

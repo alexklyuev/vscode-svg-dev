@@ -30,6 +30,8 @@ import { MoveKeyListener } from './src/listeners/move-key.listener';
 import { moveKeyPipe } from '../shared/pipes/move-key.pipe';
 import { ListAttributesListener } from './src/listeners/list-attributes.listener';
 import { listAttributesPipe } from '../shared/pipes/list-attributes.pipe';
+import { infomessageEndpoint } from './src/producers/infomessage.producer';
+import { hints } from './src/services/hints';
 
 
 /**
@@ -223,3 +225,7 @@ elementListener.copyElementEvent.on(_element => {
 
 const listAttributesListener = new ListAttributesListener(webviewEndpoint, listAttributesPipe, holder);
 listAttributesListener.listen();
+
+hints.hintEvent.on(hintKey => {
+    infomessageEndpoint.makeSetRequest(hintKey);
+});

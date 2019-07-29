@@ -11,6 +11,9 @@ import { Coorinator } from "../services/coordinator/coordinator";
 import { CancelListener } from "../listeners/cancel.listener";
 import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
+import { Hints } from "../services/hints/hints";
+import { Spawn } from "../../../shared/spawner/spawn";
+import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 
 
 export class RectFigure implements Figure<SVGRectElement> {
@@ -20,7 +23,7 @@ export class RectFigure implements Figure<SVGRectElement> {
     readonly ctor = SVGRectElement;
 
     constructor(
-        public drag: DraggerValue,
+        public readonly drag: DraggerValue,
         public readonly move: Mover,
         private artboard: Artboard,
         private userEventMan: UserEventManager,
@@ -30,6 +33,8 @@ export class RectFigure implements Figure<SVGRectElement> {
         private coords: Coorinator,
         private cancelListener: CancelListener,
         private appearance: Appearance,
+        private hints: Hints,
+        private spawn: Spawn,
     ) {}
 
     @setState
@@ -168,6 +173,147 @@ export class RectFigure implements Figure<SVGRectElement> {
 
     testByElement(element: any): element is SVGRectElement {
         return element instanceof SVGRectElement;
+    }
+
+    edit(element: SVGRectElement) {
+        this.hints.setHint('finishEdit');
+        this.userEventMan.mode = 'interactive';
+        this.guides.removeSelection();
+        const pseudoEls = Array<SVGElement>();
+        const draw = () => {
+            const width = parseFloat(element.getAttribute('width')!);
+            const height = parseFloat(element.getAttribute('height')!);
+            const x = parseFloat(element.getAttribute('x')!);
+            const y = parseFloat(element.getAttribute('y')!);
+            const points = Array<[number, number]>(
+                [x, y],
+                [x + width, y],
+                [x + width, y + height],
+                [x, y + height],
+            );
+            points.forEach((point, pointIndex) => {
+                const [ cx, cy ] = point;
+                const { value: zoom } = this.zoom;
+                const circle = this.spawn.svg.circle(
+                    {
+                        cx: `${ cx * zoom }`,
+                        cy: `${ cy * zoom }`,
+                        fill: this.appearance.editControlPointFill,
+                        stroke: this.appearance.editControlPointStroke,
+                        'stroke-dasharray': this.appearance.editControlPointStrokeDasharray,
+                        r: this.appearance.editControlPointRadius,
+                    },
+                    {
+                        pointerEvents: 'fill',
+                    }
+                 );
+                 this.guides.guidesContainer!.appendChild(circle);
+                 let vx = 0;
+                 let vy = 0;
+                 let ax = cx;
+                 let ay = cy;
+                 let rx = cx;
+                 let ry = cy;
+                 const onMouseMove = (event: MouseEvent) => {
+                    const { clientX, clientY} = event;
+                    const dx = (clientX - vx) / this.zoom.value;
+                    const dy = (clientY - vy) / this.zoom.value;
+                    rx = ax + dx;
+                    ry = ay + dy;
+                    const nx = rx * this.zoom.value;
+                    const ny = ry * this.zoom.value;
+                    this.spawn.svg.update(circle, {
+                        cx: `${ nx }`,
+                        cy: `${ ny }`,
+                    });
+                    let x$ = x;
+                    let y$ = y;
+                    let width$ = width;
+                    let height$ = height;
+                    switch (pointIndex) {
+                        case 0:
+                            x$ = cx + dx;
+                            y$ = cy + dy;
+                            width$ = width - dx;
+                            height$ = height - dy;
+                            break;
+                        case 1:
+                            y$ = cy + dy;
+                            width$ =  width + dx;
+                            height$ = height - dy;
+                            break;
+                        case 2:
+                            width$ = width + dx;
+                            height$ = height + dy;
+                            break;
+                        case 3:
+                            x$ = cx + dx;
+                            width$ = width - dx;
+                            height$ = height + dy;
+                            break;
+                    }
+                    if (width$ < 0) {
+                        width$ = -width$;
+                        x$ -= width$;
+                    }
+                    if (height$ < 0) {
+                        height$ = -height$;
+                        y$ -= height$;
+                    }
+                    this.spawn.svg.update(element, {
+                        x: `${ x$ }`,
+                        y: `${ y$ }`,
+                        width: `${ width$ }`,
+                        height: `${ height$ }`,
+                    });
+                    redraw();
+                 };
+                 const onMouseUp = (event: MouseEvent) => {
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('mouseup', onMouseUp);
+                    redraw();
+                 };
+                 const onMouseDown = (event: MouseEvent) => {
+                    window.addEventListener('mousemove', onMouseMove);
+                    window.addEventListener('mouseup', onMouseUp);
+                    const {
+                        clientX,
+                        clientY,
+                    } = event;
+                    vx = clientX;
+                    vy = clientY;
+                    ax = rx;
+                    ay = ry;
+                 };
+                 circle.addEventListener('mousedown', onMouseDown);
+                 pseudoEls.push(circle);
+            });
+        };
+
+        const undraw = () => {
+            pseudoEls.forEach(circle => this.guides.guidesContainer!.removeChild(circle));
+            pseudoEls.length = 0;
+        };
+
+        const redraw = () => {
+            undraw();
+            draw();
+        };
+
+        draw();
+
+        this.zoom.valueChange.on(redraw);
+
+        const cancel = (_key: CancelKeys) => {
+            this.userEventMan.mode = 'pick';
+            this.guides.drawSelection([element]);
+            undraw();
+            this.zoom.valueChange.off(redraw);
+            this.cancelListener.keyEvent.off(cancel);
+        };
+
+        this.cancelListener.keyEvent.on(cancel);
+
     }
 
 }

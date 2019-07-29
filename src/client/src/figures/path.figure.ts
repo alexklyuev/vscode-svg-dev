@@ -11,9 +11,9 @@ import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { PathPoints } from "../services/path/path-points";
 import { PointConcerns, PointSharedConcerns } from "./models/point-concerns.model";
 import { Coorinator } from "../services/coordinator/coordinator";
-import { Hud } from "../services/hud/hud";
 import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
+import { Hints } from "../services/hints/hints";
 
 
 export class PathFigure implements Figure<SVGPathElement> {
@@ -39,8 +39,8 @@ export class PathFigure implements Figure<SVGPathElement> {
         private guides: Guides,
         private pathPoints: PathPoints,
         private coords: Coorinator,
-        private hud: Hud,
         private appearance: Appearance,
+        private hints: Hints,
     ) {}
 
     /**
@@ -108,9 +108,8 @@ export class PathFigure implements Figure<SVGPathElement> {
         const subpointsListenerEvent = 'mouseup';
         window.addEventListener(pointsListenerEvent, pointsListener);
         window.addEventListener(subpointsListenerEvent, subpointsListener);
-        this.hud.hintOutlet.hint = `Press 'esc' to finish with open path and 'enter' to finish with closed path`;
+        this.hints.setHint('finishCreate');
         const stop = (key: CancelKeys) => {
-            this.hud.hintOutlet.hint = null;
             window.removeEventListener(pointsListenerEvent, pointsListener);
             window.removeEventListener(subpointsListenerEvent, subpointsListener);
             this.cancelListener.keyEvent.off(stop);
@@ -235,7 +234,7 @@ export class PathFigure implements Figure<SVGPathElement> {
     edit(element: SVGPathElement) {
         let d = element.getAttribute('d');
         if (d) {
-            this.hud.hintOutlet.hint = `Press 'esc' or 'enter' to finish editing`;
+            this.hints.setHint('finishEdit');
 
             const newD = this.pathPoints.setPointsAbsolute(d);
             element.setAttribute('d', newD);
@@ -366,7 +365,6 @@ export class PathFigure implements Figure<SVGPathElement> {
             this.zoom.valueChange.on(redraw);
 
             const cancel = (_key: CancelKeys) => {
-                this.hud.hintOutlet.hint = null;
                 this.userEventMan.mode = 'pick';
                 this.guides.drawSelection([element]);
                 undraw();

@@ -40,9 +40,11 @@ import {
     textReverseConnection,
     moveKeyConnection,
     listAttributesConnection,
+    infomessageConnection,
 } from './services/connection';
 import { CancelKeys } from './shared/pipes/cancel.pipe';
 import { MoveArrowKeys } from './shared/pipes/move-key.pipe';
+import { hintsDict } from './shared/hints/hints.dict';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -123,6 +125,29 @@ export function activate(context: vscode.ExtensionContext) {
                 const newValue = await vscode.window.showInputBox();
                 await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
                 return {text: newValue!};
+            },
+        );
+    });
+
+    infomessageConnection.onConnected(endpoint => {
+        endpoint.listenSetRequest(
+            _request =>  true,
+            async hintKey => {
+                const config = vscode.workspace.getConfiguration('SVGdev');
+                const showHint = config.showHint[hintKey];
+                console.log('show hint', showHint);
+                if (showHint) {
+                    const dontShowAgain = 'don`t show again';
+                    const result = await vscode.window.showInformationMessage(
+                        hintsDict[hintKey],
+                        'close',
+                        dontShowAgain,
+                    );
+                    if (result === dontShowAgain) {
+                        console.log('ok, silenced');
+                        config.update(`showHint.${ hintKey }`, false, true);
+                    }
+                }
             },
         );
     });

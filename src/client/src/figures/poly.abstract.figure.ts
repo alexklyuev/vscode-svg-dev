@@ -10,8 +10,8 @@ import { PointConcerns } from "./models/point-concerns.model";
 import { Guides } from "../services/guides/guides";
 import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Appearance } from "../services/appearance/appearance";
-import { Hud } from "../services/hud/hud";
 import { MoverPoints } from "../services/mover/mover-points";
+import { Hints } from "../services/hints/hints";
 
 
 export abstract class PolyFigure implements Figure<SVGElement> {
@@ -32,7 +32,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         private userEventMan: UserEventManager,
         public guides: Guides,
         private appearance: Appearance,
-        private hud: Hud,
+        private hints: Hints,
     ) {}
 
     abstract testByElement(element: any): element is SVGElement;
@@ -226,7 +226,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
 
     edit(element: SVGElement) {
         let points = element.getAttribute('points');
-        this.hud.hintOutlet.hint = `Press 'esc' or 'enter' to finish editing`;
+        this.hints.setHint('finishEdit');
         this.userEventMan.mode = 'interactive';
         this.guides.removeSelection();
         const pseudoEls = Array<SVGElement>();
@@ -333,7 +333,6 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         this.zoom.valueChange.on(redraw);
 
         const cancel = (_key: CancelKeys) => {
-            this.hud.hintOutlet.hint = null;
             this.userEventMan.mode = 'pick';
             this.guides.drawSelection([element]);
             undraw();

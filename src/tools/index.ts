@@ -81,6 +81,7 @@ toolbox.register(
     new RectHeightTool(),
     new RectRxTool(),
     new RectRyTool(),
+    {command: {title: 'Edit by points', command: 'svgDevEdit'}},
 );
 toolbox.register(
     new ToolGroup('Line'),
@@ -89,14 +90,14 @@ toolbox.register(
     {command: {title: 'Y1', command: 'svgDevRemoteAttributeInput', arguments: ['y1']}},
     {command: {title: 'X2', command: 'svgDevRemoteAttributeInput', arguments: ['x2']}},
     {command: {title: 'Y2', command: 'svgDevRemoteAttributeInput', arguments: ['y2']}},
-    {command: {title: 'Edit points visually', command: 'svgDevEdit'}},
+    {command: {title: 'Edit by points', command: 'svgDevEdit'}},
 );
 toolbox.register(
     new ToolGroup('Poly'),
     {command: {title: 'Add Polygon', command: 'svgDevAddInteractive', arguments: ['polygon']}},
     {command: {title: 'Add Polyline', command: 'svgDevAddInteractive', arguments: ['polyline']}},
     {command: {title: 'Edit points attribute', command: 'svgDevRemoteAttributeInput', arguments: ['points']}},
-    {command: {title: 'Edit points visually', command: 'svgDevEdit'}},
+    {command: {title: 'Edit by points', command: 'svgDevEdit'}},
 );
 toolbox.register(
     new ToolGroup('Path'),

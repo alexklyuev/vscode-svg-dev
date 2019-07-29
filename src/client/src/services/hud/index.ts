@@ -1,7 +1,6 @@
 import { Hud } from "./hud";
 import { ColorRepresenterService } from "./color-representer.service";
 import { AppearanceOutlet } from "./appearance.outlet";
-import { HintsOutlet } from "./hints.outlet";
 import { ArtboardControls } from "./artboard.controls";
 import { FillControl } from "./fill.control";
 import { StrokeControl } from "./stroke.control";
@@ -55,6 +54,5 @@ export const appearanceOutlet = new AppearanceOutlet(
   groupControls,
   editPointsControl,
 );
-export const hintsOutlet = new HintsOutlet();
 
-export const hud = new Hud(appearanceOutlet, hintsOutlet);
+export const hud = new Hud(appearanceOutlet);

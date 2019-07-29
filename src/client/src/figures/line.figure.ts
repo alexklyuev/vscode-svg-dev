@@ -10,9 +10,9 @@ import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Guides } from "../services/guides/guides";
 import { Appearance } from "../services/appearance/appearance";
-import { Hud } from "../services/hud/hud";
 import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { Mover } from "../services/mover/mover.model";
+import { Hints } from "../services/hints/hints";
 
 
 export class LineFigure implements Figure<SVGLineElement> {
@@ -31,7 +31,7 @@ export class LineFigure implements Figure<SVGLineElement> {
         private coords: Coorinator,
         private guides: Guides,
         private appearance: Appearance,
-        private hud: Hud,
+        private hints: Hints,
     ) {}
 
     testByElement(element: any): element is SVGLineElement {
@@ -150,7 +150,7 @@ export class LineFigure implements Figure<SVGLineElement> {
     }
 
     edit(element: SVGLineElement) {
-        this.hud.hintOutlet.hint = `Press 'esc' or 'enter' to finish editing`;
+        this.hints.setHint('finishEdit');
         this.userEventMan.mode = 'interactive';
         this.guides.removeSelection();
         const pseudoEls = Array<SVGElement>();
@@ -236,7 +236,6 @@ export class LineFigure implements Figure<SVGLineElement> {
         this.zoom.valueChange.on(redraw);
 
         const cancel = (_key: CancelKeys) => {
-            this.hud.hintOutlet.hint = null;
             this.userEventMan.mode = 'pick';
             this.guides.drawSelection([element]);
             undraw();

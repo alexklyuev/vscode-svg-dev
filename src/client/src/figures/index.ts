@@ -19,13 +19,14 @@ import { PathFigure } from "./path.figure";
 import { DraggerPath } from "../services/dragger/dragger-path";
 import { pathPoints } from "../services/path";
 import { coordinator } from "../services/coordinator";
-import { hud } from "../services/hud";
 import { appearance } from "../services/appearance";
 import { textReverseEndpoint } from "../producers/text-reverse.producer";
 import { MoverPath } from "../services/mover/mover-path";
 import { MoverPoints } from "../services/mover/mover-points";
 import { MoverValue } from "../services/mover/mover-value";
 import { MoverDelegate } from "../services/mover/mover-delegate";
+import { hints } from "../services/hints";
+import { spawn } from "../../../shared/spawner/index";
 
 
 const figuresCollection = new FiguresCollection();
@@ -57,10 +58,9 @@ export const pathFigure = new PathFigure(
     guides,
     pathPoints,
     coordinator,
-    hud,
     appearance,
+    hints,
 );
-
 
 figuresCollection.add(
     new CircleFigure(
@@ -98,6 +98,8 @@ figuresCollection.add(
         coordinator,
         cancelListener,
         appearance,
+        hints,
+        spawn,
     ),
     new TextFigure(
         draggerLeftTop,
@@ -122,7 +124,7 @@ figuresCollection.add(
         coordinator,
         guides,
         appearance,
-        hud,
+        hints,
     ),
     new PolygonFigure(
         draggerPoints,
@@ -134,7 +136,7 @@ figuresCollection.add(
         userEventMan,
         guides,
         appearance,
-        hud,
+        hints,
     ),
     new PolylineFigure(
         draggerPoints,
@@ -146,7 +148,7 @@ figuresCollection.add(
         userEventMan,
         guides,
         appearance,
-        hud,
+        hints,
     ),
     pathFigure,
 );

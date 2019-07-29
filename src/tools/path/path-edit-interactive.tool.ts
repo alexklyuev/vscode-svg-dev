@@ -4,7 +4,7 @@ import { Tool } from "../../models/tool.model";
 export class PathEditInteractive implements Tool {
 
     command = {
-        title: 'Edit points visually',
+        title: 'Edit by points',
         command: 'svgDevEdit',
     };
 
