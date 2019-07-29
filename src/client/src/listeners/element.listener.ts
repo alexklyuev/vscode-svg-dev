@@ -72,6 +72,7 @@ export class ElementListener {
         element.insertAdjacentElement('afterend', copy);
         this.holder.elements = [copy];
         g.remove();
+        copy.removeAttribute('id');
         return copy;
     }
 

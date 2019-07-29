@@ -117,8 +117,10 @@ _(more in changelog)_
 
 
 ## Todo
-- docs
-- format flush
+- docs and examples
+- history
+- element tree
+- masks
 - flush current selection
 - conditional tools
 - strict position tool group

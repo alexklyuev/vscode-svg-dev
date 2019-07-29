@@ -80,9 +80,12 @@ export class Picker {
                 const outer = target.outerHTML;
                 const g = document.createElementNS('http://www.w3.org/2000/svg', 'g') as SVGGElement;
                 g.innerHTML = outer;
-                const copy = g.children[0];
+                const copy = g.children[0] as SVGElement;
+                copy.removeAttribute('id');
                 const svg = this.artboard.svg;
                 svg.insertBefore(copy, target);
+                target.insertAdjacentElement('afterend', copy);
+                this.holder.elements = [copy];
             }
             this.holder.elements.forEach(element => {
                 this.figuresCollection.delegate(element)!.drag.onMousedown(

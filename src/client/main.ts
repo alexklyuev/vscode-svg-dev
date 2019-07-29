@@ -139,14 +139,16 @@ moveKeyListener.moveEvent.on(_key => {
  */
 const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
 holder.addListener(elements => {
-    if (elements.length > 0) {
-        pickEndpoint.makeSetRequest({html: `selection: [${elements.map(el => [el.nodeName, el.id].filter(str => str).join('#')).join(', ')}]`});
-        guides.removeSelection();
-        guides.drawSelection(elements);
-    } else {
-        pickEndpoint.makeSetRequest({html: null});
-        guides.removeSelection();
-    }
+    setTimeout(() => {
+        if (elements.length > 0) {
+            pickEndpoint.makeSetRequest({html: `selection: [${elements.map(el => [el.nodeName, el.id].filter(str => str).join('#')).join(', ')}]`});
+            guides.removeSelection();
+            guides.drawSelection(elements);
+        } else {
+            pickEndpoint.makeSetRequest({html: null});
+            guides.removeSelection();
+        }
+    }, 0);
 });
 
 holder.setElements.on(elements => {
