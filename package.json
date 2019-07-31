@@ -3,7 +3,7 @@
     "displayName": "SVG dev",
     "description": "SVG visual editor",
     "preview": true,
-    "version": "0.8.10",
+    "version": "0.8.11",
     "icon": "images/line-7_big.png",
     "publisher": "kontrail",
     "repository": {
@@ -132,6 +132,18 @@
                 "mac": "cmd+e",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevEdit"
+            },
+            {
+                "key": "ctrl+z",
+                "mac": "cmd+z",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevUndo"
+            },
+            {
+                "key": "ctrl+shift+z",
+                "mac": "cmd+shift+z",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevRedo"
             }
         ],
         "commands": [
@@ -219,6 +231,12 @@
                         "type": "boolean",
                         "default": true,
                         "description": "Show edit shape hint",
+                        "scope": "window"
+                    },
+                    "SVGdev.history.maxLength": {
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Max length of stored states of history",
                         "scope": "window"
                     }
                 }

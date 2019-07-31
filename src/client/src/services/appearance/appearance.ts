@@ -1,3 +1,5 @@
+import { ClientEvent, connectEvent } from "../../entities/client-event";
+
 export class Appearance {
 
     private props = {
@@ -15,7 +17,10 @@ export class Appearance {
         editBezierPointLineStrokeDasharray: '1',
     };
 
-    fireChangeEvent(...props: any) {}
+    public readonly changeEvent = new ClientEvent<{prop: string, value: string}>();
+
+    @connectEvent('changeEvent')
+    fireChangeEvent(data: {prop: string, value: string}) {}
 
     get fill() {
         return this.props.fill;

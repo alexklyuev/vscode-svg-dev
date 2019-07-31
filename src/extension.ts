@@ -41,13 +41,21 @@ import {
     moveKeyConnection,
     listAttributesConnection,
     infomessageConnection,
+    undoConnection,
+    historyConnection,
 } from './services/connection';
 import { CancelKeys } from './shared/pipes/cancel.pipe';
 import { MoveArrowKeys } from './shared/pipes/move-key.pipe';
 import { hintsDict } from './shared/hints/hints.dict';
+import { History } from './svgdev/common/services/history/history';
 
 
 export function activate(context: vscode.ExtensionContext) {
+
+    const config = vscode.workspace.getConfiguration('SVGdev');
+    const history = new History();
+    let maxLength = config.get('history.maxLength');
+    history.maxLength = (typeof maxLength === 'number' && !!maxLength && maxLength > 0 && Number.isFinite(maxLength)) ? maxLength : 10;
 
     // TODO: isolate
     let statusBarItem: StatusBarItem | null = null;
@@ -131,11 +139,9 @@ export function activate(context: vscode.ExtensionContext) {
 
     infomessageConnection.onConnected(endpoint => {
         endpoint.listenSetRequest(
-            _request =>  true,
+            _request => true,
             async hintKey => {
-                const config = vscode.workspace.getConfiguration('SVGdev');
                 const showHint = config.showHint[hintKey];
-                console.log('show hint', showHint);
                 if (showHint) {
                     const dontShowAgain = 'don`t show again';
                     const result = await vscode.window.showInformationMessage(
@@ -144,10 +150,18 @@ export function activate(context: vscode.ExtensionContext) {
                         dontShowAgain,
                     );
                     if (result === dontShowAgain) {
-                        console.log('ok, silenced');
                         config.update(`showHint.${ hintKey }`, false, true);
                     }
                 }
+            },
+        );
+    });
+
+    historyConnection.onConnected(endpoint => {
+        endpoint.listenSetRequest(
+            _request => true,
+            ({ state }) => {
+                history.pushState(state);
             },
         );
     });
@@ -169,6 +183,7 @@ export function activate(context: vscode.ExtensionContext) {
         editor.viewType,
         new EditorSerializer(editor, connectionsManager),
     );
+
 
     context.subscriptions.push(
         vscode.commands.registerCommand('svgDevNew', async () => {
@@ -464,6 +479,22 @@ export function activate(context: vscode.ExtensionContext) {
                         const remote = new RemoteAttributeInput(conn, pick);
                         await remote.changeByInput();
                     });
+                }
+            });
+        }),
+        vscode.commands.registerCommand('svgDevUndo', () => {
+            undoConnection.ifConnected(endpoint => {
+                const state = history.getUndoState();
+                if (state) {
+                    endpoint.makeSetRequest({ state });
+                }
+            });
+        }),
+        vscode.commands.registerCommand('svgDevRedo', () => {
+            undoConnection.ifConnected(endpoint => {
+                const state = history.getRedoState();
+                if (state) {
+                    endpoint.makeSetRequest({ state });
                 }
             });
         }),

@@ -1,5 +1,9 @@
 # Change Log
 
+ - 0.8.10
+   - hints are now implemented as vscode info messages, you could silence them by pressing 'don`t show again' button indside message popup, you can enable or disable each hint in settings
+   - edit rect by poins
+   - edit by points triggers by `ctrl+e` (mac: `cmd+e`) - for all shapes that supports edit by poins (rect, path, polygon, polyline, line)
  - 0.8.9
    - formatted svg code view
    - keyboard shortcuts changes and fixes

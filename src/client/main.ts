@@ -32,6 +32,8 @@ import { ListAttributesListener } from './src/listeners/list-attributes.listener
 import { listAttributesPipe } from '../shared/pipes/list-attributes.pipe';
 import { infomessageEndpoint } from './src/producers/infomessage.producer';
 import { hints } from './src/services/hints';
+import { UndoListener } from './src/listeners/undo.listener';
+import { undoPipe } from '../shared/pipes/undo.pipe';
 
 
 /**
@@ -229,3 +231,6 @@ listAttributesListener.listen();
 hints.hintEvent.on(hintKey => {
     infomessageEndpoint.makeSetRequest(hintKey);
 });
+
+const undoListener = new UndoListener(webviewEndpoint, undoPipe, artboard, holder);
+undoListener.listen();
