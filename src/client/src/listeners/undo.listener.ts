@@ -3,9 +3,13 @@ import { Artboard } from "../services/artboard/artboard";
 import { UndoRequest, UndoResponse } from '../../../shared/pipes/undo.pipe';
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { ElementHolder } from "../services/picker/element-holder";
+import { ClientEvent, connectEvent } from "../entities/client-event";
+
 
 export class UndoListener {
     private client: PipeEndpoint<UndoRequest, UndoResponse, 'undo'>;
+
+    public readonly renderStateEvent = new ClientEvent<string>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,
@@ -19,12 +23,18 @@ export class UndoListener {
     listen() {
         this.client.listenSetRequest(
             _request => this.artboard,
-            ({state}) => {
-                this.artboard.svg.outerHTML = state;
-                this.artboard.clearCache();
-                this.holder.elements = [];
+            ({ state }) => {
+                this.renderState(state);
             },
         );
+    }
+
+    @connectEvent('renderStateEvent')
+    renderState(state: string) {
+        this.artboard.box.innerHTML = state;
+        this.artboard.clearCache();
+        this.holder.elements = [];
+        return state;
     }
 
 }

@@ -47,15 +47,29 @@ import {
 import { CancelKeys } from './shared/pipes/cancel.pipe';
 import { MoveArrowKeys } from './shared/pipes/move-key.pipe';
 import { hintsDict } from './shared/hints/hints.dict';
-import { History } from './svgdev/common/services/history/history';
 
 
 export function activate(context: vscode.ExtensionContext) {
 
     const config = vscode.workspace.getConfiguration('SVGdev');
-    const history = new History();
-    let maxLength = config.get('history.maxLength');
-    history.maxLength = (typeof maxLength === 'number' && !!maxLength && maxLength > 0 && Number.isFinite(maxLength)) ? maxLength : 10;
+
+    const contextManager = new ContextManager<AppContext>();
+    const assetsManager = new AssetsManager(context.extensionPath);
+    const webappTemplate = new WebappTemplate(assetsManager);
+    const editor = new Editor(webappTemplate, contextManager, connectionsManager, config);
+
+    assetsManager.addScript('out', 'client', 'build', 'main.js');
+    assetsManager.addStyle('out', 'client', 'build', 'artboard.css');
+
+    vscode.window.registerTreeDataProvider(
+        'svgDevToolsTreeView',
+        new ToolsTreeProvider(toolbox),
+    );
+
+    vscode.window.registerWebviewPanelSerializer(
+        editor.viewType,
+        new EditorSerializer(editor, connectionsManager),
+    );
 
     // TODO: isolate
     let statusBarItem: StatusBarItem | null = null;
@@ -161,28 +175,15 @@ export function activate(context: vscode.ExtensionContext) {
         endpoint.listenSetRequest(
             _request => true,
             ({ state }) => {
-                history.pushState(state);
+                const history = editor.history;
+                if (history) {
+                    history.pushState(state);
+                }
             },
         );
     });
 
-    const contextManager = new ContextManager<AppContext>();
-    const assetsManager = new AssetsManager(context.extensionPath);
-    const webappTemplate = new WebappTemplate(assetsManager);
-    const editor = new Editor(webappTemplate, contextManager, connectionsManager);
 
-    assetsManager.addScript('out', 'client', 'build', 'main.js');
-    assetsManager.addStyle('out', 'client', 'build', 'artboard.css');
-
-    vscode.window.registerTreeDataProvider(
-        'svgDevToolsTreeView',
-        new ToolsTreeProvider(toolbox),
-    );
-
-    vscode.window.registerWebviewPanelSerializer(
-        editor.viewType,
-        new EditorSerializer(editor, connectionsManager),
-    );
 
 
     context.subscriptions.push(
@@ -484,17 +485,23 @@ export function activate(context: vscode.ExtensionContext) {
         }),
         vscode.commands.registerCommand('svgDevUndo', () => {
             undoConnection.ifConnected(endpoint => {
-                const state = history.getUndoState();
-                if (state) {
-                    endpoint.makeSetRequest({ state });
+                const history = editor.history;
+                if (history) {
+                    const state = history.getUndoState();
+                    if (state) {
+                        endpoint.makeSetRequest({ state });
+                    }
                 }
             });
         }),
         vscode.commands.registerCommand('svgDevRedo', () => {
             undoConnection.ifConnected(endpoint => {
-                const state = history.getRedoState();
-                if (state) {
-                    endpoint.makeSetRequest({ state });
+                const history = editor.history;
+                if (history) {
+                    const state = history.getRedoState();
+                    if (state) {
+                        endpoint.makeSetRequest({ state });
+                    }
                 }
             });
         }),

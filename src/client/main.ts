@@ -234,3 +234,9 @@ hints.hintEvent.on(hintKey => {
 
 const undoListener = new UndoListener(webviewEndpoint, undoPipe, artboard, holder);
 undoListener.listen();
+undoListener.renderStateEvent.on(_state => {
+    guides.setContainerStyles();
+    guides.setSelectionStyles(holder.elements);
+    hud.appearanceOutlet.artboardControls.updateArtboardWidth(artboard.width);
+    hud.appearanceOutlet.artboardControls.updateArtboardHeight(artboard.height);
+});

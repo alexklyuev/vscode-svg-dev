@@ -134,8 +134,12 @@ export class Picker {
      * 
      */
     listen() {
-        this.artboard.svg.addEventListener('mousedown', this.bindedMousedown);
+        this.artboard.box.addEventListener('mousedown', this.bindedMousedown);
         window.addEventListener('mouseup', this.bindedMouseup);
+    }
+
+    resetListeners() {
+
     }
 
     /**

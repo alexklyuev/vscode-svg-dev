@@ -2,10 +2,12 @@ export class History {
 
     private history = Array<string>();
     private cursor = 0;
-    private maxLength$ = 10;
+    
+    constructor(
+        private maxLength$: number,
+    ) {}
 
     set maxLength(val: number) {
-        console.log('set history max length', val);
         this.maxLength$ = val;
         this.history.length = val;
     }

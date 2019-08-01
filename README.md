@@ -83,7 +83,7 @@ You can also enter edit by points mode with keyboard shortcut `ctrl+e` (mac: `cm
    - history
      - you can undo using `ctrl+z` (mac: `cmd+z`)
      - and redo using `ctrl+shift+z` (mac: `cmd+shift+z`)
-     - history length can be set in settings and is 10 by default
+     - history length can be set in settings and is 24 by default
  - 0.8.10
    - hints are now implemented as vscode info messages, you could silence them by pressing 'don`t show again' button indside message popup, you can enable or disable each hint in settings
    - edit rect by poins
@@ -128,7 +128,6 @@ _(more in changelog)_
 
 ## Todo
 - docs and examples
-- history
 - element tree
 - masks
 - flush current selection
