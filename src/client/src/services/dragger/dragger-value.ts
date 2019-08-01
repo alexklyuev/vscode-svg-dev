@@ -1,5 +1,6 @@
 import { Zoom } from "../zoom/zoom";
 import { Dragger } from "./dragger.interface";
+import { setState } from "../../decorators/set-state.decorator";
 
 
 export class DraggerValue implements Dragger {
@@ -68,6 +69,7 @@ export class DraggerValue implements Dragger {
         _event: MouseEvent,
     ) {
         this.attrsStore.delete(element);
+        this.endMove();
     }
 
     getValueAttr(
@@ -87,5 +89,8 @@ export class DraggerValue implements Dragger {
         const val = ((clientVal - storeValue) / this.zoom.value);
         element.setAttribute(key, `${val}`);
     }
+
+    @setState
+    endMove() {}
 
 }

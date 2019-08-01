@@ -44,6 +44,16 @@
                 "command": "svgDevElementCommandDelete"
             },
             {
+                "key": "alt+=",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevZoomIn"
+            },
+            {
+                "key": "alt+-",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevZoomOut"
+            },
+            {
                 "key": "ctrl+left",
                 "mac": "cmd+left",
                 "when": "svgDevActive && !svgDevHostInput",

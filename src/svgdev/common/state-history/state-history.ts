@@ -1,4 +1,4 @@
-export class History {
+export class StateHistory {
 
     private history = Array<string>();
     private cursor = 0;

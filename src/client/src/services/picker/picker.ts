@@ -3,7 +3,6 @@ import { ElementHolder } from "./element-holder";
 import { HostApi } from "../host-api/host-api.interface";
 import { Zoom } from "../zoom/zoom";
 import { FiguresCollection } from "../../figures/figures-collection";
-import { setState } from "../../decorators/set-state.decorator";
 import { UserEventManager } from "../user-event/user-event-manager";
 import { ClientEvent } from "../../entities/client-event";
 import { connectEvent } from "../../decorators/connect-event.decorator";
@@ -103,7 +102,7 @@ export class Picker {
     /**
      * 
      */
-    @setState
+    // @setState
     @connectEvent(PickerEvents.mouseUp)
     onMouseup(event: MouseEvent) {
         this.controlPropagation(event);

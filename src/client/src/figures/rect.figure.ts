@@ -37,7 +37,6 @@ export class RectFigure implements Figure<SVGRectElement> {
         private spawn: Spawn,
     ) {}
 
-    @setState
     create(_elementName: string, _attributes: {[K: string]: string}): void {
         const points = Array<PointConcerns>();
         this.artboard.box.classList.add('interactive-points');
@@ -140,6 +139,7 @@ export class RectFigure implements Figure<SVGRectElement> {
     /**
      * 
      */
+    @setState
     renderFinal(points: PointConcerns[]): void {
         const { svg } = this.artboard;
         const element = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -177,7 +177,7 @@ export class RectFigure implements Figure<SVGRectElement> {
 
     edit(element: SVGRectElement) {
         this.hints.setHint('finishEdit');
-        this.userEventMan.mode = 'interactive';
+        // this.userEventMan.mode = 'interactive';
         this.guides.removeSelection();
         const pseudoEls = Array<SVGElement>();
         const draw = () => {
@@ -305,15 +305,19 @@ export class RectFigure implements Figure<SVGRectElement> {
         this.zoom.valueChange.on(redraw);
 
         const cancel = (_key: CancelKeys) => {
-            this.userEventMan.mode = 'pick';
+            // this.userEventMan.mode = 'pick';
             this.guides.drawSelection([element]);
             undraw();
             this.zoom.valueChange.off(redraw);
             this.cancelListener.keyEvent.off(cancel);
+            this.editFinish();
         };
 
         this.cancelListener.keyEvent.on(cancel);
 
     }
+
+    @setState
+    editFinish() {}
 
 }

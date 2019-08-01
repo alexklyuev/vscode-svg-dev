@@ -5,15 +5,15 @@ import { AppContext } from '../app-context.type';
 import { Template } from '../models/template.model';
 import { HostEndpoint } from './host-endpoint/host-endpoint';
 import { ConnectionsManager } from './connection/connections-manager';
-import { History } from '../svgdev/common/services/history/history';
+import { StateHistory } from '../svgdev/common/state-history/state-history';
 
 
 export class Editor {
 
     private webviewPanel: WebviewPanel | null = null;
 
-    private histories = new Map<WebviewPanel, History>();
-    private history$: History | null = null;
+    private histories = new Map<WebviewPanel, StateHistory>();
+    private history$: StateHistory | null = null;
 
     public readonly viewType = 'svgDevPanel';
 
@@ -39,9 +39,6 @@ export class Editor {
                 retainContextWhenHidden: true,
             },
         );
-        let maxLength = this.config.get('history.maxLength') as number;
-        maxLength = ( typeof maxLength === 'number' && !!maxLength && maxLength > 0 && Number.isFinite(maxLength) ) ? maxLength : 24;
-        this.histories.set(this.webviewPanel, new History(maxLength));
         return this.webviewPanel;
     }
 
@@ -56,6 +53,11 @@ export class Editor {
                 svgDevActive: false,
             });
         });
+
+        let maxLength = this.config.get('history.maxLength') as number;
+        maxLength = ( typeof maxLength === 'number' && !!maxLength && maxLength > 0 && Number.isFinite(maxLength) ) ? maxLength : 24;
+        this.histories.set(webviewPanel, new StateHistory(maxLength));
+
         webviewPanel.onDidChangeViewState(_event => {
             this.contextManager.set('svgDevActive', webviewPanel!.active);
             if (webviewPanel.active) {

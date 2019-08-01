@@ -22,6 +22,7 @@ export function setState(_instancePrototype: any, _propertyKey: string, descript
     descriptor.value = function(...args: any[]) {
         const res = orig.call(this, ...args);
         setTimeout(persistState, 0);
+        console.log(_propertyKey);
         return res;
     };
 }
