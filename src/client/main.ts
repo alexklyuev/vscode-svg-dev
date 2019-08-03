@@ -34,6 +34,7 @@ import { infomessageEndpoint } from './src/producers/infomessage.producer';
 import { hints } from './src/services/hints';
 import { UndoListener } from './src/listeners/undo.listener';
 import { undoPipe } from '../shared/pipes/undo.pipe';
+import { cancelHub } from './src/services/cancel-hub';
 
 
 /**
@@ -96,7 +97,7 @@ remoteAttributeListener.listen();
 const createListener = new CreateListener(webviewEndpoint, createPipe, figuresCollection);
 createListener.listen();
 
-const editListener = new EditListener(webviewEndpoint, editPipe, figuresCollection, holder);
+const editListener = new EditListener(webviewEndpoint, editPipe, figuresCollection, holder, cancelHub);
 editListener.listen();
 
 /**

@@ -58,56 +58,80 @@
                 "mac": "cmd+left",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
-                "args": ["left", false]
+                "args": [
+                    "left",
+                    false
+                ]
             },
             {
                 "key": "ctrl+up",
                 "mac": "cmd+up",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
-                "args": ["up", false]
+                "args": [
+                    "up",
+                    false
+                ]
             },
             {
                 "key": "ctrl+right",
                 "mac": "cmd+right",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
-                "args": ["right", false]
+                "args": [
+                    "right",
+                    false
+                ]
             },
             {
                 "key": "ctrl+down",
                 "mac": "cmd+down",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
-                "args": ["down", false]
+                "args": [
+                    "down",
+                    false
+                ]
             },
             {
                 "key": "shift+ctrl+left",
                 "mac": "shift+cmd+left",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
-                "args": ["left", true]
+                "args": [
+                    "left",
+                    true
+                ]
             },
             {
                 "key": "shift+ctrl+up",
                 "mac": "shift+cmd+up",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
-                "args": ["up", true]
+                "args": [
+                    "up",
+                    true
+                ]
             },
             {
                 "key": "shift+ctrl+right",
                 "mac": "shift+cmd+right",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
-                "args": ["right", true]
+                "args": [
+                    "right",
+                    true
+                ]
             },
             {
                 "key": "shift+ctrl+down",
                 "mac": "shift+cmd+down",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevMoveKey",
-                "args": ["down", true]
+                "args": [
+                    "down",
+                    true
+                ]
             },
             {
                 "key": "ctrl+d",
@@ -227,7 +251,7 @@
                 }
             ]
         },
-        "configuration":[
+        "configuration": [
             {
                 "title": "SVG dev",
                 "properties": {

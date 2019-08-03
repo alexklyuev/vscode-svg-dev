@@ -31,7 +31,9 @@ export class UndoListener {
 
     @connectEvent('renderStateEvent')
     renderState(state: string) {
-        this.artboard.box.innerHTML = state;
+        try {
+            this.artboard.box.innerHTML = state;
+        } catch {}
         this.artboard.clearCache();
         this.holder.elements = [];
         return state;

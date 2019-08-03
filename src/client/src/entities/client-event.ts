@@ -44,3 +44,23 @@ export function connectEvent(eventName: string) {
         }
     };
 }
+
+export function withEvent<T, Of>(fn: (instance: T) => ClientEvent<Of>) {
+    return function(_instancePrototype: any, _propertyName: string, descriptor: PropertyDescriptor) {
+        const orig = descriptor.value;
+        if (orig instanceof Function) {
+            descriptor.value = function(...args: any[]) {
+                const returnValue = orig.call(this, ...args);
+                const eventEmitter = fn(this as T);
+                if (eventEmitter instanceof ClientEvent) {
+                    eventEmitter[emit](returnValue);
+                } else {
+                    throw new Error('withEvent: not an event');
+                }
+                return returnValue;
+            };
+        } else {
+            throw new Error('connectEvent: not a method');
+        }
+    };
+}

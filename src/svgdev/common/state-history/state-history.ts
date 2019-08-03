@@ -13,6 +13,9 @@ export class StateHistory {
     }
 
     pushState(state: string) {
+        if (this.cursor > 0) {
+            this.history.splice(0, this.cursor);
+        }
         this.history.unshift(state);
         this.history.length = this.maxLength$;
         this.cursor = 0;

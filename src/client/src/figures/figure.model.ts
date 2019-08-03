@@ -13,7 +13,7 @@ export interface Figure<Ctor> {
 
     create(elementName: string, attributes: {[K: string]: string}): void;
 
-    edit?(element: SVGElement): void;
+    edit?(element: SVGElement): void | (() => void);
 
     move?: Mover;
 

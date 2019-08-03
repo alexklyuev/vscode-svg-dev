@@ -239,7 +239,7 @@ export class PathFigure implements Figure<SVGPathElement> {
             const newD = this.pathPoints.setPointsAbsolute(d);
             element.setAttribute('d', newD);
 
-            this.userEventMan.mode = 'interactive';
+            // this.userEventMan.mode = 'interactive';
             this.guides.removeSelection();
             
             const pseudoEls = Array<SVGElement>();
@@ -273,6 +273,7 @@ export class PathFigure implements Figure<SVGPathElement> {
                         let rcx = cx;
                         let rcy = cy;
                         const onMouseMove = (event: MouseEvent) => {
+                            event.stopPropagation();
                             const {
                                 clientX,
                                 clientY,
@@ -313,12 +314,14 @@ export class PathFigure implements Figure<SVGPathElement> {
                             element.setAttribute('d', points);
                             redraw();
                         };
-                        const onMouseUp = (_event: MouseEvent) => {
+                        const onMouseUp = (event: MouseEvent) => {
+                            event.stopPropagation();
                             window.removeEventListener('mousemove', onMouseMove);
                             window.removeEventListener('mouseup', onMouseUp);
                             redraw();
                         };
                         const onMouseDown = (event: MouseEvent) => {
+                            event.stopPropagation();
                             window.addEventListener('mousemove', onMouseMove);
                             window.addEventListener('mouseup', onMouseUp);
                             const {
@@ -364,15 +367,21 @@ export class PathFigure implements Figure<SVGPathElement> {
 
             this.zoom.valueChange.on(redraw);
 
-            const cancel = (_key: CancelKeys) => {
-                this.userEventMan.mode = 'pick';
-                this.guides.drawSelection([element]);
+            const elementOnMouseMove = (_event: MouseEvent) => {
+                redraw();
+            };
+            element.addEventListener('mousemove', elementOnMouseMove);
+
+            const cancel = () => {
+                // this.userEventMan.mode = 'pick';
+                // this.guides.drawSelection([element]);
                 undraw();
                 this.zoom.valueChange.off(redraw);
-                this.cancelListener.keyEvent.off(cancel);
+                // this.cancelListener.keyEvent.off(cancel);
+                element.removeEventListener('mousemove', elementOnMouseMove);
             };
-
-            this.cancelListener.keyEvent.on(cancel);
+            return cancel;
+            // this.cancelListener.keyEvent.on(cancel);
 
         }
     }

@@ -13,7 +13,7 @@ import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
 import { Spawn } from "../../../shared/spawner/spawn";
-import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
+import { ClientEvent, connectEvent } from "../entities/client-event";
 
 
 export class RectFigure implements Figure<SVGRectElement> {
@@ -178,7 +178,6 @@ export class RectFigure implements Figure<SVGRectElement> {
     edit(element: SVGRectElement) {
         this.hints.setHint('finishEdit');
         // this.userEventMan.mode = 'interactive';
-        this.guides.removeSelection();
         const pseudoEls = Array<SVGElement>();
         const draw = () => {
             const width = parseFloat(element.getAttribute('width')!);
@@ -215,6 +214,7 @@ export class RectFigure implements Figure<SVGRectElement> {
                  let rx = cx;
                  let ry = cy;
                  const onMouseMove = (event: MouseEvent) => {
+                    event.stopPropagation();
                     const { clientX, clientY} = event;
                     const dx = (clientX - vx) / this.zoom.value;
                     const dy = (clientY - vy) / this.zoom.value;
@@ -269,11 +269,14 @@ export class RectFigure implements Figure<SVGRectElement> {
                     redraw();
                  };
                  const onMouseUp = (event: MouseEvent) => {
+                    event.stopPropagation();
                     window.removeEventListener('mousemove', onMouseMove);
                     window.removeEventListener('mouseup', onMouseUp);
                     redraw();
                  };
                  const onMouseDown = (event: MouseEvent) => {
+                    event.stopPropagation();
+                    this.guides.removeSelection();
                     window.addEventListener('mousemove', onMouseMove);
                     window.addEventListener('mouseup', onMouseUp);
                     const {
@@ -304,20 +307,33 @@ export class RectFigure implements Figure<SVGRectElement> {
 
         this.zoom.valueChange.on(redraw);
 
-        const cancel = (_key: CancelKeys) => {
+        const elementOnMouseMove = (_event: MouseEvent) => {
+            redraw();
+        };
+        element.addEventListener('mousemove', elementOnMouseMove);
+
+        const cancel = () => {
             // this.userEventMan.mode = 'pick';
-            this.guides.drawSelection([element]);
+            // this.guides.drawSelection([element]);
             undraw();
             this.zoom.valueChange.off(redraw);
-            this.cancelListener.keyEvent.off(cancel);
-            this.editFinish();
+            // this.cancelListener.keyEvent.off(cancel);
+
+            element.removeEventListener('mousemove', elementOnMouseMove);
+
+            this.editFinish(element);
         };
 
-        this.cancelListener.keyEvent.on(cancel);
+        // this.cancelListener.keyEvent.on(cancel);
 
+        return cancel;
     }
 
+    public readonly editFinishEvent = new ClientEvent<SVGElement>();
+    @connectEvent('editFinishEvent')
     @setState
-    editFinish() {}
+    editFinish(element: SVGElement) {
+        return element;
+    }
 
 }
