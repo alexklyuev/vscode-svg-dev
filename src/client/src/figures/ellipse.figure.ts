@@ -11,6 +11,9 @@ import { PointConcerns } from "./models/point-concerns.model";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
+import { Hints } from "../services/hints/hints";
+import { Spawn } from "../../../shared/spawner/spawn";
+
 
 export class EllipseFigure implements Figure<SVGEllipseElement> {
 
@@ -29,6 +32,8 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         public readonly guides: Guides,
         private coords: Coorinator,
         private appearance: Appearance,
+        private hints: Hints,
+        private spawn: Spawn,
     ) {
     }
 
@@ -129,10 +134,131 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
         }
         const cx = rx + (x2 > x1 ? x1 : x2);
         const cy = ry + (y2 > y1 ? y1 : y2);
-        element.setAttribute('cx', `${ cx }`);
-        element.setAttribute('cy', `${ cy }`);
-        element.setAttribute('rx', `${ rx }`);
-        element.setAttribute('ry', `${ ry }`);
+        this.spawn.svg.update(element, {
+            'cx': `${ cx }`,
+            'cy': `${ cy }`,
+            'rx': `${ rx }`,
+            'ry': `${ ry }`,
+        });
+        // element.setAttribute('cx', `${ cx }`);
+        // element.setAttribute('cy', `${ cy }`);
+        // element.setAttribute('rx', `${ rx }`);
+        // element.setAttribute('ry', `${ ry }`);
+    }
+
+    edit(element: SVGEllipseElement) {
+        this.hints.setHint('finishEdit');
+        const pseudoEls = Array<SVGElement>();
+        const draw = () => {
+            const cx = parseFloat(element.getAttribute('cx')!);
+            const cy = parseFloat(element.getAttribute('cy')!);
+            const rx = parseFloat(element.getAttribute('rx')!);
+            const ry = parseFloat(element.getAttribute('ry')!);
+            const points = Array<[number, number]>(
+                [cx + rx, cy],
+                [cx, cy + ry],
+            );
+            points.forEach((point, pointIndex) => {
+                const [ cx$, cy$ ] = point;
+                const { value: zoom } = this.zoom;
+                const circle = this.spawn.svg.circle(
+                    {
+                        cx: `${ cx$ * zoom }`,
+                        cy: `${ cy$ * zoom }`,
+                        fill: this.appearance.editControlPointFill,
+                        stroke: this.appearance.editControlPointStroke,
+                        'stroke-dasharray': this.appearance.editControlPointStrokeDasharray,
+                        r: this.appearance.editControlPointRadius,
+                    },
+                    {
+                        pointerEvents: 'fill',
+                    },
+                );
+                this.guides.guidesContainer! .appendChild(circle);
+                pseudoEls.push(circle);
+                let vx = 0;
+                let vy = 0;
+                let ax = cx;
+                let ay = cy;
+                let lx = cx;
+                let ly = cy;
+                const onMouseMove = (event: MouseEvent) => {
+                    event.stopPropagation();
+                    const { clientX, clientY} = event;
+                    const dx = (clientX - vx) / this.zoom.value;
+                    const dy = (clientY - vy) / this.zoom.value;
+                    lx = ax + dx;
+                    ly = ay + dy;
+                    const nx = lx * this.zoom.value;
+                    const ny = ly * this.zoom.value;
+                    this.spawn.svg.update(circle, {
+                        cx: `${ pointIndex === 0 ? nx : lx }`,
+                        cy: `${ pointIndex === 1 ? ny : ly }`,
+                    });
+                    let rx$ = rx;
+                    let ry$ = ry;
+                    switch (pointIndex) {
+                        case 0:
+                            rx$ = rx + dx;
+                            break;
+                        case 1:
+                            ry$ = ry + dy;
+                            break;
+                    }
+                    if (rx$ < 0 ) {
+                        rx$ = -rx$;
+                    }
+                    if (ry$ < 0) {
+                        ry$ = -ry$;
+                    }
+                    this.spawn.svg.update(element, {
+                        rx: `${ rx$ }`,
+                        ry: `${ ry$ }`,
+                    });
+                    redraw();
+                 };
+                 const onMouseUp = (event: MouseEvent) => {
+                    event.stopPropagation();
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('mouseup', onMouseUp);
+                    redraw();
+                 };
+                 const onMouseDown = (event: MouseEvent) => {
+                    event.stopPropagation();
+                    this.guides.removeSelection();
+                    window.addEventListener('mousemove', onMouseMove);
+                    window.addEventListener('mouseup', onMouseUp);
+                    const {
+                        clientX,
+                        clientY,
+                    } = event;
+                    vx = clientX;
+                    vy = clientY;
+                    ax = lx;
+                    ay = ly;
+                 };
+                 circle.addEventListener('mousedown', onMouseDown);
+            });
+        };
+        const undraw = () => {
+            pseudoEls.forEach(circle => this.guides.guidesContainer!.removeChild(circle));
+            pseudoEls.length = 0;
+        };
+        const redraw = () => {
+            undraw();
+            draw();
+        };
+        draw();
+        this.zoom.valueChange.on(redraw);
+        const elementOnMouseMove = (_event: MouseEvent) => {
+            redraw();
+        };
+        element.addEventListener('mousemove', elementOnMouseMove);
+        return () => {
+            undraw();
+            this.zoom.valueChange.off(redraw);
+            element.removeEventListener('mousemove', elementOnMouseMove);
+        };
     }
 
 }

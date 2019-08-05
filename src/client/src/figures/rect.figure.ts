@@ -164,11 +164,16 @@ export class RectFigure implements Figure<SVGRectElement> {
         const y = y1 < y2 ? y1 : y2;
         const width = Math.abs(x2 - x1);
         const height = Math.abs(y2 - y1);
-
-        element.setAttribute('x', `${ x }`);
-        element.setAttribute('y', `${ y }`);
-        element.setAttribute('width', `${ width }`);
-        element.setAttribute('height', `${ height }`);
+        this.spawn.svg.update(element, {
+            'x': `${ x }`,
+            'y': `${ y }`,
+            'width': `${ width }`,
+            'height': `${ height }`,
+        });
+        // element.setAttribute('x', `${ x }`);
+        // element.setAttribute('y', `${ y }`);
+        // element.setAttribute('width', `${ width }`);
+        // element.setAttribute('height', `${ height }`);
     }
 
     testByElement(element: any): element is SVGRectElement {

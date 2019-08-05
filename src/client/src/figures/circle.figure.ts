@@ -11,6 +11,9 @@ import { CancelListener } from "../listeners/cancel.listener";
 import { Guides } from "../services/guides/guides";
 import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
+import { Hints } from "../services/hints/hints";
+import { Spawn } from "../../../shared/spawner/spawn";
+
 
 export class CircleFigure implements Figure<SVGCircleElement> {
 
@@ -29,6 +32,8 @@ export class CircleFigure implements Figure<SVGCircleElement> {
         private cancelListener: CancelListener,
         private guides: Guides,
         private appearance: Appearance,
+        private hints: Hints,
+        private spawn: Spawn,
     ) {}
 
     testByElement(element: any): element is SVGCircleElement {
@@ -142,5 +147,111 @@ export class CircleFigure implements Figure<SVGCircleElement> {
         element.setAttribute('cy', `${ cy }`);
         element.setAttribute('r', `${ r }`);
     }
+
+    edit(element: SVGEllipseElement) {
+        this.hints.setHint('finishEdit');
+        const pseudoEls = Array<SVGElement>();
+        const draw = () => {
+            const cx = parseFloat(element.getAttribute('cx')!);
+            const cy = parseFloat(element.getAttribute('cy')!);
+            const r = parseFloat(element.getAttribute('r')!);
+            const points = Array<[number, number]>(
+                [cx + r, cy],
+            );
+            points.forEach((point, pointIndex) => {
+                const [ cx$, cy$ ] = point;
+                const { value: zoom } = this.zoom;
+                const circle = this.spawn.svg.circle(
+                    {
+                        cx: `${ cx$ * zoom }`,
+                        cy: `${ cy$ * zoom }`,
+                        fill: this.appearance.editControlPointFill,
+                        stroke: this.appearance.editControlPointStroke,
+                        'stroke-dasharray': this.appearance.editControlPointStrokeDasharray,
+                        r: this.appearance.editControlPointRadius,
+                    },
+                    {
+                        pointerEvents: 'fill',
+                    },
+                );
+                this.guides.guidesContainer! .appendChild(circle);
+                pseudoEls.push(circle);
+                let vx = 0;
+                let vy = 0;
+                let ax = cx;
+                let ay = cy;
+                let lx = cx;
+                let ly = cy;
+                const onMouseMove = (event: MouseEvent) => {
+                    event.stopPropagation();
+                    const { clientX, clientY} = event;
+                    const dx = (clientX - vx) / this.zoom.value;
+                    const dy = (clientY - vy) / this.zoom.value;
+                    lx = ax + dx;
+                    ly = ay + dy;
+                    const nx = lx * this.zoom.value;
+                    const ny = ly * this.zoom.value;
+                    this.spawn.svg.update(circle, {
+                        cx: `${ pointIndex === 0 ? nx : lx }`,
+                        cy: `${ pointIndex === 1 ? ny : ly }`,
+                    });
+                    let r$ = r;
+                    switch (pointIndex) {
+                        case 0:
+                            r$ = r + dx;
+                            break;
+                    }
+                    if (r$ < 0 ) {
+                        r$ = -r$;
+                    }
+                    this.spawn.svg.update(element, {
+                        r: `${ r$ }`,
+                    });
+                    redraw();
+                 };
+                 const onMouseUp = (event: MouseEvent) => {
+                    event.stopPropagation();
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('mouseup', onMouseUp);
+                    redraw();
+                 };
+                 const onMouseDown = (event: MouseEvent) => {
+                    event.stopPropagation();
+                    this.guides.removeSelection();
+                    window.addEventListener('mousemove', onMouseMove);
+                    window.addEventListener('mouseup', onMouseUp);
+                    const {
+                        clientX,
+                        clientY,
+                    } = event;
+                    vx = clientX;
+                    vy = clientY;
+                    ax = lx;
+                    ay = ly;
+                 };
+                 circle.addEventListener('mousedown', onMouseDown);
+            });
+        };
+        const undraw = () => {
+            pseudoEls.forEach(circle => this.guides.guidesContainer!.removeChild(circle));
+            pseudoEls.length = 0;
+        };
+        const redraw = () => {
+            undraw();
+            draw();
+        };
+        draw();
+        this.zoom.valueChange.on(redraw);
+        const elementOnMouseMove = (_event: MouseEvent) => {
+            redraw();
+        };
+        element.addEventListener('mousemove', elementOnMouseMove);
+        return () => {
+            undraw();
+            this.zoom.valueChange.off(redraw);
+            element.removeEventListener('mousemove', elementOnMouseMove);
+        };
+    }
+
 
 }

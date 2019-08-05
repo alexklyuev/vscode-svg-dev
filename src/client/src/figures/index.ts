@@ -74,6 +74,8 @@ figuresCollection.add(
         cancelListener,
         guides,
         appearance,
+        hints,
+        spawn,
     ),
     new EllipseFigure(
         draggerCenter,
@@ -86,6 +88,8 @@ figuresCollection.add(
         guides,
         coordinator,
         appearance,
+        hints,
+        spawn,
     ),
     new RectFigure(
         draggerLeftTop, 
