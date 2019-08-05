@@ -79,11 +79,14 @@ You can edit existing shapes (path, polygon, polyline, line) point by point clic
 You can also enter edit by points mode with keyboard shortcut `ctrl+e` (mac: `cmd+e`)
 
 ## What`s new
- - 0.8.11
+ <!-- - 0.8.xx
    - history
      - you can undo using `ctrl+z` (mac: `cmd+z`)
      - and redo using `ctrl+shift+z` (mac: `cmd+shift+z`)
-     - history length can be set in settings and is 24 by default
+     - history length can be set in settings and is 24 by default -->
+ - 0.8.11
+   - circle and ellipse are editable by points
+   - shapes are now movable in edit-points-mode, also you can pick other shapes and switch to edit-points-mode on picked shape by "edit points" button or pressing `ctrl+e` (mac: `cmd+e`)
  - 0.8.10
    - hints are now implemented as vscode info messages, you could silence them by pressing 'don`t show again' button indside message popup, you can enable or disable each hint in settings
    - edit rect by poins

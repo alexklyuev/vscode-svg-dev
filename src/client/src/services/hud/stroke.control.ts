@@ -1,7 +1,7 @@
 import { Appearance } from "../appearance/appearance";
 import { ColorRepresenterService } from "./color-representer.service";
 import { connectEvent, ClientEvent } from "../../entities/client-event";
-import { PipeEndpoint } from "../../../../shared/services/pipe/pipe";
+import { PipeEndpoint } from "../../../../lib/common/pipe/pipe";
 import { AppearanceRequest, AppearanceResponse } from "../../../../shared/pipes/appearance.pipe";
 
 

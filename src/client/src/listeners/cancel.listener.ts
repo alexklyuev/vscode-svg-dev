@@ -1,4 +1,4 @@
-import { Pipe, PipeEndpoint } from "../../../shared/services/pipe/pipe";
+import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { CancelPipeRequest, CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { ClientEvent } from "../entities/client-event";

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { RemoteAttribute } from "../remote-attribute/remote-attribute";
-import { PipeEndpoint } from "../../shared/services/pipe/pipe";
+import { PipeEndpoint } from "../../lib/common/pipe/pipe";
 import { RemoteAttributeRequest, RemoteAttributeResponse } from "../../shared/pipes/remote-attribute.pipe";
 import { QuickPickItem } from 'vscode';
 

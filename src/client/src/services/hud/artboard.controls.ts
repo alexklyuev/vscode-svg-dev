@@ -1,6 +1,6 @@
 import { Artboard } from "../artboard/artboard";
 import { ArtboardStyleListener } from "../../listeners/artboard-style.listener";
-import { PipeEndpoint } from "../../../../shared/services/pipe/pipe";
+import { PipeEndpoint } from "../../../../lib/common/pipe/pipe";
 import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../../../shared/pipes/artboard-style.pipe";
 import { ColorRepresenterService } from "./color-representer.service";
 import { ArtboardListener } from "../../listeners/artboard.listener";

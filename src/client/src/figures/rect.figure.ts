@@ -12,7 +12,7 @@ import { CancelListener } from "../listeners/cancel.listener";
 import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
-import { Spawn } from "../../../shared/spawner/spawn";
+import { Spawn } from "../../../lib/dom/spawner/spawn";
 import { ClientEvent, connectEvent } from "../entities/client-event";
 
 

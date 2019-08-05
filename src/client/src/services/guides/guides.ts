@@ -1,5 +1,6 @@
 import { Artboard } from "../artboard/artboard";
 import { ClientEvent, connectEvent } from "../../entities/client-event";
+import { Spawn } from "../../../../lib/dom/spawner/spawn";
 
 
 const enum GuidesEvents {
@@ -22,6 +23,7 @@ export class Guides {
 
     constructor(
         private artboard: Artboard,
+        private spawn: Spawn,
     ) {
         // this.artboard.tools.style.pointerEvents = 'none';
     }
@@ -76,7 +78,8 @@ export class Guides {
      */
     drawSelection(elements: Element[]): void {
         if (this.container) {
-            this.selection = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            // this.selection = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            this.selection = this.spawn.svg.rect();
             this.container.appendChild(this.selection);
             this.setSelectionStyles(elements);
         }
@@ -93,16 +96,19 @@ export class Guides {
             const right = rects.map(({ right }) => right).reduce((acc, right) => right > acc ? right : acc, -Infinity);
             const bottom = rects.map(({ bottom }) => bottom).reduce((acc, bottom) => bottom > acc ? bottom : acc, -Infinity);
             const { left: containerLeft, top: containerTop } = this.container.getBoundingClientRect();
-            this.selection.setAttribute('x', `${ left - containerLeft - 1 }`);
-            this.selection.setAttribute('y', `${ top - containerTop - 1 }`);
-            this.selection.setAttribute('width', `${ right - left + 1 }`);
-            this.selection.setAttribute('height', `${ bottom - top + 1 }`);
-            this.selection.setAttribute('fill', 'none');
-            this.selection.setAttribute('stroke', 'blue');
-            this.selection.setAttribute('stroke-width', '1');
-            this.selection.setAttribute('stroke-dasharray', '1');
-            // this.selectionDrawn.emit(this.selection.getBoundingClientRect());
-            this.selectionStylesIsSet();
+            if ( [left, top, bottom, right].every(d => Number.isFinite(d)) ) {
+                this.spawn.svg.update(this.selection, {
+                    'x': `${ left - containerLeft - 1 }`,
+                    'y': `${ top - containerTop - 1 }`,
+                    'width': `${ right - left + 1 }`,
+                    'height': `${ bottom - top + 1 }`,
+                    'fill': 'none',
+                    'stroke': 'blue',
+                    'stroke-width': '1',
+                    'stroke-dasharray': '1',
+                });
+                this.selectionStylesIsSet();
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { Zoom } from "../services/zoom/zoom";
 import { Artboard } from "../services/artboard/artboard";
-import { Pipe, PipeEndpoint } from "../../../shared/services/pipe/pipe";
+import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { ZoomRequest } from "../../../shared/pipes/zoom.pipe";
 // import { updateSelection } from "../decorators/update-selection.decorator";
 

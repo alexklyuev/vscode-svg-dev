@@ -1,5 +1,5 @@
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../shared/services/pipe/pipe";
+import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { ArtboardRequest, ArtboardResponse } from "../../../shared/pipes/artboard.pipe";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";

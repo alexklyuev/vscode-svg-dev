@@ -1,4 +1,4 @@
-import { PipeEndpoint, Pipe } from "../../../../shared/services/pipe/pipe";
+import { PipeEndpoint, Pipe } from "../../../../lib/common/pipe/pipe";
 import { HostApi } from "../host-api/host-api.interface";
 
 

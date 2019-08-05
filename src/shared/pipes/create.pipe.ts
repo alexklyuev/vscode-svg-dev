@@ -1,4 +1,4 @@
-import { Pipe } from "../services/pipe/pipe";
+import { Pipe } from "../../lib/common/pipe/pipe";
 
 export type ColorAttrs = {
     fill: string;

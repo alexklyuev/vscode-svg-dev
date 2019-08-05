@@ -1,4 +1,4 @@
-import { Pipe } from "../services/pipe/pipe";
+import { Pipe } from "../../lib/common/pipe/pipe";
 import { HintsDict } from "../hints/hints.dict";
 
 export type InfomessageRequest = keyof HintsDict;

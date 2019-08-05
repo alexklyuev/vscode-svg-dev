@@ -1,5 +1,5 @@
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../shared/services/pipe/pipe";
+import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { MoveKeyRequest } from "../../../shared/pipes/move-key.pipe";
 import { ElementHolder } from "../services/picker/element-holder";
 import { FiguresCollection } from "../figures/figures-collection";

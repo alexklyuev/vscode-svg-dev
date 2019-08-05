@@ -1,4 +1,4 @@
-import { Pipe } from "../services/pipe/pipe";
+import { Pipe } from "../../lib/common/pipe/pipe";
 
 /**
  * Remote attribute

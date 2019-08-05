@@ -2,7 +2,7 @@ import { ColorRepresenterService } from "./color-representer.service";
 import { Appearance } from "../appearance/appearance";
 import { connectEvent, ClientEvent } from "../../entities/client-event";
 import { AppearanceResponse, AppearanceRequest } from "../../../../shared/pipes/appearance.pipe";
-import { PipeEndpoint } from "../../../../shared/services/pipe/pipe";
+import { PipeEndpoint } from "../../../../lib/common/pipe/pipe";
 
 
 const enum FillControlEvents {

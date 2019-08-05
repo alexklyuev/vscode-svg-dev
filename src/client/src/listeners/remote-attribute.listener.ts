@@ -1,5 +1,5 @@
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../shared/services/pipe/pipe";
+import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { RemoteAttributeRequest, RemoteAttributeResponse } from "../../../shared/pipes/remote-attribute.pipe";
 import { ElementHolder } from "../services/picker/element-holder";
 import { setState } from "../decorators/set-state.decorator";

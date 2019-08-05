@@ -1,5 +1,5 @@
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../shared/services/pipe/pipe";
+import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { FlushPayload } from "../../../shared/pipes/flush.pipe";
 import { Artboard } from "../services/artboard/artboard";
 

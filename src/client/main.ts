@@ -35,6 +35,8 @@ import { hints } from './src/services/hints';
 import { UndoListener } from './src/listeners/undo.listener';
 import { undoPipe } from '../shared/pipes/undo.pipe';
 import { cancelHub } from './src/services/cancel-hub';
+import { ConfigListener } from './src/listeners/config.listener';
+import { configPipe } from '../shared/pipes/config.pipe';
 
 
 /**
@@ -241,3 +243,12 @@ undoListener.renderStateEvent.on(_state => {
     hud.appearanceOutlet.artboardControls.updateArtboardWidth(artboard.width);
     hud.appearanceOutlet.artboardControls.updateArtboardHeight(artboard.height);
 });
+
+appearance.changeEvent.on(({prop, value}) => {
+    console.log(`Appearance: ${ prop } => ${ value }`);
+});
+
+const configListener = new ConfigListener(webviewEndpoint, configPipe, appearance);
+configListener.listen();
+
+

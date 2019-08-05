@@ -18,9 +18,10 @@ export class Appearance {
     };
 
     public readonly changeEvent = new ClientEvent<{prop: string, value: string}>();
-
     @connectEvent('changeEvent')
-    fireChangeEvent(data: {prop: string, value: string}) {}
+    fireChangeEvent(data: {prop: string, value: string}) {
+        return data;
+    }
 
     get fill() {
         return this.props.fill;

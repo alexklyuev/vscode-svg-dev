@@ -49,6 +49,10 @@ export class SvgSpawner extends AbstractSpawner<SVGElement> {
     return this.element('circle', attrs, styles) as SVGCircleElement;
   }
 
+  rect(attrs: Props = {}, styles: Props = {}) {
+    return this.element('rect', attrs, styles) as SVGRectElement;
+  }
+
 }
 
 export class Spawn {

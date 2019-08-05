@@ -1,5 +1,8 @@
 # Change Log
 
+ - 0.8.11
+   - circle and ellipse are editable by points
+   - shapes are now movable in edit-points-mode, also you can pick other shapes and switch to edit-points-mode on picked shape by "edit points" button or pressing `ctrl+e` (mac: `cmd+e`)
  - 0.8.10
    - hints are now implemented as vscode info messages, you could silence them by pressing 'don`t show again' button indside message popup, you can enable or disable each hint in settings
    - edit rect by poins

@@ -1,4 +1,4 @@
-import { PipeEndpoint } from "../../shared/services/pipe/pipe";
+import { PipeEndpoint } from "../../lib/common/pipe/pipe";
 import { RemoteAttributeRequest, RemoteAttributeResponse } from "../../shared/pipes/remote-attribute.pipe";
 
 

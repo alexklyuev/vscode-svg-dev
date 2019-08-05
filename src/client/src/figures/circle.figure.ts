@@ -12,7 +12,7 @@ import { Guides } from "../services/guides/guides";
 import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
-import { Spawn } from "../../../shared/spawner/spawn";
+import { Spawn } from "../../../lib/dom/spawner/spawn";
 
 
 export class CircleFigure implements Figure<SVGCircleElement> {

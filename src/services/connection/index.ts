@@ -22,6 +22,7 @@ import { listAttributesPipe } from "../../shared/pipes/list-attributes.pipe";
 import { infomessagePipe } from "../../shared/pipes/infomessage.pipe";
 import { undoPipe } from "../../shared/pipes/undo.pipe";
 import { historyPipe } from "../../shared/pipes/history.pipe";
+import { configPipe } from "../../shared/pipes/config.pipe";
 
 
 export const pickConnection = new PipeConnection(pickPipe);
@@ -47,6 +48,7 @@ export const listAttributesConnection = new PipeConnection(listAttributesPipe);
 export const infomessageConnection = new PipeConnection(infomessagePipe);
 export const undoConnection = new PipeConnection(undoPipe);
 export const historyConnection = new PipeConnection(historyPipe);
+export const configConnection = new PipeConnection(configPipe);
 
 export const appearanceConnection = new PipeConnection(appearancePipe);
 
@@ -75,6 +77,7 @@ const connections: PipeConnection<any, any, any>[] = [
     infomessageConnection,
     undoConnection,
     historyConnection,
+    configConnection,
 ];
 
 export const connectionsManager = new ConnectionsManager();

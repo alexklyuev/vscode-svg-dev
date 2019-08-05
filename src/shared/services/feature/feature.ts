@@ -1,4 +1,4 @@
-import { Pipe, PipeEndpoint } from "../pipe/pipe";
+import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { PipeConnection } from "../../../services/connection/pipe-connection";
 import { WebviewEndpoint } from "../../../client/src/services/endpoint/webview-endpoint";
 

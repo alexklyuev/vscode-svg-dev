@@ -1,4 +1,4 @@
-import { PipeEndpoint, Pipe } from "../../../shared/services/pipe/pipe";
+import { PipeEndpoint, Pipe } from "../../../lib/common/pipe/pipe";
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { ElementHolder } from "../services/picker/element-holder";
 import { setState } from "../decorators/set-state.decorator";

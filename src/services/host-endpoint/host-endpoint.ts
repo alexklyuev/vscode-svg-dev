@@ -1,5 +1,5 @@
 import { WebviewPanel } from "vscode";
-import { Pipe, PipeEndpoint } from "../../shared/services/pipe/pipe";
+import { Pipe, PipeEndpoint } from "../../lib/common/pipe/pipe";
 import { TypedWire, TypedWireEndpoint } from "../../shared/services/typed-wire/typed-wire";
 
 

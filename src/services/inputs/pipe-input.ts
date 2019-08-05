@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { PipeEndpoint } from "../../shared/services/pipe/pipe";
+import { PipeEndpoint } from "../../lib/common/pipe/pipe";
 
 
 export class PipeInput<Req, Res, Tag extends string> {

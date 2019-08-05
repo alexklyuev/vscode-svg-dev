@@ -26,7 +26,7 @@ import { MoverPoints } from "../services/mover/mover-points";
 import { MoverValue } from "../services/mover/mover-value";
 import { MoverDelegate } from "../services/mover/mover-delegate";
 import { hints } from "../services/hints";
-import { spawn } from "../../../shared/spawner/index";
+import { spawn } from "../../../lib/dom/spawner/index";
 
 
 const figuresCollection = new FiguresCollection();

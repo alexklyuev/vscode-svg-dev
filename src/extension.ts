@@ -43,6 +43,7 @@ import {
     infomessageConnection,
     undoConnection,
     historyConnection,
+    configConnection,
 } from './services/connection';
 import { CancelKeys } from './shared/pipes/cancel.pipe';
 import { MoveArrowKeys } from './shared/pipes/move-key.pipe';
@@ -52,6 +53,8 @@ import { hintsDict } from './shared/hints/hints.dict';
 export function activate(context: vscode.ExtensionContext) {
 
     const config = vscode.workspace.getConfiguration('SVGdev');
+
+    console.log(config);
 
     const contextManager = new ContextManager<AppContext>();
     const assetsManager = new AssetsManager(context.extensionPath);
@@ -192,6 +195,9 @@ export function activate(context: vscode.ExtensionContext) {
             await editor.activate(panel);
             const hostEndpoint = new HostEndpoint(panel);
             connectionsManager.each(connection => connection.connect(hostEndpoint));
+            configConnection.ifConnected(endpoint => {
+                endpoint.makeSetRequest(config);
+            });
             // @deprecated
             loggerConnection.ifConnected(hostLogger => {
                 hostLogger.listenSetRequest(

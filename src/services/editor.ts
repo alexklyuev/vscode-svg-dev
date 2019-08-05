@@ -5,7 +5,8 @@ import { AppContext } from '../app-context.type';
 import { Template } from '../models/template.model';
 import { HostEndpoint } from './host-endpoint/host-endpoint';
 import { ConnectionsManager } from './connection/connections-manager';
-import { StateHistory } from '../svgdev/common/state-history/state-history';
+// import { StateHistory } from '../lib/common/state-history/state-history';
+import { StateHistory } from "../lib/common/state-history/state-history";
 
 
 export class Editor {
