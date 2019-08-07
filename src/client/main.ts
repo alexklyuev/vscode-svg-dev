@@ -244,9 +244,9 @@ undoListener.renderStateEvent.on(_state => {
     hud.appearanceOutlet.artboardControls.updateArtboardHeight(artboard.height);
 });
 
-appearance.changeEvent.on(({prop, value}) => {
-    console.log(`Appearance: ${ prop } => ${ value }`);
-});
+// appearance.changeEvent.on(({prop, value}) => {
+//     console.log(`Appearance: ${ prop } => ${ value }`);
+// });
 
 const configListener = new ConfigListener(webviewEndpoint, configPipe, appearance);
 configListener.listen();
