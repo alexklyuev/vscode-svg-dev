@@ -54,7 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     const config = vscode.workspace.getConfiguration('SVGdev');
 
-    console.log(config);
+    // console.log(config);
 
     const contextManager = new ContextManager<AppContext>();
     const assetsManager = new AssetsManager(context.extensionPath);
