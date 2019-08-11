@@ -23,7 +23,9 @@ export const MakeIterator = (map: DescriptorIterationMap) => {
         map.set(value, iter);
         const newValue = function (this: any, ...args: any[]) {
             const result = value.call(this, ...args);
-            fn({ value: result, done: false });
+            setTimeout(() => {
+                fn({ value: result, done: false });
+            }, 0);
             return result;
         };
         (newValue as any)[link] = value;

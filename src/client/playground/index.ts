@@ -23,7 +23,6 @@ const intercept$ = findIterator(playground.intercept)!;
 
 const finite$ = takeUntil(event$, intercept$);
 
-
 (async () => {
     for await (const event of finite$) {
         console.log(`event1 is ${ event }`);
@@ -41,3 +40,15 @@ setTimeout(() => {
 setTimeout(() => {
     clearInterval(int);
 }, 10000);
+
+// playground.event();
+// playground.event();
+// playground.event();
+// playground.event();
+// playground.event();
+// playground.event();
+// playground.event();
+// playground.intercept();
+// playground.event();
+// playground.event();
+// playground.event();
