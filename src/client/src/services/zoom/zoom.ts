@@ -1,6 +1,5 @@
 import { Artboard } from "../../services/artboard/artboard";
-import { ClientEvent } from "../../entities/client-event";
-import { connectEvent } from "../../decorators/connect-event.decorator";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
 
 
 /**
@@ -17,7 +16,7 @@ export class Zoom {
 
     private zoom = 1;
 
-    public readonly [ZoomEvents.valueChange] = new ClientEvent<number>();
+    public readonly [ZoomEvents.valueChange] = new EventBus<number>();
 
     constructor(
         private artboard: Artboard,

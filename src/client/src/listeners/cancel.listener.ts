@@ -1,8 +1,7 @@
 import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { CancelPipeRequest, CancelKeys } from "../../../shared/pipes/cancel.pipe";
-import { ClientEvent } from "../entities/client-event";
-import { connectEvent } from "../decorators/connect-event.decorator";
+import { EventBus, connectEvent } from "../../../lib/common/events";
 
 
 const enum CancelEvents {
@@ -13,7 +12,7 @@ export class CancelListener {
 
     private endpoint: PipeEndpoint<CancelPipeRequest, {}, 'cancel'>;
 
-    public readonly [CancelEvents.keyEvent] = new ClientEvent<CancelKeys>();
+    public readonly [CancelEvents.keyEvent] = new EventBus<CancelKeys>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,

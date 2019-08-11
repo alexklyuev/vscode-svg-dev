@@ -1,9 +1,9 @@
-import { connectEvent, ClientEvent } from "../../../entities/client-event";
+import { EventBus, connectEvent } from "../../../../../lib/common/events";
 
 
 export class Shape {
 
-  public readonly createEvent = new ClientEvent<MouseEvent>();
+  public readonly createEvent = new EventBus<MouseEvent>();
 
   private el: HTMLElement;
 

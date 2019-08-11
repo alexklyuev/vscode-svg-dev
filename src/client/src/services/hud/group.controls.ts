@@ -1,12 +1,13 @@
-import { connectEvent, ClientEvent } from "../../entities/client-event";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
+
 
 export class GroupControls {
 
     private el: HTMLElement;
 
-    public readonly groupEvent = new ClientEvent<MouseEvent>();
+    public readonly groupEvent = new EventBus<MouseEvent>();
 
-    public readonly ungroupEvent = new ClientEvent<MouseEvent>();
+    public readonly ungroupEvent = new EventBus<MouseEvent>();
 
     constructor() {
         this.el = document.createElement('div');

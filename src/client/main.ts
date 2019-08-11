@@ -37,7 +37,20 @@ import { undoPipe } from '../shared/pipes/undo.pipe';
 import { cancelHub } from './src/services/cancel-hub';
 import { ConfigListener } from './src/listeners/config.listener';
 import { configPipe } from '../shared/pipes/config.pipe';
+// import { iterateEvent } from '../lib/common/events/client-event';
 
+
+// (async () => {
+//     for await (const cr of guides.aiDrawn()) {
+//         console.log(`cr1 is: ${ cr }`);
+//     }
+// })();
+
+// (async () => {
+//     for await (const cr of iterateEvent(guides.selectionDrawn)) {
+//         console.log(`cr2 is: ${ cr }`);
+//     }
+// })();
 
 /**
  * 
@@ -250,5 +263,4 @@ undoListener.renderStateEvent.on(_state => {
 
 const configListener = new ConfigListener(webviewEndpoint, configPipe, appearance);
 configListener.listen();
-
 

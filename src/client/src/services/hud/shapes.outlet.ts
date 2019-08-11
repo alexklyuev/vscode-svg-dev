@@ -1,10 +1,10 @@
 import { Shape } from "./shapes/shape";
-import { connectEvent, ClientEvent } from "../../entities/client-event";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
 
 
 export class ShapesOutlet {
 
-    public readonly createShapeEvent = new ClientEvent<string>();
+    public readonly createShapeEvent = new EventBus<string>();
 
     private el: HTMLElement;
     private shapes: Shape[];

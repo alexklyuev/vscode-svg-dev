@@ -1,4 +1,4 @@
-import { ClientEvent, connectEvent } from "../../entities/client-event";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
 
 const enum ElementHolderEvents {
     setElements = 'setElements',
@@ -6,7 +6,7 @@ const enum ElementHolderEvents {
 
 export class ElementHolder {
 
-    public readonly [ElementHolderEvents.setElements] = new ClientEvent<SVGElement[]>();
+    public readonly [ElementHolderEvents.setElements] = new EventBus<SVGElement[]>();
 
     private box = Array<SVGElement>();
 

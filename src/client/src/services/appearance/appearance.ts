@@ -1,4 +1,5 @@
-import { ClientEvent, connectEvent } from "../../entities/client-event";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
+
 
 export class Appearance {
 
@@ -17,7 +18,7 @@ export class Appearance {
         editBezierPointLineStrokeDasharray: '1',
     };
 
-    public readonly changeEvent = new ClientEvent<{prop: string, value: string}>();
+    public readonly changeEvent = new EventBus<{prop: string, value: string}>();
     @connectEvent('changeEvent')
     fireChangeEvent(data: {prop: string, value: string}) {
         return data;

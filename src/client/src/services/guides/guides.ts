@@ -1,5 +1,5 @@
 import { Artboard } from "../artboard/artboard";
-import { ClientEvent, connectEvent } from "../../entities/client-event";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
 import { Spawn } from "../../../../lib/dom/spawner/spawn";
 
 
@@ -18,14 +18,29 @@ export class Guides {
     private container: SVGSVGElement | null = null;
     private selection: SVGRectElement | null = null;
 
-    public readonly [GuidesEvents.selectionDrawn] = new ClientEvent<ClientRect>();
-    public readonly [GuidesEvents.selectionDestroyed] = new ClientEvent<null>();
+    public readonly [GuidesEvents.selectionDrawn] = new EventBus<ClientRect>();
+    public readonly [GuidesEvents.selectionDestroyed] = new EventBus<null>();
 
     constructor(
         private artboard: Artboard,
         private spawn: Spawn,
     ) {
-        // this.artboard.tools.style.pointerEvents = 'none';
+    }
+
+    async * aiDrawn(): AsyncIterableIterator<ClientRect> {
+        return yield * {
+            [Symbol.asyncIterator]: () => {
+                return {
+                    next: () => {
+                        return new Promise<IteratorResult<ClientRect>>(resolve => {
+                            this[GuidesEvents.selectionDrawn].once(value => {
+                                resolve({ value, done: false });
+                            });
+                        });
+                    },
+                };
+            },
+        };
     }
 
     get guidesContainer(): SVGSVGElement | null {
@@ -43,7 +58,7 @@ export class Guides {
      * 
      */
     createContainer() {
-        this.container = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        this.container = this.spawn.svg.svg();
         this.artboard.tools.appendChild(this.container);
         this.setContainerStyles();
     }
@@ -51,14 +66,13 @@ export class Guides {
     setContainerStyles() {
         if (this.container) {
             const { left, top, width, height } = this.artboard.svg.getBoundingClientRect();
-            Object.assign(this.container.style, {
+            this.spawn.svg.update(this.container, {}, {
                 position: 'absolute',
                 border: this.borderStyle,
                 left: `${ left - 0.5 }px`,
                 top: `${ top - 0.5 }px`,
                 width: `${ width }px`,
                 height: `${ height }px`,
-                // pointerEvents: 'none',
             });
         }
     }
@@ -78,7 +92,6 @@ export class Guides {
      */
     drawSelection(elements: Element[]): void {
         if (this.container) {
-            // this.selection = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
             this.selection = this.spawn.svg.rect();
             this.container.appendChild(this.selection);
             this.setSelectionStyles(elements);
@@ -127,7 +140,6 @@ export class Guides {
         if (this.container && this.selection) {
             this.container.removeChild(this.selection);
             this.selection = null;
-            // this.selectionDestroyed.emit(null);
             this.selectionIsRemoved();
         }
     }

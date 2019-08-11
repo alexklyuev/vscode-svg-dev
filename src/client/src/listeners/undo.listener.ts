@@ -3,13 +3,13 @@ import { Artboard } from "../services/artboard/artboard";
 import { UndoRequest, UndoResponse } from '../../../shared/pipes/undo.pipe';
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { ElementHolder } from "../services/picker/element-holder";
-import { ClientEvent, connectEvent } from "../entities/client-event";
+import { EventBus, connectEvent } from "../../../lib/common/events";
 
 
 export class UndoListener {
     private client: PipeEndpoint<UndoRequest, UndoResponse, 'undo'>;
 
-    public readonly renderStateEvent = new ClientEvent<string>();
+    public readonly renderStateEvent = new EventBus<string>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,

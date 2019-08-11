@@ -1,6 +1,6 @@
 import { ColorRepresenterService } from "./color-representer.service";
 import { Appearance } from "../appearance/appearance";
-import { connectEvent, ClientEvent } from "../../entities/client-event";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
 import { AppearanceResponse, AppearanceRequest } from "../../../../shared/pipes/appearance.pipe";
 import { PipeEndpoint } from "../../../../lib/common/pipe/pipe";
 
@@ -11,7 +11,7 @@ const enum FillControlEvents {
 
 export class FillControl {
 
-    public readonly [FillControlEvents.appearanceRequest] = new ClientEvent<Promise<AppearanceResponse>>();
+    public readonly [FillControlEvents.appearanceRequest] = new EventBus<Promise<AppearanceResponse>>();
 
     private fillEl: HTMLElement;
     private fillBtn: HTMLElement;

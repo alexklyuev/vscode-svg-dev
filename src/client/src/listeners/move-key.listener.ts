@@ -3,13 +3,13 @@ import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { MoveKeyRequest } from "../../../shared/pipes/move-key.pipe";
 import { ElementHolder } from "../services/picker/element-holder";
 import { FiguresCollection } from "../figures/figures-collection";
-import { ClientEvent, connectEvent } from "../entities/client-event";
+import { EventBus, connectEvent } from "../../../lib/common/events";
 
 
 export class MoveKeyListener {
     private moveKeyClient: PipeEndpoint<MoveKeyRequest, {}, 'move-key'>;
 
-    public readonly moveEvent = new ClientEvent<'left' | 'up' | 'right' | 'down'>();
+    public readonly moveEvent = new EventBus<'left' | 'up' | 'right' | 'down'>();
     
     constructor(
         private webviewEndpoint: WebviewEndpoint,

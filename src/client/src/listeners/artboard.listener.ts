@@ -3,7 +3,7 @@ import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { ArtboardRequest, ArtboardResponse } from "../../../shared/pipes/artboard.pipe";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
-import { ClientEvent, connectEvent } from "../entities/client-event";
+import { EventBus, connectEvent } from "../../../lib/common/events";
 
 
 const enum ArtboardListenerEvents {
@@ -14,7 +14,7 @@ const enum ArtboardListenerEvents {
 export class ArtboardListener {
     private artboardClient: PipeEndpoint<ArtboardRequest, ArtboardResponse, 'artboard'>;
 
-    public readonly [ArtboardListenerEvents.changeProperty] = new ClientEvent<{property: string, value: string}>();
+    public readonly [ArtboardListenerEvents.changeProperty] = new EventBus<{property: string, value: string}>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,

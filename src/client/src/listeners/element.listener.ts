@@ -4,13 +4,13 @@ import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { ElementHolder } from "../services/picker/element-holder";
 import { setState } from "../decorators/set-state.decorator";
 import { FiguresCollection } from "../figures/figures-collection";
-import { connectEvent, ClientEvent } from "../entities/client-event";
+import { EventBus, connectEvent } from "../../../lib/common/events";
 
 
 export class ElementListener {
     private elementReceiver: PipeEndpoint<ElementCommand, {}, 'element'>;
 
-    public readonly copyElementEvent = new ClientEvent<SVGElement>();
+    public readonly copyElementEvent = new EventBus<SVGElement>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,

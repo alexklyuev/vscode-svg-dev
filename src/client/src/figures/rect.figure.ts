@@ -13,7 +13,7 @@ import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
 import { Spawn } from "../../../lib/dom/spawner/spawn";
-import { ClientEvent, connectEvent } from "../entities/client-event";
+import { EventBus, connectEvent } from "../../../lib/common/events";
 
 
 export class RectFigure implements Figure<SVGRectElement> {
@@ -334,7 +334,7 @@ export class RectFigure implements Figure<SVGRectElement> {
         return cancel;
     }
 
-    public readonly editFinishEvent = new ClientEvent<SVGElement>();
+    public readonly editFinishEvent = new EventBus<SVGElement>();
     @connectEvent('editFinishEvent')
     @setState
     editFinish(element: SVGElement) {

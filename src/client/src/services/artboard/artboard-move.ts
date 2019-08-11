@@ -1,5 +1,5 @@
 import { Artboard } from "./artboard";
-import { ClientEvent, connectEvent } from "../../entities/client-event";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
 import { UserEventManager } from "../user-event/user-event-manager";
 
 
@@ -18,9 +18,9 @@ export class ArtboardMove {
     private bindedOnMouseMove: (event: MouseEvent) => void;
     private bindedOnMouseUp: (event: MouseEvent) => void;
 
-    public readonly [ArtboardMoveEvents.mouseDownEvent] = new ClientEvent<MouseEvent>();
-    public readonly [ArtboardMoveEvents.mouseUpEvent] = new ClientEvent<MouseEvent>();
-    public readonly [ArtboardMoveEvents.mouseMoveEvent] = new ClientEvent<{left: number; top: number, event: MouseEvent}>();
+    public readonly [ArtboardMoveEvents.mouseDownEvent] = new EventBus<MouseEvent>();
+    public readonly [ArtboardMoveEvents.mouseUpEvent] = new EventBus<MouseEvent>();
+    public readonly [ArtboardMoveEvents.mouseMoveEvent] = new EventBus<{left: number; top: number, event: MouseEvent}>();
 
     private coords: {clientX: number, clientY: number} = {clientX: initialX, clientY: initialY};
 

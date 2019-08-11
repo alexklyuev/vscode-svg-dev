@@ -1,4 +1,5 @@
-import { connectEvent, ClientEvent } from "../../entities/client-event";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
+
 
 export class EditPointsControl {
 
@@ -14,7 +15,7 @@ export class EditPointsControl {
   <line x1="1.96" y1="3.2199999999999998" x2="3.4999999999999996" y2="5.6" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5"></line><line x1="5.820000000000001" y1="3.14" x2="4.14" y2="5.619999999999999" stroke="white" fill="none" stroke-linecap="butt" stroke-linejoin="miter" stroke-width=".5" stroke-dasharray=".5"></line><circle fill="none" stroke="white" cx="3.84" cy="6.58" r="1" stroke-width=".5"></circle><circle fill="none" stroke="white" cx="1.44" cy="2.38" r="1" stroke-width=".5"></circle><circle fill="none" stroke="white" cx="6.48" cy="2.32" r="1" stroke-width=".5" stroke-dasharray=".5"></circle></svg>
   `;
 
-  public readonly editPointsEvent = new ClientEvent<MouseEvent>();
+  public readonly editPointsEvent = new EventBus<MouseEvent>();
 
   constructor(
 

@@ -45,6 +45,10 @@ export class SvgSpawner extends AbstractSpawner<SVGElement> {
     return document.createElementNS('http://www.w3.org/2000/svg', name);
   }
 
+  svg(attrs: Props = {}, styles: Props = {}) {
+    return this.element('svg', attrs, styles) as SVGSVGElement;
+  }
+
   circle(attrs: Props = {}, styles: Props = {}) {
     return this.element('circle', attrs, styles) as SVGCircleElement;
   }

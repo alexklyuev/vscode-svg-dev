@@ -4,8 +4,8 @@ import { HostApi } from "../host-api/host-api.interface";
 import { Zoom } from "../zoom/zoom";
 import { FiguresCollection } from "../../figures/figures-collection";
 import { UserEventManager } from "../user-event/user-event-manager";
-import { ClientEvent } from "../../entities/client-event";
-import { connectEvent } from "../../decorators/connect-event.decorator";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
+
 
 
 const enum PickerEvents {
@@ -21,9 +21,9 @@ export class Picker {
     private bindedMousedown: (event: MouseEvent) => void;
     private bindedMouseup: (event: MouseEvent) => void;
 
-    public readonly [PickerEvents.mouseDown] = new ClientEvent<MouseEvent>();
-    public readonly [PickerEvents.mouseMove] = new ClientEvent<MouseEvent>();
-    public readonly [PickerEvents.mouseUp] = new ClientEvent<MouseEvent>();
+    public readonly [PickerEvents.mouseDown] = new EventBus<MouseEvent>();
+    public readonly [PickerEvents.mouseMove] = new EventBus<MouseEvent>();
+    public readonly [PickerEvents.mouseUp] = new EventBus<MouseEvent>();
 
     /**
      * 

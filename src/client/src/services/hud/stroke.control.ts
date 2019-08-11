@@ -1,6 +1,6 @@
 import { Appearance } from "../appearance/appearance";
 import { ColorRepresenterService } from "./color-representer.service";
-import { connectEvent, ClientEvent } from "../../entities/client-event";
+import { EventBus, connectEvent } from "../../../../lib/common/events";
 import { PipeEndpoint } from "../../../../lib/common/pipe/pipe";
 import { AppearanceRequest, AppearanceResponse } from "../../../../shared/pipes/appearance.pipe";
 
@@ -11,7 +11,7 @@ const enum StrokeControlEvents {
 
 export class StrokeControl {
 
-    public readonly [StrokeControlEvents.appearanceRequest] = new ClientEvent<Promise<AppearanceResponse>>();
+    public readonly [StrokeControlEvents.appearanceRequest] = new EventBus<Promise<AppearanceResponse>>();
 
     private strokeEl: HTMLElement;
     private strokeBtn: HTMLElement;
