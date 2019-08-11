@@ -1,4 +1,5 @@
-export type DescriptorIterationMap = Map<Function, {[Symbol.asyncIterator]: () => any}>;
+type StoreIter = () => {[ Symbol.asyncIterator ]: () => any};
+export type DescriptorIterationMap = Map<Function, StoreIter>;
 
 const link = Symbol();
 
@@ -8,23 +9,39 @@ export const MakeIterator = (map: DescriptorIterationMap) => {
         if (!(value instanceof Function)) {
             throw new Error(`makeIterator decorator applied to not a function`);
         }
-        let fn = new Function();
-        const iter = {
-            [Symbol.asyncIterator] () {
-                return {
-                    next: () => {
-                        return new Promise<T>(resolve => {
-                            fn = resolve;
-                        });
-                    },
-                };
-            },
+        // let fn = new Function();
+        let fns = Array<Function>();
+        const iterFn = () => {
+            return {
+                [Symbol.asyncIterator] () {
+                    return {
+                        next: () => {
+                            return new Promise<T>(resolve => {
+                                fns.push(resolve);
+                            });
+                        },
+                    };
+                },
+            };
         };
-        map.set(value, iter);
+        // const iter = {
+        //     [Symbol.asyncIterator] () {
+        //         return {
+        //             next: () => {
+        //                 return new Promise<T>(resolve => {
+        //                     fn = resolve;
+        //                 });
+        //             },
+        //         };
+        //     },
+        // };
+        map.set(value, iterFn);
         const newValue = function (this: any, ...args: any[]) {
             const result = value.call(this, ...args);
             setTimeout(() => {
-                fn({ value: result, done: false });
+                fns.forEach(fn => {
+                    fn({ value: result, done: false });
+                });
             }, 0);
             return result;
         };
@@ -37,8 +54,8 @@ export const FindIterator = (map: DescriptorIterationMap) => {
     return (method: any) => {
         const iter = map.get(method[link])!;
         return async function * (this: void) {
-            yield * iter;
-        }();
+            yield * iter();
+        };
     };
 };
 
