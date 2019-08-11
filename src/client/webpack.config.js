@@ -2,6 +2,8 @@
 
 const path = require('path');
 
+console.log('--->', path.resolve(__dirname, '../../src/lib/common'));
+
 /**
  * @returns {webpack.Configuration}
  */
@@ -24,6 +26,9 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: ['.ts']
+        extensions: ['.ts'],
+        alias: {
+            '@common': path.resolve(__dirname, '../../src/lib/common'),
+        },
     },
 };

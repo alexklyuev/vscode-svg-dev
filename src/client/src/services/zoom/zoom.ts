@@ -1,5 +1,6 @@
 import { Artboard } from "../../services/artboard/artboard";
 import { EventBus, connectEvent } from "../../../../lib/common/events";
+import { makeIterator } from "../../iterators";
 
 
 /**
@@ -32,6 +33,7 @@ export class Zoom {
     /**
      * update zoom value by relative (delta) value or to absolute (abs) value
      */
+    @makeIterator
     @connectEvent(ZoomEvents.valueChange)
     update(delta: number | undefined, abs: number | undefined): number {
         if (delta) {

@@ -37,7 +37,18 @@ import { undoPipe } from '../shared/pipes/undo.pipe';
 import { cancelHub } from './src/services/cancel-hub';
 import { ConfigListener } from './src/listeners/config.listener';
 import { configPipe } from '../shared/pipes/config.pipe';
+// import { findIterator } from './src/iterators';
 // import { iterateEvent } from '../lib/common/events/client-event';
+
+import './playground';
+
+// import { MakeIterator } from "@common/";
+// import {} from '@common'
+// import { MakeIterator } from '@common/iterators/index';
+// import {} from '@common/';
+// import { MakeIterator, FindIterator } from '@common/iterators';
+
+// console.log(MakeIterator, FindIterator);
 
 
 // (async () => {
@@ -264,3 +275,9 @@ undoListener.renderStateEvent.on(_state => {
 const configListener = new ConfigListener(webviewEndpoint, configPipe, appearance);
 configListener.listen();
 
+
+// (async () => {
+//     for await ( const val of findIterator(zoom.update)! ) {
+//         console.log(`zval2 is ${ val }`);
+//     }
+// })();

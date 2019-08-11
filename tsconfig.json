@@ -8,6 +8,10 @@
             "dom",
             "esnext"
         ],
+        "baseUrl": ".",
+        "paths": {
+            "@common/*": ["src/lib/common/*"],
+        },
         "sourceMap": true,
         "rootDir": "src",
         /* Strict Type-Checking Option */
