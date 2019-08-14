@@ -2,21 +2,26 @@ export function takeUntil (this: void, iteratorFn: () => AsyncIterableIterator<a
   const iterator = iteratorFn();
   const interceptor = interceptorFn();
   let interceptDone = false;
-  let fn = Function();
+  let nextFn = Function();
   const obj = {
       [Symbol.asyncIterator] () {
           return {
               next: () => {
-                  return new Promise<{value: any, done: boolean}>(resolve => {
-                      fn = resolve;
-                  });
+                return new Promise<{value: any, done: boolean}>(resolve => {
+                    nextFn = resolve;
+                });
               },
+            //   return: () => {
+            //     return new Promise<{value: any, done: true}>(resolve => {
+            //         returnFn = resolve;
+            //     });
+            //   },
           };
       },
   };
   iterator.next().then(function onResolve (this: void, {value, done}) {
       done = done || interceptDone;
-      fn({ value, done });
+      nextFn({ value, done });
       if (!done) {
           iterator.next().then(onResolve);
       }

@@ -10,7 +10,7 @@
         ],
         "baseUrl": ".",
         "paths": {
-            "@common/*": ["src/lib/common/*"],
+            "@/*": ["src/lib/*"]
         },
         "sourceMap": true,
         "rootDir": "src",

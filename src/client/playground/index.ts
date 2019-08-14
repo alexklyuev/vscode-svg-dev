@@ -1,5 +1,5 @@
 import { makeIterator, findIterator } from "../src/iterators";
-import { takeUntil, merge } from "@common/iterators";
+import { takeUntil, merge } from '@/common/iterators';
 
 export class Playground {
 
@@ -31,6 +31,7 @@ let count = 0;
     for await ( const event of finite$() ) {
         console.log(`[${ ++count }] event1 is ${ event }`);
     }
+    console.log('--------------!!!-----------');
 })();
 
 (async () => {

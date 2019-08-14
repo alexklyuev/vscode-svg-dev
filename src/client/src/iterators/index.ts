@@ -1,4 +1,4 @@
-import { MakeIterator, FindIterator } from '@common/iterators';
+import { MakeIterator, FindIterator } from '@/common/iterators';
 
 const map = new Map();
 
