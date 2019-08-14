@@ -5,9 +5,10 @@ import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../../../shared/
 import { ColorRepresenterService } from "./color-representer.service";
 import { ArtboardListener } from "../../listeners/artboard.listener";
 import { ArtboardRequest, ArtboardResponse } from "../../../../shared/pipes/artboard.pipe";
+import { Outlet } from "./models/outlet.model";
 
 
-export class ArtboardControls {
+export class ArtboardControls implements Outlet {
 
     private artboardEl: HTMLElement;
     private abWidth: HTMLElement;

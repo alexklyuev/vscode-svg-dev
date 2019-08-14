@@ -3,13 +3,14 @@ import { ColorRepresenterService } from "./color-representer.service";
 import { EventBus, connectEvent } from "../../../../lib/common/events";
 import { PipeEndpoint } from "../../../../lib/common/pipe/pipe";
 import { AppearanceRequest, AppearanceResponse } from "../../../../shared/pipes/appearance.pipe";
+import { Outlet } from "./models/outlet.model";
 
 
 const enum StrokeControlEvents {
     appearanceRequest = 'appearanceRequest',
 }
 
-export class StrokeControl {
+export class StrokeControl implements Outlet {
 
     public readonly [StrokeControlEvents.appearanceRequest] = new EventBus<Promise<AppearanceResponse>>();
 

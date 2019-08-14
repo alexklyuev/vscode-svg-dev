@@ -22,7 +22,7 @@ import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener, artboardListener, artboardStyleListener } from './src/listeners';
 import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
-import { hud, shapesOutlet, editPointsControl, groupControls } from './src/services/hud';
+import { shapesOutlet, editPointsControl, groupControls, fillControl, strokeControl, artboardControls } from './src/services/hud';
 import { appearance } from './src/services/appearance';
 import { AppearanceResponse } from '../shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from './src/producers/inverse-interactive.producer';
@@ -37,31 +37,7 @@ import { undoPipe } from '../shared/pipes/undo.pipe';
 import { cancelHub } from './src/services/cancel-hub';
 import { ConfigListener } from './src/listeners/config.listener';
 import { configPipe } from '../shared/pipes/config.pipe';
-// import { findIterator } from './src/iterators';
-// import { iterateEvent } from '../lib/common/events/client-event';
-
-import './playground';
-
-// import { MakeIterator } from "@common/";
-// import {} from '@common'
-// import { MakeIterator } from '@common/iterators/index';
-// import {} from '@common/';
-// import { MakeIterator, FindIterator } from '@common/iterators';
-
-// console.log(MakeIterator, FindIterator);
-
-
-// (async () => {
-//     for await (const cr of guides.aiDrawn()) {
-//         console.log(`cr1 is: ${ cr }`);
-//     }
-// })();
-
-// (async () => {
-//     for await (const cr of iterateEvent(guides.selectionDrawn)) {
-//         console.log(`cr2 is: ${ cr }`);
-//     }
-// })();
+import { findIterator } from './src/iterators';
 
 /**
  * 
@@ -189,11 +165,11 @@ holder.setElements.on(elements => {
         const stroke = lastElement.getAttribute('stroke');
         if (fill) {
             appearance.fill = fill;
-            hud.appearanceOutlet.fillControl.updateFillBtn(fill);
+            fillControl.updateFillBtn(fill);
         }
         if (stroke) {
             appearance.stroke = stroke;
-            hud.appearanceOutlet.strokeControl.updateStrokeBtn(stroke);
+            strokeControl.updateStrokeBtn(stroke);
         }
     }
 });
@@ -207,8 +183,8 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
         el.setAttribute(name, value);
     });
 };
-hud.appearanceOutlet.fillControl.appearanceRequest.on(appearanceRequestCallback);
-hud.appearanceOutlet.strokeControl.appearanceRequest.on(appearanceRequestCallback);
+fillControl.appearanceRequest.on(appearanceRequestCallback);
+strokeControl.appearanceRequest.on(appearanceRequestCallback);
 
 /**
  * Create elements by hud shape tools
@@ -216,11 +192,6 @@ hud.appearanceOutlet.strokeControl.appearanceRequest.on(appearanceRequestCallbac
 shapesOutlet.createShapeEvent.on(shapeName => {
     inverseInteractiveEndpoint.makeSetRequest({});
     figuresCollection.delegate(shapeName)!.create(shapeName, {});
-});
-
-editPointsControl.editPointsEvent.on(_event => {
-    inverseInteractiveEndpoint.makeSetRequest({});
-    editListener.editElement();
 });
 
 holder.setElements.on(elements => {
@@ -264,20 +235,19 @@ undoListener.listen();
 undoListener.renderStateEvent.on(_state => {
     guides.setContainerStyles();
     guides.setSelectionStyles(holder.elements);
-    hud.appearanceOutlet.artboardControls.updateArtboardWidth(artboard.width);
-    hud.appearanceOutlet.artboardControls.updateArtboardHeight(artboard.height);
+    artboardControls.updateArtboardWidth(artboard.width);
+    artboardControls.updateArtboardHeight(artboard.height);
 });
-
-// appearance.changeEvent.on(({prop, value}) => {
-//     console.log(`Appearance: ${ prop } => ${ value }`);
-// });
 
 const configListener = new ConfigListener(webviewEndpoint, configPipe, appearance);
 configListener.listen();
 
-
-// (async () => {
-//     for await ( const val of findIterator(zoom.update)! ) {
-//         console.log(`zval2 is ${ val }`);
-//     }
-// })();
+/**
+ * Stream of clicks on 'edit point' button inside editing window
+ */
+(async () => {
+    for await ( const _event of findIterator(editPointsControl.editPoints)<MouseEvent>() ) {
+        inverseInteractiveEndpoint.makeSetRequest({});
+        editListener.editElement();
+    }
+})();

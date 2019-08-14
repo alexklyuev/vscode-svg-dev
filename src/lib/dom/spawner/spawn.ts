@@ -19,6 +19,10 @@ abstract class AbstractSpawner<T extends (HTMLElement | SVGElement)> {
       el.setAttribute(key, attrs[key]);
     });
     Object.assign(el.style, styles);
+    return {
+      attributes: (attrs: Props) => this.update(el, attrs),
+      styles: (styles: Props) => this.update(el, {}, styles),
+    };
   }
 
 }

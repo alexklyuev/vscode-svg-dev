@@ -33,7 +33,7 @@ export class Zoom {
     /**
      * update zoom value by relative (delta) value or to absolute (abs) value
      */
-    @makeIterator
+    @makeIterator()
     @connectEvent(ZoomEvents.valueChange)
     update(delta: number | undefined, abs: number | undefined): number {
         if (delta) {

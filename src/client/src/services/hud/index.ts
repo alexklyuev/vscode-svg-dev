@@ -14,6 +14,8 @@ import { ShapesOutlet } from "./shapes.outlet";
 import { pathShape, polygonShape, polylineShape, rectShape, circleShape, ellipseShape, textShape, lineShape } from "./shapes";
 import { EditPointsControl } from "./edit-points.control";
 import { GroupControls } from "./group.controls";
+import { spawn } from "../../../../lib/dom/spawner";
+import { EditOnPick } from "./edit-on-pick.control";
 
 export const colorRepresenter = new ColorRepresenterService();
 export const artboardControls = new ArtboardControls(
@@ -45,14 +47,21 @@ export const shapesOutlet = new ShapesOutlet(
   textShape,
 );
 export const groupControls = new GroupControls();
-export const editPointsControl = new EditPointsControl();
-export const appearanceOutlet = new AppearanceOutlet(
+export const editPointsControl = new EditPointsControl(spawn);
+const editOnPick = new EditOnPick(spawn);
+export const firstRowOutlet = new AppearanceOutlet(
   artboardControls,
   fillControl,
   strokeControl,
   shapesOutlet,
   groupControls,
-  editPointsControl,
+);
+export const secondRowOutlet = new AppearanceOutlet(
+    editOnPick,
+    editPointsControl,
 );
 
-export const hud = new Hud(appearanceOutlet);
+export const hud = new Hud(
+  firstRowOutlet,
+  secondRowOutlet,
+);

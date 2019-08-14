@@ -3,13 +3,14 @@ import { Appearance } from "../appearance/appearance";
 import { EventBus, connectEvent } from "../../../../lib/common/events";
 import { AppearanceResponse, AppearanceRequest } from "../../../../shared/pipes/appearance.pipe";
 import { PipeEndpoint } from "../../../../lib/common/pipe/pipe";
+import { Outlet } from "./models/outlet.model";
 
 
 const enum FillControlEvents {
     appearanceRequest = 'appearanceRequest',
 }
 
-export class FillControl {
+export class FillControl implements Outlet {
 
     public readonly [FillControlEvents.appearanceRequest] = new EventBus<Promise<AppearanceResponse>>();
 

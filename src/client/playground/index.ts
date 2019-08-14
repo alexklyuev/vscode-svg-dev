@@ -3,12 +3,12 @@ import { takeUntil, merge } from '@/common/iterators';
 
 export class Playground {
 
-    @makeIterator
+    @makeIterator()
     event() {
         return 1;
     }
 
-    @makeIterator
+    @makeIterator()
     intercept() {
         return 2;
     }

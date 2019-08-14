@@ -1,7 +1,8 @@
 import { EventBus, connectEvent } from "../../../../lib/common/events";
+import { Outlet } from "./models/outlet.model";
 
 
-export class GroupControls {
+export class GroupControls implements Outlet {
 
     private el: HTMLElement;
 

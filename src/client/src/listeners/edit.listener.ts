@@ -2,7 +2,6 @@ import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { EditRequest } from "../../../shared/pipes/edit.pipe";
 import { FiguresCollection } from "../figures/figures-collection";
-// import { setState } from "../decorators/set-state.decorator";
 import { ElementHolder } from "../services/picker/element-holder";
 import { CancelHub } from "../services/cancel-hub/cancel-hub";
 
@@ -29,7 +28,6 @@ export class EditListener {
         );
     }
 
-    // @setState
     editElement() {
         const element = this.holder.elements[0];
         const delegate = this.figuresCollection.delegate(element);

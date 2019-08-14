@@ -1,8 +1,9 @@
 import { Shape } from "./shapes/shape";
 import { EventBus, connectEvent } from "../../../../lib/common/events";
+import { Outlet } from "./models/outlet.model";
 
 
-export class ShapesOutlet {
+export class ShapesOutlet implements Outlet {
 
     public readonly createShapeEvent = new EventBus<string>();
 

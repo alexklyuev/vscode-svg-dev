@@ -1,4 +1,4 @@
-import { AppearanceOutlet } from "./appearance.outlet";
+import { Outlet } from "./models/outlet.model";
 
 
 export class Hud {
@@ -6,7 +6,7 @@ export class Hud {
     private element: HTMLElement;
 
     constructor(
-        public readonly appearanceOutlet: AppearanceOutlet,
+        ...children: Outlet[]
     ) {
         this.element = document.querySelector<HTMLElement>('#hud')!;
         Object.assign(this.element.style, {
@@ -14,7 +14,7 @@ export class Hud {
             left: '0',
             top: '0',
         });
-        this.appearanceOutlet.appendTo(this.element);
+        children.forEach(child => child.appendTo(this.element));
     }
 
 }
