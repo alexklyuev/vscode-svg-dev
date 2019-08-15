@@ -334,7 +334,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
 
         draw();
 
-        this.zoom.valueChange.on(redraw);
+        // this.zoom.valueChange.on(redraw);
 
         const elementOnMouseMove = (_event: MouseEvent) => {
             redraw();
@@ -345,7 +345,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             // this.userEventMan.mode = 'pick';
             // this.guides.drawSelection([element]);
             undraw();
-            this.zoom.valueChange.off(redraw);
+            // this.zoom.valueChange.off(redraw);
             // this.cancelListener.keyEvent.off(cancel);
             element.removeEventListener('mousemove', elementOnMouseMove);
         };

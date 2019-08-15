@@ -1,13 +1,7 @@
 import { Artboard } from "./artboard";
-import { EventBus, connectEvent } from "../../../../lib/common/events";
 import { UserEventManager } from "../user-event/user-event-manager";
+import { makeIterator } from "../../iterators";
 
-
-const enum ArtboardMoveEvents {
-    mouseDownEvent = 'mouseDownEvent',
-    mouseUpEvent = 'mouseUpEvent',
-    mouseMoveEvent = 'mouseMoveEvent',
-}
 
 const initialX = 50;
 const initialY = 100;
@@ -17,10 +11,6 @@ export class ArtboardMove {
     private bindedOnMouseDown: (event: MouseEvent) => void;
     private bindedOnMouseMove: (event: MouseEvent) => void;
     private bindedOnMouseUp: (event: MouseEvent) => void;
-
-    public readonly [ArtboardMoveEvents.mouseDownEvent] = new EventBus<MouseEvent>();
-    public readonly [ArtboardMoveEvents.mouseUpEvent] = new EventBus<MouseEvent>();
-    public readonly [ArtboardMoveEvents.mouseMoveEvent] = new EventBus<{left: number; top: number, event: MouseEvent}>();
 
     private coords: {clientX: number, clientY: number} = {clientX: initialX, clientY: initialY};
 
@@ -62,7 +52,7 @@ export class ArtboardMove {
     }
 
     
-    @connectEvent(ArtboardMoveEvents.mouseDownEvent)
+    @makeIterator()
     onMouseDown(event: MouseEvent) {
         if (this.userEventMan.mode === 'interactive') {
             return event;
@@ -77,7 +67,7 @@ export class ArtboardMove {
         return event;
     }
 
-    @connectEvent(ArtboardMoveEvents.mouseMoveEvent)
+    @makeIterator()
     onMouseMove(event: MouseEvent) {
         const { clientX, clientY } = event;
         const box = this.artboard.box;
@@ -91,7 +81,7 @@ export class ArtboardMove {
         return {left: this.marginLeft, top: this.marginTop, event};
     }
 
-    @connectEvent(ArtboardMoveEvents.mouseUpEvent)
+    @makeIterator()
     onMouseUp(event: MouseEvent) {
         const { clientX, clientY } = event;
         const deltaX = clientX - this.coords.clientX;

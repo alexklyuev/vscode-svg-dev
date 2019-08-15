@@ -4,15 +4,7 @@ import { HostApi } from "../host-api/host-api.interface";
 import { Zoom } from "../zoom/zoom";
 import { FiguresCollection } from "../../figures/figures-collection";
 import { UserEventManager } from "../user-event/user-event-manager";
-import { EventBus, connectEvent } from "../../../../lib/common/events";
-
-
-
-const enum PickerEvents {
-    mouseMove = 'mouseMoveEvent',
-    mouseDown = 'mouseDownEvent',
-    mouseUp = 'mouseUpEvent',
-}
+import { makeIterator } from "../../iterators";
 
 
 export class Picker {
@@ -21,15 +13,11 @@ export class Picker {
     private bindedMousedown: (event: MouseEvent) => void;
     private bindedMouseup: (event: MouseEvent) => void;
 
-    public readonly [PickerEvents.mouseDown] = new EventBus<MouseEvent>();
-    public readonly [PickerEvents.mouseMove] = new EventBus<MouseEvent>();
-    public readonly [PickerEvents.mouseUp] = new EventBus<MouseEvent>();
-
     /**
      * 
      * @param event 
      */
-    @connectEvent(PickerEvents.mouseMove)
+    @makeIterator()
     onMousemove(event: MouseEvent) {
         this.controlPropagation(event);
         this.holder.elements.forEach(element => {
@@ -44,7 +32,7 @@ export class Picker {
     /**
      * 
      */
-    @connectEvent(PickerEvents.mouseDown)
+    @makeIterator()
     onMousedown(event: MouseEvent) {
         if (this.userEventMan.mode === 'interactive') {
             return event;
@@ -102,8 +90,7 @@ export class Picker {
     /**
      * 
      */
-    // @setState
-    @connectEvent(PickerEvents.mouseUp)
+    @makeIterator()
     onMouseup(event: MouseEvent) {
         this.controlPropagation(event);
         this.holder.elements.forEach(element => {
@@ -138,7 +125,6 @@ export class Picker {
     }
 
     resetListeners() {
-
     }
 
     /**

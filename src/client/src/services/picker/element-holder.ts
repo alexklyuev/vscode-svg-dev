@@ -1,16 +1,9 @@
-import { EventBus, connectEvent } from "../../../../lib/common/events";
+import { makeIterator } from "../../iterators";
 
-const enum ElementHolderEvents {
-    setElements = 'setElements',
-}
 
 export class ElementHolder {
 
-    public readonly [ElementHolderEvents.setElements] = new EventBus<SVGElement[]>();
-
     private box = Array<SVGElement>();
-
-    private callbacks = new Set<(element: SVGElement[]) => void>();
 
     get elements(): SVGElement[] {
         return this.box;
@@ -18,18 +11,12 @@ export class ElementHolder {
 
     set elements(val: SVGElement[]) {
         this.box = val;
-        this.callbacks.forEach(callback => callback(val));
         this.fireElements(val);
     }
 
-    @connectEvent(ElementHolderEvents.setElements)
+    @makeIterator()
     fireElements(elements: SVGElement[]): SVGElement[] {
         return elements;
-    }
-
-    addListener(callback: (element: SVGElement[]) => void) {
-        this.callbacks.add(callback);
-        return () => this.callbacks.delete(callback);
     }
 
 }

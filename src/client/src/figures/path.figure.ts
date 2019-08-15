@@ -365,7 +365,7 @@ export class PathFigure implements Figure<SVGPathElement> {
 
             draw();
 
-            this.zoom.valueChange.on(redraw);
+            // this.zoom.valueChange.on(redraw);
 
             const elementOnMouseMove = (_event: MouseEvent) => {
                 redraw();
@@ -376,7 +376,7 @@ export class PathFigure implements Figure<SVGPathElement> {
                 // this.userEventMan.mode = 'pick';
                 // this.guides.drawSelection([element]);
                 undraw();
-                this.zoom.valueChange.off(redraw);
+                // this.zoom.valueChange.off(redraw);
                 // this.cancelListener.keyEvent.off(cancel);
                 element.removeEventListener('mousemove', elementOnMouseMove);
             };

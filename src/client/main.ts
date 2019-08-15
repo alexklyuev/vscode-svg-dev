@@ -49,18 +49,42 @@ guides.createContainer();
  */
 artboardMove.on();
 
-artboardMove.mouseMoveEvent.on(_move => {
-    guides.setContainerStyles();
-    guides.setSelectionStyles(holder.elements);
-});
 
-picker.mouseMoveEvent.on(_event => guides.setSelectionStyles(holder.elements));
+const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
 
-zoom.valueChange.on(value => {
-    pickEndpoint.makeSetRequest({ html: `zoom: ${ Math.round(value * 100) }%` });
-    guides.setContainerStyles();
-    guides.setSelectionStyles(holder.elements);
-});
+
+/**
+ * draw tools svg and selection on artboard move
+ */
+(async () => {
+    const artboardMoveMouseMove = findIterator<MouseEvent>(artboardMove.onMouseMove);
+    for await ( const _event of artboardMoveMouseMove() ) {
+        guides.setContainerStyles();
+        guides.setSelectionStyles(holder.elements);
+    }
+})();
+
+/**
+ * update selection drawing on move selected element(s)
+ */
+(async () => {
+    const pickerMouseMove = findIterator<MouseEvent>(picker.onMousemove);
+    for await ( const _event of pickerMouseMove() ) {
+        guides.setSelectionStyles(holder.elements);
+    }
+})();
+
+/**
+ * on zoom value changes
+ */
+(async () => {
+    const zoomValues = findIterator<number>(zoom.update);
+    for await ( const value of zoomValues() ) {
+        pickEndpoint.makeSetRequest({ html: `zoom: ${ Math.round(value * 100) }%` });
+        guides.setContainerStyles();
+        guides.setSelectionStyles(holder.elements);
+    }
+})();
 
 /**
  * 
@@ -141,38 +165,45 @@ moveKeyListener.moveEvent.on(_key => {
     guides.setSelectionStyles(holder.elements);
 });
 
-/**
- * 
- */
-const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
-holder.addListener(elements => {
-    setTimeout(() => {
+(async () => {
+    const holdElements = findIterator<SVGElement[]>(holder.fireElements);
+    for await ( const elements of holdElements() ) {
+        setTimeout(() => {
+            if (elements.length > 0) {
+                pickEndpoint.makeSetRequest({html: `selection: [${elements.map(el => [el.nodeName, el.id].filter(str => str).join('#')).join(', ')}]`});
+                guides.removeSelection();
+                guides.drawSelection(elements);
+            } else {
+                pickEndpoint.makeSetRequest({html: null});
+                guides.removeSelection();
+            }
+        }, 0);
         if (elements.length > 0) {
-            pickEndpoint.makeSetRequest({html: `selection: [${elements.map(el => [el.nodeName, el.id].filter(str => str).join('#')).join(', ')}]`});
-            guides.removeSelection();
-            guides.drawSelection(elements);
+            const lastElement = elements[elements.length - 1];
+            const fill = lastElement.getAttribute('fill');
+            const stroke = lastElement.getAttribute('stroke');
+            if (fill) {
+                appearance.fill = fill;
+                fillControl.updateFillBtn(fill);
+            }
+            if (stroke) {
+                appearance.stroke = stroke;
+                strokeControl.updateStrokeBtn(stroke);
+            }
+        }
+        if (elements.length > 0) {
+            const element = elements[0];
+            const delegate = figuresCollection.delegate(element);
+            if (delegate && delegate.edit instanceof Function) {
+                editPointsControl.show();
+            } else {
+                editPointsControl.hide();
+            }
         } else {
-            pickEndpoint.makeSetRequest({html: null});
-            guides.removeSelection();
-        }
-    }, 0);
-});
-
-holder.setElements.on(elements => {
-    if (elements.length > 0) {
-        const lastElement = elements[elements.length - 1];
-        const fill = lastElement.getAttribute('fill');
-        const stroke = lastElement.getAttribute('stroke');
-        if (fill) {
-            appearance.fill = fill;
-            fillControl.updateFillBtn(fill);
-        }
-        if (stroke) {
-            appearance.stroke = stroke;
-            strokeControl.updateStrokeBtn(stroke);
+            editPointsControl.hide();
         }
     }
-});
+})();
 
 /**
  * //
@@ -192,18 +223,6 @@ strokeControl.appearanceRequest.on(appearanceRequestCallback);
 shapesOutlet.createShapeEvent.on(shapeName => {
     inverseInteractiveEndpoint.makeSetRequest({});
     figuresCollection.delegate(shapeName)!.create(shapeName, {});
-});
-
-holder.setElements.on(elements => {
-    if (elements.length > 0) {
-        const element = elements[0];
-        const delegate = figuresCollection.delegate(element);
-        if (delegate && delegate.edit instanceof Function) {
-            editPointsControl.show();
-            return;
-        }
-    }
-    editPointsControl.hide();
 });
 
 groupControls.groupEvent.on(_event => {
@@ -246,7 +265,8 @@ configListener.listen();
  * Stream of clicks on 'edit point' button inside editing window
  */
 (async () => {
-    for await ( const _event of findIterator(editPointsControl.editPoints)<MouseEvent>() ) {
+    const clicks = findIterator<MouseEvent>(editPointsControl.editPoints);
+    for await ( const _event of clicks() ) {
         inverseInteractiveEndpoint.makeSetRequest({});
         editListener.editElement();
     }

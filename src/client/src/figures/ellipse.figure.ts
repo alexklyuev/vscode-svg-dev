@@ -249,14 +249,14 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
             draw();
         };
         draw();
-        this.zoom.valueChange.on(redraw);
+        // this.zoom.valueChange.on(redraw);
         const elementOnMouseMove = (_event: MouseEvent) => {
             redraw();
         };
         element.addEventListener('mousemove', elementOnMouseMove);
         return () => {
             undraw();
-            this.zoom.valueChange.off(redraw);
+            // this.zoom.valueChange.off(redraw);
             element.removeEventListener('mousemove', elementOnMouseMove);
         };
     }
