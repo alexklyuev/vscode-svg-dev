@@ -48,7 +48,7 @@ export const shapesOutlet = new ShapesOutlet(
 );
 export const groupControls = new GroupControls();
 export const editPointsControl = new EditPointsControl(spawn);
-const editOnPick = new EditOnPick(spawn);
+export const editOnPick = new EditOnPick(spawn);
 export const firstRowOutlet = new AppearanceOutlet(
   artboardControls,
   fillControl,

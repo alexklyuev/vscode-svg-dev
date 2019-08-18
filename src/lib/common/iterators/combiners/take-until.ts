@@ -3,6 +3,7 @@ export function takeUntil (this: void, iteratorFn: () => AsyncIterableIterator<a
   const interceptor = interceptorFn();
   let interceptDone = false;
   let nextFn = Function();
+//   let returnFn = Function();
   const obj = {
       [Symbol.asyncIterator] () {
           return {
@@ -11,6 +12,11 @@ export function takeUntil (this: void, iteratorFn: () => AsyncIterableIterator<a
                     nextFn = resolve;
                 });
               },
+            //   return: () => {
+            //     return new Promise<{value: any, done: boolean}>(resolve => {
+            //         returnFn = resolve;
+            //     });
+            //   },
           };
       },
   };
@@ -19,12 +25,18 @@ export function takeUntil (this: void, iteratorFn: () => AsyncIterableIterator<a
       nextFn({ value, done });
       if (!done) {
           iterator.next().then(onResolve);
+      } else {
+        //   iterator[Symbol.asyncIterator]().return!();
       }
   });
   interceptor.next().then((_res) => {
       interceptDone = true;
+      iterator[Symbol.asyncIterator]().return!();
   });
   return async function * (this: void) {
-      yield * obj;
+    //   yield * obj;
+    for await ( const value of obj ) {
+        yield value;
+    }
   };
 }

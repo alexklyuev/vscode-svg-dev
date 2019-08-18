@@ -22,7 +22,7 @@ import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener, artboardListener, artboardStyleListener } from './src/listeners';
 import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
-import { shapesOutlet, editPointsControl, groupControls, fillControl, strokeControl, artboardControls } from './src/services/hud';
+import { shapesOutlet, editPointsControl, groupControls, fillControl, strokeControl, artboardControls, editOnPick } from './src/services/hud';
 import { appearance } from './src/services/appearance';
 import { AppearanceResponse } from '../shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from './src/producers/inverse-interactive.producer';
@@ -39,7 +39,81 @@ import { ConfigListener } from './src/listeners/config.listener';
 import { configPipe } from '../shared/pipes/config.pipe';
 import { findIterator } from './src/iterators';
 
-import './playground';
+// import './playground';
+
+
+import { fromDomEvent } from '@/dom/iterators';
+import { exposed } from '@/common/iterators';
+
+
+const xmerge = (...iters: Array<() => AsyncIterableIterator<any>>) => {
+    let fn = Function();
+    let rfns = Array<Function>();
+    const acc = {
+        [Symbol.asyncIterator] () {
+            return {
+                next () {
+                    return new Promise<{value: any, done: boolean}>(resolve => {
+                        fn = (value: any) => resolve({value, done: false});
+                    });
+                },
+                return () {
+                    rfns.forEach(rfn => rfn());
+                    return Promise.resolve<{value: Event, done: boolean}>({value: null as any, done: true});
+                },
+            };
+        }
+    };
+    iters.forEach(async iter => {
+        const iterable = iter();
+        rfns.push(() => {
+            if (iterable.return instanceof Function) {
+                iterable.return();
+            }
+        });
+        for await (const value of iterable) {
+            fn(value);
+        }
+    });
+    return async function * () {
+        yield * acc;
+    };
+};
+
+
+(async () => {
+    const downs = fromDomEvent(editOnPick.el, 'mousedown');
+    for await ( const _down of downs() ) {
+        console.log('mouse down event');
+        const ups = fromDomEvent(document, 'mouseup');
+        const moves = fromDomEvent(document, 'mousemove');
+        const force = exposed();
+        let stop = false;
+        (async () => {
+            for await ( const _up of ups() ) {
+                console.log('mouse up');
+                stop = true;
+                setTimeout(() => {
+                    force.emitter()(1);
+                }, 160);
+                return;
+            }
+        })();
+        (async () => {
+            const movesUntilUp = xmerge(moves, force.iterable);
+            for await ( const _move of movesUntilUp() ) {
+                if (stop) {
+                    console.log('stop mousemove');
+                    return;
+                } else {
+                    console.log(`mouse move ${ _move }`);
+                }
+            }
+        })();
+    }
+})();
+
+
 
 /**
  * 

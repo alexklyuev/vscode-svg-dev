@@ -10,6 +10,7 @@ export function fromDomEvent (this: void, target: EventTarget, eventName: string
                 },
                 return () {
                     target.removeEventListener(eventName, listener);
+                    console.log(`unsubscribed from ${ eventName }`);
                     return Promise.resolve<{value: Event, done: boolean}>({value: null as any, done: true});
                 },
             };
@@ -17,16 +18,9 @@ export function fromDomEvent (this: void, target: EventTarget, eventName: string
     };
     const listener = (event: Event) => fn({value: event, done: false});
     target.addEventListener(eventName, listener);
-    return async function * (
-        this: void,
-        triggerReturn: () => boolean = () => false,
-    ) {
+    return async function * (this: void) {
         for await ( const value of iter ) {
-            if ( triggerReturn() ) {
-                return;
-            } else {
-                yield value;
-            }
+            yield value;
         }
     };
 }

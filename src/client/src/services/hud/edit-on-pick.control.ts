@@ -5,7 +5,7 @@ import { makeIterator } from "../../iterators";
 
 export class EditOnPick implements Outlet {
 
-  private el: HTMLElement;
+  public readonly el: HTMLElement;
 
   private isOn = false;
 
