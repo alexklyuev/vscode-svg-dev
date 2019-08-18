@@ -7,10 +7,9 @@ export const MakeIterator = (map: DescriptorIterationMap) => {
     return <T>() => {
         return function (_instancePrototype: any, _methodName: string, descriptor: PropertyDescriptor) {
             const { value } = descriptor;
-            if (!(value instanceof Function)) {
+            if ( !(value instanceof Function) ) {
                 throw new Error(`makeIterator decorator applied to not a function`);
             }
-            // let fn = new Function();
             let fns = Array<Function>();
             const iterFn = () => {
                 return {
@@ -20,22 +19,11 @@ export const MakeIterator = (map: DescriptorIterationMap) => {
                                 return new Promise<T>(resolve => {
                                     fns.push(resolve);
                                 });
-                            },
+                            }
                         };
                     },
                 };
             };
-            // const iter = {
-            //     [Symbol.asyncIterator] () {
-            //         return {
-            //             next: () => {
-            //                 return new Promise<T>(resolve => {
-            //                     fn = resolve;
-            //                 });
-            //             },
-            //         };
-            //     },
-            // };
             map.set(value, iterFn);
             const newValue = function (this: any, ...args: any[]) {
                 const result = value.call(this, ...args);
@@ -55,10 +43,17 @@ export const MakeIterator = (map: DescriptorIterationMap) => {
 export const FindIterator = (map: DescriptorIterationMap) => {
     return <K>(method: any) => {
         const iter = map.get(method[link])!;
-        return async function * <T = K>(this: void): AsyncIterableIterator<T> {
-            yield * iter();
+        return async function * <T = K>(
+            this: void,
+            triggerReturn: (value: T) => boolean = () => false
+        ): AsyncIterableIterator<T> {
+            for await ( const value of iter() ) {
+                if ( triggerReturn(value) ) {
+                    return;
+                } else {
+                    yield value;
+                }
+            }
         };
     };
 };
-
-

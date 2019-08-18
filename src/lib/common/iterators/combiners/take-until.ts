@@ -11,11 +11,6 @@ export function takeUntil (this: void, iteratorFn: () => AsyncIterableIterator<a
                     nextFn = resolve;
                 });
               },
-            //   return: () => {
-            //     return new Promise<{value: any, done: true}>(resolve => {
-            //         returnFn = resolve;
-            //     });
-            //   },
           };
       },
   };

@@ -39,6 +39,8 @@ import { ConfigListener } from './src/listeners/config.listener';
 import { configPipe } from '../shared/pipes/config.pipe';
 import { findIterator } from './src/iterators';
 
+import './playground';
+
 /**
  * 
  */

@@ -1,5 +1,5 @@
 import { makeIterator, findIterator } from "../src/iterators";
-import { takeUntil, merge } from '@/common/iterators';
+// import { merge } from '@/common/iterators';
 
 export class Playground {
 
@@ -19,38 +19,44 @@ const playground = new Playground();
 
 const event$ = findIterator(playground.event)!;
 
-const intercept$ = findIterator(playground.intercept)!;
+// const intercept$ = findIterator(playground.intercept)!;
 
-const finite$ = takeUntil(event$, intercept$);
+// const finite$ = takeUntil(event$, intercept$);
 
-const merged$ = merge(event$, intercept$);
+// const merged$ = merge(event$, intercept$);
 
-let count = 0;
+// let count = 0;
+
+// (async () => {
+//     for await ( const event of finite$() ) {
+//         console.log(`[${ ++count }] event1 is ${ event }`);
+//     }
+// })();
+
+// (async () => {
+//     for await ( const event of event$() ) {
+//         console.log(`[${ ++count }] event2 is ${ event }`);
+//     }
+// })();
+
+// (async () => {
+//     for await ( const event of event$() ) {
+//         console.log(`[${ ++count }] event3 is ${ event }`);
+//     }
+// })();
+
 
 (async () => {
-    for await ( const event of finite$() ) {
-        console.log(`[${ ++count }] event1 is ${ event }`);
+    let mcount = 0;
+    for await ( const item of event$(_value => mcount > 3) ) {
+        console.log(`1) [${ mcount++ }] event is ${ item } `);
     }
-    console.log('--------------!!!-----------');
 })();
 
 (async () => {
-    for await ( const event of event$() ) {
-        console.log(`[${ ++count }] event2 is ${ event }`);
-    }
-})();
-
-(async () => {
-    for await ( const event of event$() ) {
-        console.log(`[${ ++count }] event3 is ${ event }`);
-    }
-})();
-
-let mcount = 0;
-
-(async () => {
-    for await ( const item of merged$() ) {
-        console.log(`[${ ++mcount }] merged event is ${ item } `);
+    let mcount = 0;
+    for await ( const item of event$() ) {
+        console.log(`2) [${ mcount++ }] event is ${ item } `);
     }
 })();
 
