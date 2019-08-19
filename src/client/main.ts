@@ -43,12 +43,13 @@ import { findIterator } from './src/iterators';
 
 
 import { fromDomEvent } from '@/dom/iterators';
-import { exposed } from '@/common/iterators';
+// import { exposed } from '@/common/iterators';
 
 
-const xmerge = (...iters: Array<() => AsyncIterableIterator<any>>) => {
+export const xmerge = (...iters: Array<() => AsyncIterableIterator<any>>) => {
     let fn = Function();
-    let rfns = Array<Function>();
+    let returnResolve = Function();
+    let returnProm = new Promise(resolve => returnResolve = resolve);
     const acc = {
         [Symbol.asyncIterator] () {
             return {
@@ -58,56 +59,52 @@ const xmerge = (...iters: Array<() => AsyncIterableIterator<any>>) => {
                     });
                 },
                 return () {
-                    rfns.forEach(rfn => rfn());
-                    return Promise.resolve<{value: Event, done: boolean}>({value: null as any, done: true});
+                    returnResolve();
+                    const prom = Promise.resolve<{value: Event, done: boolean}>({value: null as any, done: true});
+                    return prom;
                 },
             };
         }
     };
     iters.forEach(async iter => {
         const iterable = iter();
-        rfns.push(() => {
+        returnProm.then(() => {
             if (iterable.return instanceof Function) {
-                iterable.return();
+                console.log('iterable.return run');
+                const rs = iterable.return();
+                iterable.next();
+                console.log(rs);
+                return rs.then(v => console.log(v.done));
             }
         });
         for await (const value of iterable) {
+            console.log(`dvalue ${ value }`);
             fn(value);
         }
     });
     return async function * () {
         yield * acc;
+        console.log('end acc');
     };
 };
 
 
 (async () => {
     const downs = fromDomEvent(editOnPick.el, 'mousedown');
-    for await ( const _down of downs() ) {
-        console.log('mouse down event');
+    for await ( const _down of downs ) {
+        console.log('mouse down');
         const ups = fromDomEvent(document, 'mouseup');
         const moves = fromDomEvent(document, 'mousemove');
-        const force = exposed();
-        let stop = false;
         (async () => {
-            for await ( const _up of ups() ) {
-                console.log('mouse up');
-                stop = true;
-                setTimeout(() => {
-                    force.emitter()(1);
-                }, 160);
-                return;
+            for await ( const _move of moves ) {
+                console.log('mouse move');
             }
         })();
         (async () => {
-            const movesUntilUp = xmerge(moves, force.iterable);
-            for await ( const _move of movesUntilUp() ) {
-                if (stop) {
-                    console.log('stop mousemove');
-                    return;
-                } else {
-                    console.log(`mouse move ${ _move }`);
-                }
+            for await ( const _up of ups ) {
+                console.log('mouse up');
+                moves.return();
+                ups.return();
             }
         })();
     }
