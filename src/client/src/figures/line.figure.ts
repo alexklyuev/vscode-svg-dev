@@ -13,6 +13,8 @@ import { Appearance } from "../services/appearance/appearance";
 // import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
+import { findIterator } from "../../src/iterators";
+import { fromDomEvent } from "@/dom/iterators";
 
 
 export class LineFigure implements Figure<SVGLineElement> {
@@ -236,25 +238,44 @@ export class LineFigure implements Figure<SVGLineElement> {
 
         draw();
 
-        // this.zoom.valueChange.on(redraw);
+        const zoomIter = findIterator<number>(this.zoom.update);
+        (async () => {
+            for await (const _value of zoomIter) {
+                console.log('redraw line edit by zoom');
+                redraw();
+            }
+        })();
 
-        const elementOnMouseMove = (_event: MouseEvent) => {
-            redraw();
-        };
-        element.addEventListener('mousemove', elementOnMouseMove);
+        let mouseMoveIter: AsyncIterableIterator<MouseEvent>;
+        let mouseUpIter: AsyncIterableIterator<MouseEvent>;
+        const mouseDownIter = fromDomEvent(element, 'mousedown');
+        (async () => {
+            for await (const _down of mouseDownIter) {
+                mouseMoveIter = fromDomEvent(element, 'mousemove');
+                mouseUpIter = fromDomEvent(element, 'mouseup');
+                (async () => {
+                    for await (const _event of mouseMoveIter) {
+                        redraw();
+                    }
+                })();
+                (async () => {
+                    for await (const _up of mouseUpIter) {
+                        mouseUpIter.return!();
+                        mouseMoveIter.return!();
+                    }
+                })();
+            }
+        })();
 
         const cancel = () => {
-            // this.userEventMan.mode = 'pick';
-            // this.guides.drawSelection([element]);
             undraw();
-            // this.zoom.valueChange.off(redraw);
-            // this.cancelListener.keyEvent.off(cancel);
-            element.removeEventListener('mousemove', elementOnMouseMove);
+            zoomIter.return!();
+            mouseDownIter.return!();
+            mouseMoveIter.return!();
+            mouseUpIter.return!();
         };
 
-        // this.cancelListener.keyEvent.on(cancel);
         return cancel;
-
     }
 
 }

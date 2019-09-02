@@ -46,47 +46,47 @@ import { fromDomEvent } from '@/dom/iterators';
 // import { exposed } from '@/common/iterators';
 
 
-export const xmerge = (...iters: Array<() => AsyncIterableIterator<any>>) => {
-    let fn = Function();
-    let returnResolve = Function();
-    let returnProm = new Promise(resolve => returnResolve = resolve);
-    const acc = {
-        [Symbol.asyncIterator] () {
-            return {
-                next () {
-                    return new Promise<{value: any, done: boolean}>(resolve => {
-                        fn = (value: any) => resolve({value, done: false});
-                    });
-                },
-                return () {
-                    returnResolve();
-                    const prom = Promise.resolve<{value: Event, done: boolean}>({value: null as any, done: true});
-                    return prom;
-                },
-            };
-        }
-    };
-    iters.forEach(async iter => {
-        const iterable = iter();
-        returnProm.then(() => {
-            if (iterable.return instanceof Function) {
-                console.log('iterable.return run');
-                const rs = iterable.return();
-                iterable.next();
-                console.log(rs);
-                return rs.then(v => console.log(v.done));
-            }
-        });
-        for await (const value of iterable) {
-            console.log(`dvalue ${ value }`);
-            fn(value);
-        }
-    });
-    return async function * () {
-        yield * acc;
-        console.log('end acc');
-    };
-};
+// const xmerge = (...iters: Array<() => AsyncIterableIterator<any>>) => {
+//     let fn = Function();
+//     let returnResolve = Function();
+//     let returnProm = new Promise(resolve => returnResolve = resolve);
+//     const acc = {
+//         [Symbol.asyncIterator] () {
+//             return {
+//                 next () {
+//                     return new Promise<{value: any, done: boolean}>(resolve => {
+//                         fn = (value: any) => resolve({value, done: false});
+//                     });
+//                 },
+//                 return () {
+//                     returnResolve();
+//                     const prom = Promise.resolve<{value: Event, done: boolean}>({value: null as any, done: true});
+//                     return prom;
+//                 },
+//             };
+//         }
+//     };
+//     iters.forEach(async iter => {
+//         const iterable = iter();
+//         returnProm.then(() => {
+//             if (iterable.return instanceof Function) {
+//                 console.log('iterable.return run');
+//                 const rs = iterable.return();
+//                 iterable.next();
+//                 console.log(rs);
+//                 return rs.then(v => console.log(v.done));
+//             }
+//         });
+//         for await (const value of iterable) {
+//             console.log(`dvalue ${ value }`);
+//             fn(value);
+//         }
+//     });
+//     return async function * () {
+//         yield * acc;
+//         console.log('end acc');
+//     };
+// };
 
 
 (async () => {
@@ -103,8 +103,8 @@ export const xmerge = (...iters: Array<() => AsyncIterableIterator<any>>) => {
         (async () => {
             for await ( const _up of ups ) {
                 console.log('mouse up');
-                moves.return();
-                ups.return();
+                moves.return!();
+                ups.return!();
             }
         })();
     }
@@ -131,7 +131,7 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
  */
 (async () => {
     const artboardMoveMouseMove = findIterator<MouseEvent>(artboardMove.onMouseMove);
-    for await ( const _event of artboardMoveMouseMove() ) {
+    for await ( const _event of artboardMoveMouseMove ) {
         guides.setContainerStyles();
         guides.setSelectionStyles(holder.elements);
     }
@@ -142,7 +142,7 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
  */
 (async () => {
     const pickerMouseMove = findIterator<MouseEvent>(picker.onMousemove);
-    for await ( const _event of pickerMouseMove() ) {
+    for await ( const _event of pickerMouseMove ) {
         guides.setSelectionStyles(holder.elements);
     }
 })();
@@ -152,7 +152,7 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
  */
 (async () => {
     const zoomValues = findIterator<number>(zoom.update);
-    for await ( const value of zoomValues() ) {
+    for await ( const value of zoomValues ) {
         pickEndpoint.makeSetRequest({ html: `zoom: ${ Math.round(value * 100) }%` });
         guides.setContainerStyles();
         guides.setSelectionStyles(holder.elements);
@@ -240,10 +240,10 @@ moveKeyListener.moveEvent.on(_key => {
 
 (async () => {
     const holdElements = findIterator<SVGElement[]>(holder.fireElements);
-    for await ( const elements of holdElements() ) {
+    for await ( const elements of holdElements ) {
         setTimeout(() => {
             if (elements.length > 0) {
-                pickEndpoint.makeSetRequest({html: `selection: [${elements.map(el => [el.nodeName, el.id].filter(str => str).join('#')).join(', ')}]`});
+                pickEndpoint.makeSetRequest({html: `selection: [${elements.map((el: any) => [el.nodeName, el.id].filter(str => str).join('#')).join(', ')}]`});
                 guides.removeSelection();
                 guides.drawSelection(elements);
             } else {
@@ -339,7 +339,7 @@ configListener.listen();
  */
 (async () => {
     const clicks = findIterator<MouseEvent>(editPointsControl.editPoints);
-    for await ( const _event of clicks() ) {
+    for await ( const _event of clicks ) {
         inverseInteractiveEndpoint.makeSetRequest({});
         editListener.editElement();
     }

@@ -13,7 +13,8 @@ import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
 import { Spawn } from "../../../lib/dom/spawner/spawn";
-import { EventBus, connectEvent } from "../../../lib/common/events";
+import { findIterator, makeIterator } from "../../src/iterators";
+import { fromDomEvent } from "@/dom/iterators";
 
 
 export class RectFigure implements Figure<SVGRectElement> {
@@ -310,33 +311,47 @@ export class RectFigure implements Figure<SVGRectElement> {
 
         draw();
 
-        // this.zoom.valueChange.on(redraw);
+        const zoomIter = findIterator<number>(this.zoom.update);
+        (async () => {
+            for await (const _value of zoomIter) {
+                redraw();
+            }
+        })();
 
-        const elementOnMouseMove = (_event: MouseEvent) => {
-            redraw();
-        };
-        element.addEventListener('mousemove', elementOnMouseMove);
+        let mouseMoveIter: AsyncIterableIterator<MouseEvent>;
+        let mouseUpIter: AsyncIterableIterator<MouseEvent>;
+        const mouseDownIter = fromDomEvent(element, 'mousedown');
+        (async () => {
+            for await (const _down of mouseDownIter) {
+                mouseMoveIter = fromDomEvent(element, 'mousemove');
+                mouseUpIter = fromDomEvent(element, 'mouseup');
+                (async () => {
+                    for await (const _event of mouseMoveIter) {
+                        redraw();
+                    }
+                })();
+                (async () => {
+                    for await (const _up of mouseUpIter) {
+                        mouseUpIter.return!();
+                        mouseMoveIter.return!();
+                    }
+                })();
+            }
+        })();
 
         const cancel = () => {
-            // this.userEventMan.mode = 'pick';
-            // this.guides.drawSelection([element]);
             undraw();
-            // this.zoom.valueChange.off(redraw);
-            // this.cancelListener.keyEvent.off(cancel);
-
-            element.removeEventListener('mousemove', elementOnMouseMove);
-
+            zoomIter.return!();
+            mouseDownIter.return!();
+            mouseMoveIter.return!();
+            mouseUpIter.return!();
             this.editFinish(element);
         };
-
-        // this.cancelListener.keyEvent.on(cancel);
 
         return cancel;
     }
 
-    public readonly editFinishEvent = new EventBus<SVGElement>();
-    @connectEvent('editFinishEvent')
-    @setState
+    @makeIterator<SVGElement>()
     editFinish(element: SVGElement) {
         return element;
     }

@@ -1,4 +1,4 @@
-export function fromDomEvent (this: void, target: EventTarget, eventName: string) {
+export function fromDomEvent <T extends Event>(this: void, target: EventTarget, eventName: string): AsyncIterableIterator<T> {
     let fn = Function();
     const listener = (event: Event) => fn({value: event, done: false});
     target.addEventListener(eventName, listener);
@@ -8,7 +8,6 @@ export function fromDomEvent (this: void, target: EventTarget, eventName: string
             return this;
         },
         next () {
-            console.log('next called');
             return new Promise<{value: Event, done: boolean}>(resolve => {
                 fn = resolve;
             });
@@ -19,5 +18,5 @@ export function fromDomEvent (this: void, target: EventTarget, eventName: string
             return Promise.resolve<{value: Event, done: boolean}>({value: null as any, done: true});
         },
     };
-    return iter;
+    return iter as AsyncIterableIterator<T>;
 }
