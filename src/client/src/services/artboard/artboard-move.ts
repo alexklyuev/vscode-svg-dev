@@ -1,6 +1,6 @@
+import { makeIterator } from "@/common/iterators";
 import { Artboard } from "./artboard";
 import { UserEventManager } from "../user-event/user-event-manager";
-import { makeIterator } from "../../iterators";
 
 
 const initialX = 50;

@@ -186,9 +186,6 @@ export function activate(context: vscode.ExtensionContext) {
         );
     });
 
-
-
-
     context.subscriptions.push(
         vscode.commands.registerCommand('svgDevNew', async () => {
             const panel = editor.create();

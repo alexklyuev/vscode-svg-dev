@@ -1,4 +1,4 @@
-import { makeIterator } from "../../iterators";
+import { makeIterator } from "@/common/iterators";
 
 
 export class ElementHolder {

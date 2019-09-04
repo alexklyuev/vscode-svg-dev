@@ -37,7 +37,7 @@ import { undoPipe } from '../shared/pipes/undo.pipe';
 import { cancelHub } from './src/services/cancel-hub';
 import { ConfigListener } from './src/listeners/config.listener';
 import { configPipe } from '../shared/pipes/config.pipe';
-import { findIterator } from './src/iterators';
+import { findIterator } from '@/common/iterators';
 
 // import './playground';
 

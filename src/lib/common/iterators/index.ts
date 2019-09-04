@@ -1,10 +1,9 @@
-// export { MakeIterator } from './make-iterator';
-// export { FindIterator } from './make-iterator';
-export { createIterativeMethods } from './make-iterator';
+import { createIterativeMethods } from './make-iterator';
 
+const { makeIterator, findIterator } = createIterativeMethods();
 
-export { merge } from './combiners';
-export { takeUntil } from './combiners';
-
-export { exposed } from './exposed';
-
+export {
+    createIterativeMethods,
+    makeIterator,
+    findIterator,
+};

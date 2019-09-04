@@ -1,6 +1,6 @@
+import { makeIterator } from "@/common/iterators";
 import { Outlet } from "./models/outlet.model";
 import { Spawn } from "../../../../lib/dom/spawner/spawn";
-import { makeIterator } from "../../iterators";
 
 
 export class EditPointsControl implements Outlet {

@@ -26,7 +26,8 @@ import { MoverPoints } from "../services/mover/mover-points";
 import { MoverValue } from "../services/mover/mover-value";
 import { MoverDelegate } from "../services/mover/mover-delegate";
 import { hints } from "../services/hints";
-import { spawn } from "../../../lib/dom/spawner/index";
+import { spawn } from "@/dom/spawner/index";
+import { rectPointsEditor } from "../points-editor";
 
 
 const figuresCollection = new FiguresCollection();
@@ -102,8 +103,8 @@ figuresCollection.add(
         coordinator,
         cancelListener,
         appearance,
-        hints,
         spawn,
+        rectPointsEditor,
     ),
     new TextFigure(
         draggerLeftTop,

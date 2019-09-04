@@ -10,10 +10,9 @@ import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Guides } from "../services/guides/guides";
 import { Appearance } from "../services/appearance/appearance";
-// import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
-import { findIterator } from "../../src/iterators";
+import { findIterator } from "@/common/iterators";
 import { fromDomEvent } from "@/dom/iterators";
 
 

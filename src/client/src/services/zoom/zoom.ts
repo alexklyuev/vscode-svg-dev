@@ -1,5 +1,5 @@
+import { makeIterator } from "@/common/iterators";
 import { Artboard } from "../../services/artboard/artboard";
-import { makeIterator } from "../../iterators";
 
 
 /**
