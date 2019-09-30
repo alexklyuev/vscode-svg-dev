@@ -19,7 +19,6 @@ const playground = new Playground();
 
 const event$ = findIterator(playground.event)!;
 
-
 (async () => {
     let mcount = 0;
     const events = event$;

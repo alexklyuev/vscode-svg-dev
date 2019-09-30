@@ -6,8 +6,8 @@ const path = require('path');
  * @returns {webpack.Configuration}
  */
 module.exports = {
-    // mode: 'production',
-    mode: 'development',
+    mode: 'production',
+    // mode: 'development',
     entry: __dirname + '/main.ts',
     output: {
         path: path.resolve(__dirname, '../../out/client'),

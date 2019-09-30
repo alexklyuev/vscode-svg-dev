@@ -17,151 +17,174 @@ export class RectPointsEditor {
         private guides: Guides,
     ) {}
 
+    getPoints(element: SVGRectElement) {
+        const width = parseFloat(element.getAttribute('width')!);
+        const height = parseFloat(element.getAttribute('height')!);
+        const x = parseFloat(element.getAttribute('x')!);
+        const y = parseFloat(element.getAttribute('y')!);
+        const points = Array<[number, number]>(
+            [x, y],
+            [x + width, y],
+            [x + width, y + height],
+            [x, y + height],
+        );
+        return points;
+    }
+
+    createCircles(points: number[][]) {
+        return points.map(point => {
+            const [ cx, cy ] = point;
+            const { value: zoom } = this.zoom;
+            const circle = this.spawn.svg.circle(
+                {
+                    cx: `${ cx * zoom }`,
+                    cy: `${ cy * zoom }`,
+                    fill: this.appearance.editControlPointFill,
+                    stroke: this.appearance.editControlPointStroke,
+                    'stroke-dasharray': this.appearance.editControlPointStrokeDasharray,
+                    r: this.appearance.editControlPointRadius,
+                },
+                {
+                    pointerEvents: 'fill',
+                }
+            );
+            this.guides.guidesContainer!  .appendChild(circle);
+            return circle;
+        });
+    }
+
+    destroyCircles(pseudoEls: Array<SVGElement>) {
+        pseudoEls.forEach(circle => this.guides.guidesContainer!. removeChild(circle));
+        pseudoEls.length = 0;
+    }
+
     edit(element: SVGRectElement) {
         this.hints.setHint('finishEdit');
-        // this.userEventMan.mode = 'interactive';
-        const pseudoEls = Array<SVGElement>();
+
+        let pseudoEls = Array<SVGElement>();
         const returnables = Array<AsyncIterableIterator<MouseEvent>>();
-        const draw = () => {
-            const width = parseFloat(element.getAttribute('width')!);
-            const height = parseFloat(element.getAttribute('height')!);
-            const x = parseFloat(element.getAttribute('x')!);
-            const y = parseFloat(element.getAttribute('y')!);
-            const points = Array<[number, number]>(
-                [x, y],
-                [x + width, y],
-                [x + width, y + height],
-                [x, y + height],
-            );
+
+        const points = this.getPoints(element);
+
+        pseudoEls = this.createCircles(points);
+
+        const updateCircles = () => {
+            const { value: zoom } = this.zoom;
+            const points = this.getPoints(element);
             points.forEach((point, pointIndex) => {
                 const [ cx, cy ] = point;
-                const { value: zoom } = this.zoom;
-                const circle = this.spawn.svg.circle(
-                    {
-                        cx: `${ cx * zoom }`,
-                        cy: `${ cy * zoom }`,
-                        fill: this.appearance.editControlPointFill,
-                        stroke: this.appearance.editControlPointStroke,
-                        'stroke-dasharray': this.appearance.editControlPointStrokeDasharray,
-                        r: this.appearance.editControlPointRadius,
-                    },
-                    {
-                        pointerEvents: 'fill',
-                    }
-                 );
-                 this.guides.guidesContainer! .appendChild(circle);
-                 pseudoEls.push(circle);
-                 let vx = 0;
-                 let vy = 0;
-                 let ax = cx;
-                 let ay = cy;
-                 let rx = cx;
-                 let ry = cy;
-                 const circleMouseDown = fromDomEvent<MouseEvent>(circle, 'mousedown');
-                 returnables.push(circleMouseDown);
-                 (async () => {
-                     for await (const circleDownEvent of circleMouseDown) {
-                        circleDownEvent.stopPropagation();
-                        this.guides.removeSelection();
-                        const {
-                            clientX,
-                            clientY,
-                        } = circleDownEvent;
-                        vx = clientX;
-                        vy = clientY;
-                        ax = rx;
-                        ay = ry;
-                        const circleMouseMove = fromDomEvent<MouseEvent>(circle, 'mousemove');
-                        const circleMouseUp = fromDomEvent<MouseEvent>(circle, 'mouseup');
-                        (async () => {
-                            for await (const circleMoveEvent of circleMouseMove) {
-                                console.log('MOVE');
-                                circleMoveEvent.stopPropagation();
-                                const { clientX, clientY} = circleMoveEvent;
-                                const dx = (clientX - vx) / this.zoom.value;
-                                const dy = (clientY - vy) / this.zoom.value;
-                                rx = ax + dx;
-                                ry = ay + dy;
-                                const nx = rx * this.zoom.value;
-                                const ny = ry * this.zoom.value;
-                                this.spawn.svg.update(circle, {
-                                    cx: `${ nx }`,
-                                    cy: `${ ny }`,
-                                });
-                                let x$ = x;
-                                let y$ = y;
-                                let width$ = width;
-                                let height$ = height;
-                                switch (pointIndex) {
-                                    case 0:
-                                        x$ = cx + dx;
-                                        y$ = cy + dy;
-                                        width$ = width - dx;
-                                        height$ = height - dy;
-                                        break;
-                                    case 1:
-                                        y$ = cy + dy;
-                                        width$ =  width + dx;
-                                        height$ = height - dy;
-                                        break;
-                                    case 2:
-                                        width$ = width + dx;
-                                        height$ = height + dy;
-                                        break;
-                                    case 3:
-                                        x$ = cx + dx;
-                                        width$ = width - dx;
-                                        height$ = height + dy;
-                                        break;
-                                }
-                                if (width$ < 0) {
-                                    width$ = -width$;
-                                    x$ -= width$;
-                                }
-                                if (height$ < 0) {
-                                    height$ = -height$;
-                                    y$ -= height$;
-                                }
-                                this.spawn.svg.update(element, {
-                                    x: `${ x$ }`,
-                                    y: `${ y$ }`,
-                                    width: `${ width$ }`,
-                                    height: `${ height$ }`,
-                                });
-                                redraw();
-                            }
-                        })();
-                        (async () => {
-                            for await (const circleUpEvent of circleMouseUp) {
-                                circleUpEvent.stopPropagation();
-                                circleMouseMove.return!();
-                                circleMouseUp.return!();
-                                redraw();
-                            }
-                        })();
-                     }
-                 })();
+                const circle = pseudoEls[pointIndex];
+                this.spawn.svg.update(circle).attributes({
+                    cx: `${ cx * zoom }`,
+                    cy: `${ cy * zoom }`,
+                });
             });
         };
 
+        let horizontalInvert = false;
+        let verticalInvert = false;
+
+        points.forEach((_point, pointIndex) => {
+            const circle = pseudoEls[pointIndex];
+            const circleMouseDown = fromDomEvent<MouseEvent>(circle, 'mousedown');
+            returnables.push(circleMouseDown);
+            (async () => {
+                for await (const circleDownEvent of circleMouseDown) {
+                circleDownEvent.stopPropagation();
+                this.guides.removeSelection();
+                const {
+                    clientX,
+                    clientY,
+                } = circleDownEvent;
+                const downX = clientX;
+                const downY = clientY;
+                const circleMouseMove = fromDomEvent<MouseEvent>(window, 'mousemove');
+                const circleMouseUp = fromDomEvent<MouseEvent>(window, 'mouseup');
+                let usedDeltaX = 0;
+                let usedDeltaY = 0;
+                (async () => {
+                    for await (const circleMoveEvent of circleMouseMove) {
+                        circleMoveEvent.stopPropagation();
+                        const { clientX, clientY } = circleMoveEvent;
+                        const absDeltaX = (clientX - downX) / this.zoom.value;
+                        const absDeltaY = (clientY - downY) / this.zoom.value;
+                        const relDeltaX = absDeltaX - usedDeltaX;
+                        const relDeltaY = absDeltaY - usedDeltaY;
+                        usedDeltaX += relDeltaX;
+                        usedDeltaY += relDeltaY;
+                        let x$ = parseFloat(element.getAttribute('x')!);
+                        let y$ = parseFloat(element.getAttribute('y')!);
+                        let width$ = parseFloat(element.getAttribute('width')!);
+                        let height$ = parseFloat(element.getAttribute('height')!);
+                        // const cond = (horizontalInvert || verticalInvert) && !(horizontalInvert && verticalInvert);
+                        const cond = (horizontalInvert || verticalInvert);
+                        switch (pointIndex) {
+                            case 0:
+                                x$ = x$ + (relDeltaX * (cond ? 0 : 1));
+                                y$ = y$ + (relDeltaY * (cond ? 0 : 1));
+                                width$ = width$ + (relDeltaX * (cond ? 1 : -1));
+                                height$ = height$ + (relDeltaY * (cond ? 1 : -1));
+                                break;
+                            case 1:
+                                x$ = x$ + (relDeltaX * (cond ? 1 : 0));
+                                y$ = y$ + (relDeltaY * (cond ? 0 : 1));
+                                width$ =  width$ + (relDeltaX * (cond ? -1 : 1));
+                                height$ = height$ + (relDeltaY * (cond ? 1 : -1));
+                                break;
+                            case 2:
+                                x$ = x$ + (relDeltaX * (cond ? 1 : 0));
+                                y$ = y$ + (relDeltaY * (cond ? 1 : 0));
+                                width$ = width$ + (relDeltaX * (cond ? -1 : 1));
+                                height$ = height$ + (relDeltaY * (cond ? -1 : 1));
+                                break;
+                            case 3:
+                                x$ = x$ + (relDeltaX * (cond ? 0 : 1));
+                                y$ = y$ + (relDeltaY * (cond ? 1 : 0));
+                                width$ = width$ + (relDeltaX * (cond ? 1 : -1));
+                                height$ = height$ + (relDeltaY * (cond ? -1 : 1));
+                                break;
+                        }
+                        if (width$ < 0) {
+                            width$ = -width$;
+                            x$ -= width$;
+                            horizontalInvert = !horizontalInvert;
+                        }
+                        if (height$ < 0) {
+                            height$ = -height$;
+                            y$ -= height$;
+                            verticalInvert = !verticalInvert;
+                        }
+                        this.spawn.svg.update(element, {
+                            x: `${ x$ }`,
+                            y: `${ y$ }`,
+                            width: `${ width$ }`,
+                            height: `${ height$ }`,
+                        });
+                        updateCircles();
+                    }
+                })();
+                (async () => {
+                    for await (const circleUpEvent of circleMouseUp) {
+                        circleUpEvent.stopPropagation();
+                        circleMouseMove.return!();
+                        circleMouseUp.return!();
+                        updateCircles();
+                    }
+                })();
+                }
+            })();
+        });
+
         const undraw = () => {
-            pseudoEls.forEach(circle => this.guides.guidesContainer!. removeChild(circle));
-            pseudoEls.length = 0;
-            // returnables.forEach(returnable => returnable.return!());
-            // returnables.length = 0;
+            this.destroyCircles(pseudoEls);
+            returnables.forEach(returnable => returnable.return!());
+            returnables.length = 0;
         };
-
-        const redraw = () => {
-            undraw();
-            draw();
-        };
-
-        draw();
 
         const zoomIter = findIterator<number>(this.zoom.update);
         (async () => {
             for await (const _value of zoomIter) {
-                redraw();
+                updateCircles();
             }
         })();
 
@@ -170,17 +193,21 @@ export class RectPointsEditor {
         const mouseDownIter = fromDomEvent(element, 'mousedown');
         (async () => {
             for await (const _down of mouseDownIter) {
-                mouseMoveIter = fromDomEvent(element, 'mousemove');
-                mouseUpIter = fromDomEvent(element, 'mouseup');
+                this.destroyCircles(pseudoEls);
+                mouseMoveIter = fromDomEvent(window, 'mousemove');
+                mouseUpIter = fromDomEvent(window, 'mouseup');
                 (async () => {
-                    for await (const _event of mouseMoveIter) {
-                        redraw();
+                    for await (const _move of mouseMoveIter) {
+                        console.log('mousemove window:el');
+                        updateCircles();
                     }
                 })();
                 (async () => {
                     for await (const _up of mouseUpIter) {
                         mouseUpIter.return!();
                         mouseMoveIter.return!();
+                        // pseudoEls = this.createCircles(this.getPoints(element));
+                        // updateCircles();
                     }
                 })();
             }
