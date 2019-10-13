@@ -1,4 +1,4 @@
-import { CancelHub } from "./cancel-hub";
+import { EditPointsHub } from "./cancel-hub";
 import { cancelListener } from "../../listeners";
 
-export const cancelHub = new CancelHub(cancelListener);
+export const editPointsHub = new EditPointsHub(cancelListener);

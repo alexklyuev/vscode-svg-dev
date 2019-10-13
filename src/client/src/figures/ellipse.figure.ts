@@ -13,6 +13,7 @@ import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
 import { Spawn } from "../../../lib/dom/spawner/spawn";
+import { findIterator } from "../../../lib/common/iterators";
 
 
 export class EllipseFigure implements Figure<SVGEllipseElement> {
@@ -69,23 +70,30 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
                     return this.coords.render2d(client, scroll, margin, board, zoom, true);
                 });
                 const element = document.createElementNS('http://www.w3.org/2000/svg', this.name);
-                this.renderCoordsAttributes(element, [x1, y1], [x2, y2], shiftKey);                
+                this.renderCoordsAttributes(element, [x1, y1], [x2, y2], shiftKey);
                 element.setAttribute('stroke', this.appearance.stroke);
                 element.setAttribute('fill', this.appearance.fill);
                 this.artboard.svg.appendChild(element);
             }
         };
         window.addEventListener('click', pointsListener);
+        const cancelEvents = findIterator(this.cancelListener.eventReceived);
         const cancel = () => {
             window.removeEventListener('click', pointsListener);
-            this.cancelListener.keyEvent.off(cancel);
+            // this.cancelListener.keyEvent.off(cancel);
+            cancelEvents.return! ();
             this.artboard.box.classList.remove('interactive-points');
             if (pseudoElement) {
                 this.guides.guidesContainer!.removeChild(pseudoElement);
             }
             this.userEventMan.mode = 'pick';
         };
-        this.cancelListener.keyEvent.on(cancel);
+        // this.cancelListener.keyEvent.on(cancel);
+        (async () => {
+            for await (const _event of cancelEvents) {
+                cancel();
+            }
+        })();
     }
 
     /**

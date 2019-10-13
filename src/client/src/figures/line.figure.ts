@@ -89,16 +89,23 @@ export class LineFigure implements Figure<SVGLineElement> {
             }
         };
         window.addEventListener('click', pointsListener);
+        const cancelEvents = findIterator(this.cancelListener.eventReceived);
         const cancel = () => {
             window.removeEventListener('click', pointsListener);
-            this.cancelListener.keyEvent.off(cancel);
+            // this.cancelListener.keyEvent.off(cancel);
+            cancelEvents.return! ();
             this.artboard.box.classList.remove('interactive-points');
             if (tempDestroyer instanceof Function) {
                 tempDestroyer();
             }
             this.userEventMan.mode = 'pick';
         };
-        this.cancelListener.keyEvent.on(cancel);
+        // this.cancelListener.keyEvent.on(cancel);
+        (async () => {
+            for await (const _key of cancelEvents) {
+                cancel();
+            }
+        })();
     }
 
     createEditingSelection(point: PointConcerns): () => void {

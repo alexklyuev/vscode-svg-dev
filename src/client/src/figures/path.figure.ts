@@ -14,6 +14,7 @@ import { Coorinator } from "../services/coordinator/coordinator";
 import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
+import { findIterator } from "../../../lib/common/iterators";
 
 
 export class PathFigure implements Figure<SVGPathElement> {
@@ -109,10 +110,12 @@ export class PathFigure implements Figure<SVGPathElement> {
         window.addEventListener(pointsListenerEvent, pointsListener);
         window.addEventListener(subpointsListenerEvent, subpointsListener);
         this.hints.setHint('finishCreate');
+        const cancelEvents = findIterator(this.cancelListener.eventReceived);
         const stop = (key: CancelKeys) => {
             window.removeEventListener(pointsListenerEvent, pointsListener);
             window.removeEventListener(subpointsListenerEvent, subpointsListener);
-            this.cancelListener.keyEvent.off(stop);
+            // this.cancelListener.keyEvent.off(stop);
+            cancelEvents.return! ();
             this.artboard.box.classList.remove('interactive-points');
             if (destroyTempRenderFn instanceof Function) {
                 destroyTempRenderFn();
@@ -121,7 +124,12 @@ export class PathFigure implements Figure<SVGPathElement> {
             this.userEventMan.mode = 'pick';
             this.renderFinal(points, key === 'enter');
         };
-        this.cancelListener.keyEvent.on(stop);
+        // this.cancelListener.keyEvent.on(stop);
+        (async () => {
+            for await (const key of cancelEvents) {
+                stop(key);
+            }
+        })();
     }
 
     renderTemp(pointsConcerns: PointConcerns[], pointSharedConcerns: PointSharedConcerns): Function {

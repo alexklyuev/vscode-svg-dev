@@ -1,18 +1,12 @@
 import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { CancelPipeRequest, CancelKeys } from "../../../shared/pipes/cancel.pipe";
-import { EventBus, connectEvent } from "../../../lib/common/events";
+import { makeIterator } from "../../../lib/common/iterators";
 
-
-const enum CancelEvents {
-    keyEvent = 'keyEvent',
-}
 
 export class CancelListener {
 
     private endpoint: PipeEndpoint<CancelPipeRequest, {}, 'cancel'>;
-
-    public readonly [CancelEvents.keyEvent] = new EventBus<CancelKeys>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,
@@ -25,13 +19,13 @@ export class CancelListener {
         this.endpoint.listenSetRequest(
             _request => true,
             (key, _true) => {
-                this.spawnEvent(key);
+                this.eventReceived(key);
             },
         );
     }
 
-    @connectEvent(CancelEvents.keyEvent)
-    spawnEvent(key: CancelKeys): CancelKeys {
+    @makeIterator()
+    eventReceived(key: CancelKeys): CancelKeys {
         return key;
     }
 

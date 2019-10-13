@@ -11,11 +11,11 @@ export class ElementHolder {
 
     set elements(val: SVGElement[]) {
         this.box = val;
-        this.fireElements(val);
+        this.elementsHasBeenSet(val);
     }
 
     @makeIterator()
-    fireElements(elements: SVGElement[]): SVGElement[] {
+    elementsHasBeenSet(elements: SVGElement[]): SVGElement[] {
         return elements;
     }
 

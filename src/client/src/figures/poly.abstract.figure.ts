@@ -12,6 +12,7 @@ import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Appearance } from "../services/appearance/appearance";
 import { MoverPoints } from "../services/mover/mover-points";
 import { Hints } from "../services/hints/hints";
+import { findIterator } from "../../../lib/common/iterators";
 
 
 export abstract class PolyFigure implements Figure<SVGElement> {
@@ -77,9 +78,11 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             toolsSvgRemover = this.renderTools(cpoints);
         };
         window.addEventListener('click', pointsListener);
+        const cancelEvents = findIterator(this.cancelListener.eventReceived);
         const stop = (_key: CancelKeys) => {
             window.removeEventListener('click', pointsListener);
-            this.cancelListener.keyEvent.off(stop);
+            // this.cancelListener.keyEvent.off(stop);
+            cancelEvents.return! ();
             this.artboard.box.classList.remove('interactive-points');
             if (toolsSvgRemover instanceof Function) {
                 toolsSvgRemover();
@@ -88,7 +91,12 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             this.userEventMan.mode = 'pick';
             this.render(cpoints);
         };
-        this.cancelListener.keyEvent.on(stop);
+        // this.cancelListener.keyEvent.on(stop);
+        (async () => {
+            for await (const key of cancelEvents) {
+                stop(key);
+            }
+        })();
     }
 
     render(points: Array<PointConcerns>) {

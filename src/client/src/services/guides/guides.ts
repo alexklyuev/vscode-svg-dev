@@ -93,7 +93,12 @@ export class Guides {
     drawSelection(elements: Element[]): void {
         if (this.container) {
             this.selection = this.spawn.svg.rect();
-            this.container.appendChild(this.selection);
+            const firstChild = this.container.children[0];
+            if (firstChild) {
+                firstChild.insertAdjacentElement('beforebegin', this.selection);
+            } else {
+                this.container.appendChild(this.selection);
+            }
             this.setSelectionStyles(elements);
         }
     }
@@ -161,6 +166,16 @@ export class Guides {
                 const el = this.container.children[i];
                 this.container.removeChild(el);
             }
+        }
+    }
+
+    appendControlPoint(element: SVGElement) {
+        if (this.selection) {
+            this.selection.insertAdjacentElement('afterend', element);
+        } else if (this.container) {
+            this.container.appendChild(element);
+        } else {
+            throw new Error('Guides: cannot append control point');
         }
     }
 

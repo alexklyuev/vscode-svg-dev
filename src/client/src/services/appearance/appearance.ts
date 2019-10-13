@@ -1,4 +1,5 @@
-import { EventBus, connectEvent } from "../../../../lib/common/events";
+// import { EventBus, connectEvent } from "@/common/events";
+import { makeIterator } from "@/common/iterators";
 
 
 export class Appearance {
@@ -6,10 +7,10 @@ export class Appearance {
     private props = {
         fill: 'green',
         stroke : '#aaa',
-        editControlPointFill: 'none',
-        editControlPointStroke : '#666',
-        editControlPointStrokeDasharray: '1',
-        editControlPointRadius: '10',
+        editControlPointFill: 'rgba(255,255,255,1)',
+        editControlPointStroke : 'blue',
+        editControlPointStrokeDasharray: '0',
+        editControlPointRadius: '5',
         editBezierPointFill: 'red',
         editBezierPointStroke: 'red',
         editBezierPointStrokeDasharray: '1',
@@ -18,8 +19,10 @@ export class Appearance {
         editBezierPointLineStrokeDasharray: '1',
     };
 
-    public readonly changeEvent = new EventBus<{prop: string, value: string}>();
-    @connectEvent('changeEvent')
+    // public readonly changeEvent = new EventBus<{prop: string, value: string}>();
+
+    // @connectEvent('changeEvent')
+    @makeIterator()
     fireChangeEvent(data: {prop: string, value: string}) {
         return data;
     }

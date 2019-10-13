@@ -22,7 +22,14 @@ import { GroupListener } from './src/listeners/group.listener';
 import { cancelListener, artboardListener, artboardStyleListener } from './src/listeners';
 import { guides } from './src/services/guides';
 import { EditListener } from './src/listeners/edit.listener';
-import { shapesOutlet, editPointsControl, groupControls, fillControl, strokeControl, artboardControls, editOnPick } from './src/services/hud';
+import {
+    shapesOutlet,
+    editPointsControl,
+    groupControls,
+    fillControl,
+    strokeControl,
+    artboardControls,
+} from './src/services/hud';
 import { appearance } from './src/services/appearance';
 import { AppearanceResponse } from '../shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from './src/producers/inverse-interactive.producer';
@@ -34,83 +41,11 @@ import { infomessageEndpoint } from './src/producers/infomessage.producer';
 import { hints } from './src/services/hints';
 import { UndoListener } from './src/listeners/undo.listener';
 import { undoPipe } from '../shared/pipes/undo.pipe';
-import { cancelHub } from './src/services/cancel-hub';
+import { editPointsHub } from './src/services/cancel-hub';
 import { ConfigListener } from './src/listeners/config.listener';
 import { configPipe } from '../shared/pipes/config.pipe';
+
 import { findIterator } from '@/common/iterators';
-
-// import './playground';
-
-
-import { fromDomEvent } from '@/dom/iterators';
-// import { exposed } from '@/common/iterators';
-
-
-// const xmerge = (...iters: Array<() => AsyncIterableIterator<any>>) => {
-//     let fn = Function();
-//     let returnResolve = Function();
-//     let returnProm = new Promise(resolve => returnResolve = resolve);
-//     const acc = {
-//         [Symbol.asyncIterator] () {
-//             return {
-//                 next () {
-//                     return new Promise<{value: any, done: boolean}>(resolve => {
-//                         fn = (value: any) => resolve({value, done: false});
-//                     });
-//                 },
-//                 return () {
-//                     returnResolve();
-//                     const prom = Promise.resolve<{value: Event, done: boolean}>({value: null as any, done: true});
-//                     return prom;
-//                 },
-//             };
-//         }
-//     };
-//     iters.forEach(async iter => {
-//         const iterable = iter();
-//         returnProm.then(() => {
-//             if (iterable.return instanceof Function) {
-//                 console.log('iterable.return run');
-//                 const rs = iterable.return();
-//                 iterable.next();
-//                 console.log(rs);
-//                 return rs.then(v => console.log(v.done));
-//             }
-//         });
-//         for await (const value of iterable) {
-//             console.log(`dvalue ${ value }`);
-//             fn(value);
-//         }
-//     });
-//     return async function * () {
-//         yield * acc;
-//         console.log('end acc');
-//     };
-// };
-
-
-(async () => {
-    const downs = fromDomEvent(editOnPick.el, 'mousedown');
-    for await ( const _down of downs ) {
-        console.log('mouse down');
-        const ups = fromDomEvent(document, 'mouseup');
-        const moves = fromDomEvent(document, 'mousemove');
-        (async () => {
-            for await ( const _move of moves ) {
-                console.log('mouse move');
-            }
-        })();
-        (async () => {
-            for await ( const _up of ups ) {
-                console.log('mouse up');
-                moves.return!();
-                ups.return!();
-            }
-        })();
-    }
-})();
-
-
 
 /**
  * 
@@ -130,7 +65,7 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
  * draw tools svg and selection on artboard move
  */
 (async () => {
-    const artboardMoveMouseMove = findIterator<MouseEvent>(artboardMove.onMouseMove);
+    const artboardMoveMouseMove = findIterator(artboardMove.onMouseMove);
     for await ( const _event of artboardMoveMouseMove ) {
         guides.setContainerStyles();
         guides.setSelectionStyles(holder.elements);
@@ -141,7 +76,7 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
  * update selection drawing on move selected element(s)
  */
 (async () => {
-    const pickerMouseMove = findIterator<MouseEvent>(picker.onMousemove);
+    const pickerMouseMove = findIterator(picker.onMousemove);
     for await ( const _event of pickerMouseMove ) {
         guides.setSelectionStyles(holder.elements);
     }
@@ -196,7 +131,10 @@ remoteAttributeListener.listen();
 const createListener = new CreateListener(webviewEndpoint, createPipe, figuresCollection);
 createListener.listen();
 
-const editListener = new EditListener(webviewEndpoint, editPipe, figuresCollection, holder, cancelHub);
+/**
+ * 
+ */
+const editListener = new EditListener(webviewEndpoint, editPipe, figuresCollection, holder, editPointsHub);
 editListener.listen();
 
 /**
@@ -239,11 +177,13 @@ moveKeyListener.moveEvent.on(_key => {
 });
 
 (async () => {
-    const holdElements = findIterator<SVGElement[]>(holder.fireElements);
+    const holdElements = findIterator(holder.elementsHasBeenSet);
     for await ( const elements of holdElements ) {
         setTimeout(() => {
             if (elements.length > 0) {
-                pickEndpoint.makeSetRequest({html: `selection: [${elements.map((el: any) => [el.nodeName, el.id].filter(str => str).join('#')).join(', ')}]`});
+                pickEndpoint.makeSetRequest({
+                    html: `selection: [${elements.map(el => [el.nodeName, el.id].filter(str => str).join('#')).join(', ')}]`
+                });
                 guides.removeSelection();
                 guides.drawSelection(elements);
             } else {
@@ -275,6 +215,9 @@ moveKeyListener.moveEvent.on(_key => {
         } else {
             editPointsControl.hide();
         }
+        if (elements.length > 0) {
+            editListener.editElement();
+        }
     }
 })();
 
@@ -295,7 +238,7 @@ strokeControl.appearanceRequest.on(appearanceRequestCallback);
  */
 shapesOutlet.createShapeEvent.on(shapeName => {
     inverseInteractiveEndpoint.makeSetRequest({});
-    figuresCollection.delegate(shapeName)!.create(shapeName, {});
+    figuresCollection.delegate(shapeName)! .create(shapeName, {});
 });
 
 groupControls.groupEvent.on(_event => {
@@ -338,7 +281,7 @@ configListener.listen();
  * Stream of clicks on 'edit point' button inside editing window
  */
 (async () => {
-    const clicks = findIterator<MouseEvent>(editPointsControl.editPoints);
+    const clicks = findIterator(editPointsControl.editPoints);
     for await ( const _event of clicks ) {
         inverseInteractiveEndpoint.makeSetRequest({});
         editListener.editElement();

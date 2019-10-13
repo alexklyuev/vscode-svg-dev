@@ -2,12 +2,13 @@
 
 const path = require('path');
 
+const isDevelopment = true;
+
 /**
  * @returns {webpack.Configuration}
  */
 module.exports = {
-    mode: 'production',
-    // mode: 'development',
+    mode: isDevelopment ? 'development' : 'production',
     entry: __dirname + '/main.ts',
     output: {
         path: path.resolve(__dirname, '../../out/client'),

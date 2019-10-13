@@ -5,6 +5,7 @@ import { HostApi } from "../host-api/host-api.interface";
 import { Zoom } from "../zoom/zoom";
 import { FiguresCollection } from "../../figures/figures-collection";
 import { UserEventManager } from "../user-event/user-event-manager";
+import { spawn } from "../../../../lib/dom/spawner";
 
 
 export class Picker {
@@ -65,7 +66,8 @@ export class Picker {
             }
             if (event.altKey) {
                 const outer = target.outerHTML;
-                const g = document.createElementNS('http://www.w3.org/2000/svg', 'g') as SVGGElement;
+                // const g = document.createElement NS('http://www.w3.org/2000/svg', 'g') as SVGGElement;
+                const g = spawn.svg.create('g');
                 g.innerHTML = outer;
                 const copy = g.children[0] as SVGElement;
                 copy.removeAttribute('id');
@@ -122,9 +124,6 @@ export class Picker {
     listen() {
         this.artboard.box.addEventListener('mousedown', this.bindedMousedown);
         window.addEventListener('mouseup', this.bindedMouseup);
-    }
-
-    resetListeners() {
     }
 
     /**

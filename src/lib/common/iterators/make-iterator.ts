@@ -15,11 +15,15 @@ export const createIterativeMethods = () => {
                 return result;
             };
             descriptor.value = newValue;
-            map.set(newValue, []);
+            map.set(newValue, Array<Function>());
         };
     };
 
-    const findIterator = <T>(method: Function) => {
+    /**
+     * method is some class method which has been decorated with `@makeIterator()`
+     * R is return value type of method
+     */
+    const findIterator = <R>(method: (...args: any[]) => R) => {
         const callbacks = map.get(method)!;
         let localResolve: Function;
         let done = false;
@@ -29,17 +33,19 @@ export const createIterativeMethods = () => {
             },
             next () {
                 const prom = new Promise(resolve => {
-                    localResolve = (value: T) => resolve({value, done});
+                    localResolve = (value: R) => resolve({value, done});
                     callbacks.push(localResolve);
                 });
                 return prom;
             },
             return () {
                 done = true;
-                localResolve(null);
+                if (localResolve instanceof Function) {
+                    localResolve(null);
+                }
             },
         };
-        return iter as AsyncIterableIterator<T>;
+        return iter as AsyncIterableIterator<R>;
     };
 
     return { makeIterator, findIterator };

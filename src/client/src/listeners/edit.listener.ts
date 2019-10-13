@@ -3,7 +3,7 @@ import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { EditRequest } from "../../../shared/pipes/edit.pipe";
 import { FiguresCollection } from "../figures/figures-collection";
 import { ElementHolder } from "../services/picker/element-holder";
-import { CancelHub } from "../services/cancel-hub/cancel-hub";
+import { EditPointsHub } from "../services/cancel-hub/cancel-hub";
 
 
 export class EditListener {
@@ -14,7 +14,7 @@ export class EditListener {
         private editPipe: Pipe<EditRequest, {}, 'edit'>,
         private figuresCollection: FiguresCollection,
         private holder: ElementHolder,
-        private cancelHub: CancelHub,
+        private cancelHub: EditPointsHub,
     ) {
         this.editClient = this.webviewEndpoint.createFromPipe(this.editPipe);
     }
@@ -34,7 +34,7 @@ export class EditListener {
         if (delegate && delegate.edit instanceof Function) {
             const cancelFn = delegate.edit(element);
             if (cancelFn instanceof Function) {
-                this.cancelHub.add(cancelFn);
+                this.cancelHub.take(cancelFn);
             }
         }
     }

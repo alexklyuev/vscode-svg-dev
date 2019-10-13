@@ -1,23 +1,15 @@
 import { findIterator } from "@/common/iterators";
 import { fromDomEvent } from "@/dom/iterators";
-import { Spawn } from "@/dom/spawner/spawn";
-import { Hints } from "../services/hints/hints";
-import { Zoom } from "../services/zoom/zoom";
-import { Appearance } from "../services/appearance/appearance";
-import { Guides } from "../services/guides/guides";
+import { spawn } from "@/dom/spawner";
+
+import { zoom } from "../../src/services/zoom";
+import { appearance } from "../../src/services/appearance";
+import { guides } from "../../src/services/guides";
 
 
 export class RectPointsEditor {
 
-    constructor(
-        private hints: Hints,
-        private zoom: Zoom,
-        private appearance: Appearance,
-        private spawn: Spawn,
-        private guides: Guides,
-    ) {}
-
-    getPoints(element: SVGRectElement) {
+    getPoints(element: SVGRectElement) { 
         const width = parseFloat(element.getAttribute('width')!);
         const height = parseFloat(element.getAttribute('height')!);
         const x = parseFloat(element.getAttribute('x')!);
@@ -34,32 +26,32 @@ export class RectPointsEditor {
     createCircles(points: number[][]) {
         return points.map(point => {
             const [ cx, cy ] = point;
-            const { value: zoom } = this.zoom;
-            const circle = this.spawn.svg.circle(
+            const { value: zoomValue } = zoom;
+            const circle = spawn.svg.circle(
                 {
-                    cx: `${ cx * zoom }`,
-                    cy: `${ cy * zoom }`,
-                    fill: this.appearance.editControlPointFill,
-                    stroke: this.appearance.editControlPointStroke,
-                    'stroke-dasharray': this.appearance.editControlPointStrokeDasharray,
-                    r: this.appearance.editControlPointRadius,
+                    cx: `${ cx * zoomValue }`,
+                    cy: `${ cy * zoomValue }`,
+                    fill: appearance.editControlPointFill,
+                    stroke: appearance.editControlPointStroke,
+                    'stroke-dasharray': appearance.editControlPointStrokeDasharray,
+                    r: appearance.editControlPointRadius,
                 },
                 {
                     pointerEvents: 'fill',
                 }
             );
-            this.guides.guidesContainer!  .appendChild(circle);
+            // guides.guidesContainer!  .appendChild(circle);
+            guides.appendControlPoint(circle);
             return circle;
         });
     }
 
     destroyCircles(pseudoEls: Array<SVGElement>) {
-        pseudoEls.forEach(circle => this.guides.guidesContainer!. removeChild(circle));
+        pseudoEls.forEach(circle => guides.guidesContainer!. removeChild(circle));
         pseudoEls.length = 0;
     }
 
     edit(element: SVGRectElement) {
-        this.hints.setHint('finishEdit');
 
         let pseudoEls = Array<SVGElement>();
         const returnables = Array<AsyncIterableIterator<MouseEvent>>();
@@ -69,14 +61,14 @@ export class RectPointsEditor {
         pseudoEls = this.createCircles(points);
 
         const updateCircles = () => {
-            const { value: zoom } = this.zoom;
+            const { value: zoomValue } = zoom;
             const points = this.getPoints(element);
             points.forEach((point, pointIndex) => {
                 const [ cx, cy ] = point;
                 const circle = pseudoEls[pointIndex];
-                this.spawn.svg.update(circle).attributes({
-                    cx: `${ cx * zoom }`,
-                    cy: `${ cy * zoom }`,
+                spawn.svg.update(circle).attributes({
+                    cx: `${ cx * zoomValue }`,
+                    cy: `${ cy * zoomValue }`,
                 });
             });
         };
@@ -91,7 +83,7 @@ export class RectPointsEditor {
             (async () => {
                 for await (const circleDownEvent of circleMouseDown) {
                 circleDownEvent.stopPropagation();
-                this.guides.removeSelection();
+                guides.removeSelection();
                 const {
                     clientX,
                     clientY,
@@ -106,8 +98,9 @@ export class RectPointsEditor {
                     for await (const circleMoveEvent of circleMouseMove) {
                         circleMoveEvent.stopPropagation();
                         const { clientX, clientY } = circleMoveEvent;
-                        const absDeltaX = (clientX - downX) / this.zoom.value;
-                        const absDeltaY = (clientY - downY) / this.zoom.value;
+                        const { value: zoomValue } = zoom;
+                        const absDeltaX = (clientX - downX) / zoomValue;
+                        const absDeltaY = (clientY - downY) / zoomValue;
                         const relDeltaX = absDeltaX - usedDeltaX;
                         const relDeltaY = absDeltaY - usedDeltaY;
                         usedDeltaX += relDeltaX;
@@ -154,7 +147,7 @@ export class RectPointsEditor {
                             y$ -= height$;
                             verticalInvert = !verticalInvert;
                         }
-                        this.spawn.svg.update(element, {
+                        spawn.svg.update(element, {
                             x: `${ x$ }`,
                             y: `${ y$ }`,
                             width: `${ width$ }`,
@@ -181,7 +174,7 @@ export class RectPointsEditor {
             returnables.length = 0;
         };
 
-        const zoomIter = findIterator<number>(this.zoom.update);
+        const zoomIter = findIterator<number>(zoom.update);
         (async () => {
             for await (const _value of zoomIter) {
                 updateCircles();
