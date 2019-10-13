@@ -30,11 +30,13 @@ export class EditListener {
 
     editElement() {
         const element = this.holder.elements[0];
-        const delegate = this.figuresCollection.delegate(element);
-        if (delegate && delegate.edit instanceof Function) {
-            const cancelFn = delegate.edit(element);
-            if (cancelFn instanceof Function) {
-                this.cancelHub.take(cancelFn);
+        if (!this.cancelHub.isSameElement(element)) {
+            const delegate = this.figuresCollection.delegate(element);
+            if (delegate && delegate.edit instanceof Function) {
+                const cancelFn = delegate.edit(element);
+                if (cancelFn instanceof Function) {
+                    this.cancelHub.take(element, cancelFn);
+                }
             }
         }
     }

@@ -9,6 +9,8 @@ import { guides } from "../../src/services/guides";
 
 export class RectPointsEditor {
 
+    cancelation = () => {};
+
     getPoints(element: SVGRectElement) { 
         const width = parseFloat(element.getAttribute('width')!);
         const height = parseFloat(element.getAttribute('height')!);
@@ -40,46 +42,48 @@ export class RectPointsEditor {
                     pointerEvents: 'fill',
                 }
             );
-            // guides.guidesContainer!  .appendChild(circle);
             guides.appendControlPoint(circle);
             return circle;
         });
     }
 
-    destroyCircles(pseudoEls: Array<SVGElement>) {
-        pseudoEls.forEach(circle => guides.guidesContainer!. removeChild(circle));
-        pseudoEls.length = 0;
+    destroyCircles(circles: Array<SVGElement>) {
+        circles.forEach(circle => guides.guidesContainer!. removeChild(circle));
+        circles.length = 0;
     }
 
-    edit(element: SVGRectElement) {
+    destroyReturnables(returnables: AsyncIterableIterator<MouseEvent>[]) {
+        returnables.forEach(r => r.return! ());
+        returnables.length = 0;
+    }
 
-        let pseudoEls = Array<SVGElement>();
-        const returnables = Array<AsyncIterableIterator<MouseEvent>>();
+    updateCircles(
+        element: SVGRectElement,
+        circles: SVGCircleElement[],
+        returnables: AsyncIterableIterator<MouseEvent>[],
+    ) {
+        // const { value: zoomValue } = zoom;
+        // const points = this.getPoints(element);
+        // points.forEach((point, pointIndex) => {
+        //     const [ cx, cy ] = point;
+        //     const circle = circles[pointIndex];
+        //     spawn.svg.update(circle).attributes({
+        //         cx: `${ cx * zoomValue }`,
+        //         cy: `${ cy * zoomValue }`,
+        //     });
+        // });
+        this.destroyCircles(circles);
+        this.destroyReturnables(returnables);
 
         const points = this.getPoints(element);
-
-        pseudoEls = this.createCircles(points);
-
-        const updateCircles = () => {
-            const { value: zoomValue } = zoom;
-            const points = this.getPoints(element);
-            points.forEach((point, pointIndex) => {
-                const [ cx, cy ] = point;
-                const circle = pseudoEls[pointIndex];
-                spawn.svg.update(circle).attributes({
-                    cx: `${ cx * zoomValue }`,
-                    cy: `${ cy * zoomValue }`,
-                });
-            });
-        };
+        const newCircles = this.createCircles(points);
 
         let horizontalInvert = false;
         let verticalInvert = false;
 
-        points.forEach((_point, pointIndex) => {
-            const circle = pseudoEls[pointIndex];
+        const newReturnables = newCircles.map((circle, pointIndex) => {
             const circleMouseDown = fromDomEvent<MouseEvent>(circle, 'mousedown');
-            returnables.push(circleMouseDown);
+            // returnables.push(circleMouseDown);
             (async () => {
                 for await (const circleDownEvent of circleMouseDown) {
                 circleDownEvent.stopPropagation();
@@ -153,54 +157,53 @@ export class RectPointsEditor {
                             width: `${ width$ }`,
                             height: `${ height$ }`,
                         });
-                        updateCircles();
+                        this.updateCircles(element, circles, returnables);
                     }
                 })();
                 (async () => {
                     for await (const circleUpEvent of circleMouseUp) {
                         circleUpEvent.stopPropagation();
-                        circleMouseMove.return!();
-                        circleMouseUp.return!();
-                        updateCircles();
+                        circleMouseMove.return! ();
+                        circleMouseUp.return! ();
+                        // circleMouseDown.return! ();
+                        this.updateCircles(element, circles, returnables);
                     }
                 })();
                 }
             })();
+            return circleMouseDown;
         });
+        circles.push(...newCircles);
+        returnables.push(...newReturnables);
+    }
 
-        const undraw = () => {
-            this.destroyCircles(pseudoEls);
-            returnables.forEach(returnable => returnable.return!());
-            returnables.length = 0;
-        };
-
+    edit(element: SVGRectElement) {
+        const returnables = Array<AsyncIterableIterator<MouseEvent>>();
+        const circles = Array<SVGCircleElement>();
+        this.updateCircles(element, circles, returnables);
         const zoomIter = findIterator<number>(zoom.update);
         (async () => {
             for await (const _value of zoomIter) {
-                updateCircles();
+                this.updateCircles(element, circles, returnables);
             }
         })();
-
         let mouseMoveIter: AsyncIterableIterator<MouseEvent>;
         let mouseUpIter: AsyncIterableIterator<MouseEvent>;
         const mouseDownIter = fromDomEvent(element, 'mousedown');
         (async () => {
             for await (const _down of mouseDownIter) {
-                this.destroyCircles(pseudoEls);
-                mouseMoveIter = fromDomEvent(window, 'mousemove');
-                mouseUpIter = fromDomEvent(window, 'mouseup');
+                mouseMoveIter = fromDomEvent(element, 'mousemove');
+                mouseUpIter = fromDomEvent(element, 'mouseup');
                 (async () => {
                     for await (const _move of mouseMoveIter) {
-                        console.log('mousemove window:el');
-                        updateCircles();
+                        this.updateCircles(element, circles, returnables);
                     }
                 })();
                 (async () => {
                     for await (const _up of mouseUpIter) {
-                        mouseUpIter.return!();
-                        mouseMoveIter.return!();
-                        // pseudoEls = this.createCircles(this.getPoints(element));
-                        // updateCircles();
+                        mouseUpIter.return! ();
+                        mouseMoveIter.return! ();
+                        this.updateCircles(element, circles, returnables);
                     }
                 })();
             }
@@ -217,7 +220,9 @@ export class RectPointsEditor {
             .forEach(iter => {
                 iter.return!();
             });
-            undraw();
+            this.destroyCircles(circles);
+            this.destroyReturnables(returnables);
+            console.log('CANCELED');
         };
 
         return cancel;

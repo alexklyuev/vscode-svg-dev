@@ -5,11 +5,18 @@ export class EditPointsHub {
 
     private cancelFn: (() => void) | null = null;
 
+    private innerElement: SVGElement | null = null;
+
     constructor(
         private cancelListner: CancelListener,
     ) {}
 
-    take(fn: () => void) {
+    isSameElement(element: SVGElement) {
+        return element === this.innerElement;
+    }
+
+    take(element: SVGElement, fn: () => void) {
+        this.innerElement = element;
         const cancelEvents = findIterator(this.cancelListner.eventReceived);
         if (this.cancelFn instanceof Function) {
             // this.cancelListner.keyEvent.off(this.cancelFn);
