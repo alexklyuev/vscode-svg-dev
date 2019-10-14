@@ -13,7 +13,7 @@ import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Spawn } from "../../../lib/dom/spawner/spawn";
 import { RectPointsEditor } from "../points-editor/rect.points-editor";
-import { findIterator } from "../../../lib/common/iterators";
+import { findMethodIterator } from "../../../lib/common/iterators";
 
 
 export class RectFigure implements Figure<SVGRectElement> {
@@ -79,7 +79,7 @@ export class RectFigure implements Figure<SVGRectElement> {
             }
         };
         window.addEventListener('click', pointsListener);
-        const cancelEvents = findIterator(this.cancelListener.eventReceived);
+        const cancelEvents = findMethodIterator(this.cancelListener.eventReceived);
         const cancel = () => {
             window.removeEventListener('click', pointsListener);
             // this.cancelListener.keyEvent.off(cancel);

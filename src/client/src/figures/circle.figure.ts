@@ -13,7 +13,7 @@ import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
 import { Spawn } from "../../../lib/dom/spawner/spawn";
-import { findIterator } from "../../../lib/common/iterators";
+import { findMethodIterator } from "../../../lib/common/iterators";
 
 
 export class CircleFigure implements Figure<SVGCircleElement> {
@@ -70,7 +70,7 @@ export class CircleFigure implements Figure<SVGCircleElement> {
             }
         };
         window.addEventListener('click', pointsListener);
-        const cancelEvents = findIterator(this.cancelListener.eventReceived);
+        const cancelEvents = findMethodIterator(this.cancelListener.eventReceived);
         const cancel = () => {
             window.removeEventListener('click', pointsListener);
             // this.cancelListener.keyEvent.off(cancel);

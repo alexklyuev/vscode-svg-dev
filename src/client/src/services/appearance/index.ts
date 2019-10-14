@@ -1,3 +1,3 @@
 import { Appearance } from "./appearance";
 
-export const appearance = new Appearance();
+export const appearance: any = new Appearance();

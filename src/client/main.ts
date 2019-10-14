@@ -41,11 +41,11 @@ import { infomessageEndpoint } from './src/producers/infomessage.producer';
 import { hints } from './src/services/hints';
 import { UndoListener } from './src/listeners/undo.listener';
 import { undoPipe } from '../shared/pipes/undo.pipe';
-import { editPointsHub } from './src/services/cancel-hub';
 import { ConfigListener } from './src/listeners/config.listener';
 import { configPipe } from '../shared/pipes/config.pipe';
 
-import { findIterator } from '@/common/iterators';
+import { editPointsHub } from '@/webview/services/edit-points-hub';
+import { findMethodIterator } from '@/common/iterators';
 
 /**
  * 
@@ -65,7 +65,7 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
  * draw tools svg and selection on artboard move
  */
 (async () => {
-    const artboardMoveMouseMove = findIterator(artboardMove.onMouseMove);
+    const artboardMoveMouseMove = findMethodIterator(artboardMove.onMouseMove);
     for await ( const _event of artboardMoveMouseMove ) {
         guides.setContainerStyles();
         guides.setSelectionStyles(holder.elements);
@@ -76,7 +76,7 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
  * update selection drawing on move selected element(s)
  */
 (async () => {
-    const pickerMouseMove = findIterator(picker.onMousemove);
+    const pickerMouseMove = findMethodIterator(picker.onMousemove);
     for await ( const _event of pickerMouseMove ) {
         guides.setSelectionStyles(holder.elements);
     }
@@ -86,7 +86,7 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
  * on zoom value changes
  */
 (async () => {
-    const zoomValues = findIterator<number>(zoom.update);
+    const zoomValues = findMethodIterator(zoom.update);
     for await ( const value of zoomValues ) {
         pickEndpoint.makeSetRequest({ html: `zoom: ${ Math.round(value * 100) }%` });
         guides.setContainerStyles();
@@ -176,9 +176,12 @@ moveKeyListener.moveEvent.on(_key => {
     guides.setSelectionStyles(holder.elements);
 });
 
+/**
+ * 
+ */
 (async () => {
-    const holdElements = findIterator(holder.elementsHasBeenSet);
-    for await ( const elements of holdElements ) {
+    const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
+    for await (const elements of elementsHasBeenSet) {
         setTimeout(() => {
             if (elements.length > 0) {
                 pickEndpoint.makeSetRequest({
@@ -191,6 +194,15 @@ moveKeyListener.moveEvent.on(_key => {
                 guides.removeSelection();
             }
         }, 0);
+    }
+})();
+
+/**
+ * 
+ */
+(async () => {
+    const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
+    for await (const elements of elementsHasBeenSet) {
         if (elements.length > 0) {
             const lastElement = elements[elements.length - 1];
             const fill = lastElement.getAttribute('fill');
@@ -204,6 +216,15 @@ moveKeyListener.moveEvent.on(_key => {
                 strokeControl.updateStrokeBtn(stroke);
             }
         }
+    }
+})();
+
+/**
+ * show/hide edit button
+ */
+(async () => {
+    const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
+    for await (const elements of elementsHasBeenSet) {
         if (elements.length > 0) {
             const element = elements[0];
             const delegate = figuresCollection.delegate(element);
@@ -215,9 +236,16 @@ moveKeyListener.moveEvent.on(_key => {
         } else {
             editPointsControl.hide();
         }
-        if (elements.length > 0) {
-            editListener.editElement();
-        }
+    }
+})();
+
+/**
+ * edit on pick
+ */
+(async () => {
+    const pickerMouseUps = findMethodIterator(picker.onMouseup);
+    for await (const _event of pickerMouseUps) {
+        editListener.editElement();
     }
 })();
 
@@ -251,12 +279,36 @@ groupControls.ungroupEvent.on(_event => {
     groupListener.ungroup();
 });
 
-elementListener.copyElementEvent.on(_element => {
-    setTimeout(() => {
-        guides.setContainerStyles();
-        guides.setSelectionStyles(holder.elements);
-    }, 0);
-});
+(async () => {
+    const copyElement = findMethodIterator(elementListener.copyInPlaceElement);
+    for await (const _element of copyElement) {
+        setTimeout(() => {
+            guides.setContainerStyles();
+            guides.setSelectionStyles(holder.elements);
+        }, 0);
+    }
+})();
+
+/**
+ * edit on copy
+ */
+(async () => {
+    const copyElement = findMethodIterator(elementListener.copyInPlaceElement);
+    for await (const _element of copyElement) {
+        editListener.editElement();
+    }
+})();
+
+/**
+ * remove editing on delete
+ */
+(async () => {
+    const deleteElement = findMethodIterator(elementListener.deleteElement);
+    for await (const _void of deleteElement) {
+        editPointsHub.takeActiveElement(null);
+        editPointsHub.takeCancelationFn(() => {});
+    }
+})();
 
 const listAttributesListener = new ListAttributesListener(webviewEndpoint, listAttributesPipe, holder);
 listAttributesListener.listen();
@@ -281,7 +333,7 @@ configListener.listen();
  * Stream of clicks on 'edit point' button inside editing window
  */
 (async () => {
-    const clicks = findIterator(editPointsControl.editPoints);
+    const clicks = findMethodIterator(editPointsControl.editPoints);
     for await ( const _event of clicks ) {
         inverseInteractiveEndpoint.makeSetRequest({});
         editListener.editElement();

@@ -12,7 +12,7 @@ import { Guides } from "../services/guides/guides";
 import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
-import { findIterator } from "@/common/iterators";
+import { findMethodIterator } from "@/common/iterators";
 import { fromDomEvent } from "@/dom/iterators";
 
 
@@ -89,7 +89,7 @@ export class LineFigure implements Figure<SVGLineElement> {
             }
         };
         window.addEventListener('click', pointsListener);
-        const cancelEvents = findIterator(this.cancelListener.eventReceived);
+        const cancelEvents = findMethodIterator(this.cancelListener.eventReceived);
         const cancel = () => {
             window.removeEventListener('click', pointsListener);
             // this.cancelListener.keyEvent.off(cancel);
@@ -244,7 +244,7 @@ export class LineFigure implements Figure<SVGLineElement> {
 
         draw();
 
-        const zoomIter = findIterator<number>(this.zoom.update);
+        const zoomIter = findMethodIterator<number>(this.zoom.update);
         (async () => {
             for await (const _value of zoomIter) {
                 console.log('redraw line edit by zoom');

@@ -1,5 +1,6 @@
-import { CancelListener } from "../../listeners/cancel.listener";
-import { findIterator } from "../../../../lib/common/iterators";
+import { findMethodIterator } from "@/common/iterators";
+import { CancelListener } from "../../../../client/src/listeners/cancel.listener";
+
 
 export class EditPointsHub {
 
@@ -15,16 +16,17 @@ export class EditPointsHub {
         return element === this.innerElement;
     }
 
-    take(element: SVGElement, fn: () => void) {
+    takeActiveElement(element: SVGElement | null) {
         this.innerElement = element;
-        const cancelEvents = findIterator(this.cancelListner.eventReceived);
+    }
+
+    takeCancelationFn(fn: () => void) {
+        const cancelEvents = findMethodIterator(this.cancelListner.eventReceived);
         if (this.cancelFn instanceof Function) {
-            // this.cancelListner.keyEvent.off(this.cancelFn);
             cancelEvents.return! ();
             this.cancelFn();
         }
         this.cancelFn = fn;
-        // this.cancelListner.keyEvent.on(this.cancelFn);
         (async () => {
             for await (const _event of cancelEvents) {
                 if (this.cancelFn instanceof Function) {

@@ -1,9 +1,9 @@
-import { createIterativeMethods } from './make-iterator';
+import { createIterativeMethods } from './method-iterator';
 
-const { makeIterator, findIterator } = createIterativeMethods();
+const { makeMethodIterator, findMethodIterator } = createIterativeMethods();
 
 export {
     createIterativeMethods,
-    makeIterator,
-    findIterator,
+    makeMethodIterator,
+    findMethodIterator,
 };

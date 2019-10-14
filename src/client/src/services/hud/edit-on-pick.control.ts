@@ -1,4 +1,4 @@
-import { makeIterator } from "@/common/iterators";
+import { makeMethodIterator } from "@/common/iterators";
 import { Outlet } from "./models/outlet.model";
 import { Spawn } from "../../../../lib/dom/spawner/spawn";
 
@@ -40,7 +40,7 @@ export class EditOnPick implements Outlet {
     parent.appendChild(this.el);
   }
 
-  @makeIterator()
+  @makeMethodIterator()
   toggle(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();

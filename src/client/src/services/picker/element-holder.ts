@@ -1,4 +1,4 @@
-import { makeIterator } from "@/common/iterators";
+import { makeMethodIterator } from "@/common/iterators";
 
 
 export class ElementHolder {
@@ -14,7 +14,7 @@ export class ElementHolder {
         this.elementsHasBeenSet(val);
     }
 
-    @makeIterator()
+    @makeMethodIterator()
     elementsHasBeenSet(elements: SVGElement[]): SVGElement[] {
         return elements;
     }

@@ -1,7 +1,7 @@
 import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { CancelPipeRequest, CancelKeys } from "../../../shared/pipes/cancel.pipe";
-import { makeIterator } from "../../../lib/common/iterators";
+import { makeMethodIterator } from "../../../lib/common/iterators";
 
 
 export class CancelListener {
@@ -24,7 +24,7 @@ export class CancelListener {
         );
     }
 
-    @makeIterator()
+    @makeMethodIterator()
     eventReceived(key: CancelKeys): CancelKeys {
         return key;
     }

@@ -1,14 +1,14 @@
-import { makeIterator, findIterator } from "@/common/iterators";
+import { makeMethodIterator, findMethodIterator } from "@/common/iterators";
 
 
 export class Playground {
 
-    @makeIterator()
+    @makeMethodIterator()
     event() {
         return 1;
     }
 
-    @makeIterator()
+    @makeMethodIterator()
     intercept() {
         return 2;
     }
@@ -17,7 +17,7 @@ export class Playground {
 
 const playground = new Playground();
 
-const event$ = findIterator(playground.event)!;
+const event$ = findMethodIterator(playground.event)!;
 
 (async () => {
     let mcount = 0;

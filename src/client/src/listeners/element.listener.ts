@@ -1,16 +1,16 @@
-import { PipeEndpoint, Pipe } from "../../../lib/common/pipe/pipe";
+import { spawn } from "@/dom/spawner";
+import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
+import { makeMethodIterator } from "@/common/iterators";
+
 import { ElementCommand } from "../../../shared/pipes/element.pipe";
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { ElementHolder } from "../services/picker/element-holder";
 import { setState } from "../decorators/set-state.decorator";
 import { FiguresCollection } from "../figures/figures-collection";
-import { EventBus, connectEvent } from "../../../lib/common/events";
 
 
 export class ElementListener {
     private elementReceiver: PipeEndpoint<ElementCommand, {}, 'element'>;
-
-    public readonly copyElementEvent = new EventBus<SVGElement>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,
@@ -46,6 +46,7 @@ export class ElementListener {
         }
     }
 
+    @makeMethodIterator()
     @setState
     deleteElement(element: SVGElement) {
         element.remove();
@@ -62,11 +63,11 @@ export class ElementListener {
         return newEl;
     }
 
+    @makeMethodIterator()
     @setState
-    @connectEvent('copyElementEvent')
     copyInPlaceElement(element: SVGElement) {
         const elHtml = element.outerHTML;
-        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const g = spawn.svg.create('g');
         g.innerHTML = elHtml;
         const copy = g.children[0] as SVGElement;
         element.insertAdjacentElement('afterend', copy);

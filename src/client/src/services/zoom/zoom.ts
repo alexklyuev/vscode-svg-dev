@@ -1,4 +1,4 @@
-import { makeIterator } from "@/common/iterators";
+import { makeMethodIterator } from "@/common/iterators";
 import { Artboard } from "../../services/artboard/artboard";
 
 
@@ -23,7 +23,7 @@ export class Zoom {
     /**
      * update zoom value by relative (delta) value or to absolute (abs) value
      */
-    @makeIterator()
+    @makeMethodIterator()
     update(delta: number | undefined, abs: number | undefined): number {
         if (delta) {
             this.zoom += delta;

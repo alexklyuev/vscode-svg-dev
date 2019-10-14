@@ -1,4 +1,4 @@
-import { makeIterator } from "@/common/iterators";
+import { makeMethodIterator } from "@/common/iterators";
 import { Outlet } from "./models/outlet.model";
 import { Spawn } from "../../../../lib/dom/spawner/spawn";
 
@@ -61,7 +61,7 @@ export class EditPointsControl implements Outlet {
     this.spawn.html.update(this.el).styles({ 'display': 'none' });
   }
 
-  @makeIterator()
+  @makeMethodIterator()
   editPoints(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();

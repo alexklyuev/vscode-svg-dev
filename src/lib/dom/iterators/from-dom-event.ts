@@ -14,7 +14,7 @@ export function fromDomEvent <T extends Event>(this: void, target: EventTarget, 
         },
         return () {
             unsubscribe();
-            console.log(`unsubscribed from ${ eventName }`);
+            // console.log(`unsubscribed from ${ eventName }`);
             return Promise.resolve<{value: Event, done: boolean}>({value: null as any, done: true});
         },
     };

@@ -12,7 +12,7 @@ import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Appearance } from "../services/appearance/appearance";
 import { MoverPoints } from "../services/mover/mover-points";
 import { Hints } from "../services/hints/hints";
-import { findIterator } from "../../../lib/common/iterators";
+import { findMethodIterator } from "../../../lib/common/iterators";
 
 
 export abstract class PolyFigure implements Figure<SVGElement> {
@@ -78,7 +78,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             toolsSvgRemover = this.renderTools(cpoints);
         };
         window.addEventListener('click', pointsListener);
-        const cancelEvents = findIterator(this.cancelListener.eventReceived);
+        const cancelEvents = findMethodIterator(this.cancelListener.eventReceived);
         const stop = (_key: CancelKeys) => {
             window.removeEventListener('click', pointsListener);
             // this.cancelListener.keyEvent.off(stop);

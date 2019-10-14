@@ -1,4 +1,4 @@
-import { makeIterator } from "@/common/iterators";
+import { makeMethodIterator } from "@/common/iterators";
 import { Artboard } from "../../services/artboard/artboard";
 import { ElementHolder } from "./element-holder";
 import { HostApi } from "../host-api/host-api.interface";
@@ -18,7 +18,7 @@ export class Picker {
      * 
      * @param event 
      */
-    @makeIterator()
+    @makeMethodIterator()
     onMousemove(event: MouseEvent) {
         this.controlPropagation(event);
         this.holder.elements.forEach(element => {
@@ -33,7 +33,7 @@ export class Picker {
     /**
      * 
      */
-    @makeIterator()
+    @makeMethodIterator()
     onMousedown(event: MouseEvent) {
         if (this.userEventMan.mode === 'interactive') {
             return event;
@@ -92,7 +92,7 @@ export class Picker {
     /**
      * 
      */
-    @makeIterator()
+    @makeMethodIterator()
     onMouseup(event: MouseEvent) {
         this.controlPropagation(event);
         this.holder.elements.forEach(element => {

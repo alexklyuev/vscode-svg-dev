@@ -2,7 +2,7 @@ export const createIterativeMethods = () => {
 
     const map = new Map<Function, Function[]>();
 
-    const makeIterator = <T>() => {
+    const makeMethodIterator = <T>() => {
         return function (_instancePrototype: any, _methodName: string, descriptor: PropertyDescriptor) {
             const { value } = descriptor;
             const newValue = function(this: any, ...args: any[]) {
@@ -20,10 +20,10 @@ export const createIterativeMethods = () => {
     };
 
     /**
-     * method is some class method which has been decorated with `@makeIterator()`
+     * method is some class method which has been decorated with `@makeMethodIterator()`
      * R is return value type of method
      */
-    const findIterator = <R>(method: (...args: any[]) => R) => {
+    const findMethodIterator = <R>(method: (...args: any[]) => R) => {
         const callbacks = map.get(method)!;
         let localResolve: Function;
         let done = false;
@@ -48,5 +48,5 @@ export const createIterativeMethods = () => {
         return iter as AsyncIterableIterator<R>;
     };
 
-    return { makeIterator, findIterator };
+    return { makeMethodIterator, findMethodIterator };
 };

@@ -1,4 +1,4 @@
-import { makeIterator } from "@/common/iterators";
+import { makeMethodIterator } from "@/common/iterators";
 import { Artboard } from "./artboard";
 import { UserEventManager } from "../user-event/user-event-manager";
 
@@ -52,7 +52,7 @@ export class ArtboardMove {
     }
 
     
-    @makeIterator()
+    @makeMethodIterator()
     onMouseDown(event: MouseEvent) {
         if (this.userEventMan.mode === 'interactive') {
             return event;
@@ -67,7 +67,7 @@ export class ArtboardMove {
         return event;
     }
 
-    @makeIterator()
+    @makeMethodIterator()
     onMouseMove(event: MouseEvent) {
         const { clientX, clientY } = event;
         const box = this.artboard.box;
@@ -81,7 +81,7 @@ export class ArtboardMove {
         return {left: this.marginLeft, top: this.marginTop, event};
     }
 
-    @makeIterator()
+    @makeMethodIterator()
     onMouseUp(event: MouseEvent) {
         const { clientX, clientY } = event;
         const deltaX = clientX - this.coords.clientX;
