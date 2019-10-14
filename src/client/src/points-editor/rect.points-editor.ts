@@ -1,9 +1,9 @@
 import { findMethodIterator } from "@/common/iterators";
 import { fromDomEvent } from "@/dom/iterators";
 import { spawn } from "@/dom/spawner";
+import { appearance } from "@/webview/services/appearance";
 
 import { zoom } from "../../src/services/zoom";
-import { appearance } from "../../src/services/appearance";
 import { guides } from "../../src/services/guides";
 import { artboard } from "../../src/services/artboard";
 

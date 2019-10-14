@@ -1,9 +1,10 @@
+import { PipeEndpoint } from "@/common/pipe/pipe";
+import { Appearance } from "@/webview/services/appearance/appearance";
+
 import { Figure } from "./figure.model";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 import { DraggerValue } from "../services/dragger/dragger-value";
-import { Appearance } from "../services/appearance/appearance";
-import { PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { Mover } from "../services/mover/mover.model";
 
 

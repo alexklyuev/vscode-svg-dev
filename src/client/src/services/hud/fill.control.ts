@@ -1,8 +1,9 @@
+import { EventBus, connectEvent } from "@/common/events";
+import { PipeEndpoint } from "@/common/pipe/pipe";
+import { Appearance } from "@/webview/services/appearance/appearance";
+
 import { ColorRepresenterService } from "./color-representer.service";
-import { Appearance } from "../appearance/appearance";
-import { EventBus, connectEvent } from "../../../../lib/common/events";
 import { AppearanceResponse, AppearanceRequest } from "../../../../shared/pipes/appearance.pipe";
-import { PipeEndpoint } from "../../../../lib/common/pipe/pipe";
 import { Outlet } from "./models/outlet.model";
 
 

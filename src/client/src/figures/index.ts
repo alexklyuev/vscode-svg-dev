@@ -1,3 +1,6 @@
+import { appearance } from "@/webview/services/appearance";
+import { spawn } from "@/dom/spawner/index";
+
 import { FiguresCollection } from "./figures-collection";
 import { CircleFigure } from "./circle.figure";
 import { RectFigure } from "./rect.figure";
@@ -19,14 +22,12 @@ import { PathFigure } from "./path.figure";
 import { DraggerPath } from "../services/dragger/dragger-path";
 import { pathPoints } from "../services/path";
 import { coordinator } from "../services/coordinator";
-import { appearance } from "../services/appearance";
 import { textReverseEndpoint } from "../producers/text-reverse.producer";
 import { MoverPath } from "../services/mover/mover-path";
 import { MoverPoints } from "../services/mover/mover-points";
 import { MoverValue } from "../services/mover/mover-value";
 import { MoverDelegate } from "../services/mover/mover-delegate";
 import { hints } from "../services/hints";
-import { spawn } from "@/dom/spawner/index";
 import { rectPointsEditor } from "../points-editor";
 
 

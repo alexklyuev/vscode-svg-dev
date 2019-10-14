@@ -1,3 +1,6 @@
+import { spawn } from "@/dom/spawner";
+import { appearance } from "@/webview/services/appearance";
+
 import { Hud } from "./hud";
 import { ColorRepresenterService } from "./color-representer.service";
 import { AppearanceOutlet } from "./appearance.outlet";
@@ -8,13 +11,11 @@ import { artboard } from "../artboard";
 import { artboardStyleListener, artboardListener } from "../../listeners";
 import { artboardInverseEndpoint } from "../../producers/artboard-inverse.producer";
 import { artboardStyleInverseProducer } from "../../producers/artboard-style-inverse.producer";
-import { appearance } from "../appearance";
 import { appearanceEndpoint } from "../../producers/appearance.producer";
 import { ShapesOutlet } from "./shapes.outlet";
 import { pathShape, polygonShape, polylineShape, rectShape, circleShape, ellipseShape, textShape, lineShape } from "./shapes";
 import { EditPointsControl } from "./edit-points.control";
 import { GroupControls } from "./group.controls";
-import { spawn } from "../../../../lib/dom/spawner";
 import { EditOnPick } from "./edit-on-pick.control";
 
 export const colorRepresenter = new ColorRepresenterService();

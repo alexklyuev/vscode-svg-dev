@@ -1,3 +1,7 @@
+import { findMethodIterator } from "@/common/iterators";
+import { Spawn } from "@/dom/spawner/spawn";
+import { Appearance } from "@/webview/services/appearance/appearance";
+
 import { Figure } from "./figure.model";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
@@ -9,11 +13,8 @@ import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Guides } from "../services/guides/guides";
 import { PointConcerns } from "./models/point-concerns.model";
 import { Coorinator } from "../services/coordinator/coordinator";
-import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
-import { Spawn } from "../../../lib/dom/spawner/spawn";
-import { findMethodIterator } from "../../../lib/common/iterators";
 
 
 export class EllipseFigure implements Figure<SVGEllipseElement> {

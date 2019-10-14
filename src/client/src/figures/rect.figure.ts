@@ -1,3 +1,7 @@
+import { findMethodIterator } from "@/common/iterators";
+import { Spawn } from "@/dom/spawner/spawn";
+import { Appearance } from "@/webview/services/appearance/appearance";
+
 import { Figure } from "./figure.model";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
@@ -9,11 +13,8 @@ import { Zoom } from "../services/zoom/zoom";
 import { Guides } from "../services/guides/guides";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { CancelListener } from "../listeners/cancel.listener";
-import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
-import { Spawn } from "../../../lib/dom/spawner/spawn";
 import { RectPointsEditor } from "../points-editor/rect.points-editor";
-import { findMethodIterator } from "../../../lib/common/iterators";
 
 
 export class RectFigure implements Figure<SVGRectElement> {

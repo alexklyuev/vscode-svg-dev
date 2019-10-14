@@ -1,9 +1,10 @@
-import { Appearance } from "../appearance/appearance";
-import { ColorRepresenterService } from "./color-representer.service";
-import { EventBus, connectEvent } from "../../../../lib/common/events";
-import { PipeEndpoint } from "../../../../lib/common/pipe/pipe";
+import { Appearance } from "@/webview/services/appearance/appearance";
+import { EventBus, connectEvent } from "@/common/events";
+import { PipeEndpoint } from "@/common/pipe/pipe";
+
 import { AppearanceRequest, AppearanceResponse } from "../../../../shared/pipes/appearance.pipe";
 import { Outlet } from "./models/outlet.model";
+import { ColorRepresenterService } from "./color-representer.service";
 
 
 const enum StrokeControlEvents {

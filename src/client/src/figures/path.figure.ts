@@ -1,3 +1,6 @@
+import { Appearance } from "@/webview/services/appearance/appearance";
+import { findMethodIterator } from "@/common/iterators";
+
 import { Figure } from "./figure.model";
 import { setState } from "../decorators/set-state.decorator";
 import { Artboard } from "../services/artboard/artboard";
@@ -11,10 +14,8 @@ import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { PathPoints } from "../services/path/path-points";
 import { PointConcerns, PointSharedConcerns } from "./models/point-concerns.model";
 import { Coorinator } from "../services/coordinator/coordinator";
-import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
-import { findMethodIterator } from "../../../lib/common/iterators";
 
 
 export class PathFigure implements Figure<SVGPathElement> {

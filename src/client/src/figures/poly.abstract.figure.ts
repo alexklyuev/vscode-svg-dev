@@ -1,3 +1,6 @@
+import { Appearance } from "@/webview/services/appearance/appearance";
+import { findMethodIterator } from "@/common/iterators";
+
 import { Figure } from "./figure.model";
 import { Dragger } from "../services/dragger/dragger.interface";
 import { Artboard } from "../services/artboard/artboard";
@@ -9,10 +12,8 @@ import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { PointConcerns } from "./models/point-concerns.model";
 import { Guides } from "../services/guides/guides";
 import { ArtboardMove } from "../services/artboard/artboard-move";
-import { Appearance } from "../services/appearance/appearance";
 import { MoverPoints } from "../services/mover/mover-points";
 import { Hints } from "../services/hints/hints";
-import { findMethodIterator } from "../../../lib/common/iterators";
 
 
 export abstract class PolyFigure implements Figure<SVGElement> {

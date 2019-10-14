@@ -1,3 +1,7 @@
+import { findMethodIterator } from "@/common/iterators";
+import { fromDomEvent } from "@/dom/iterators";
+import { Appearance } from "@/webview/services/appearance/appearance";
+
 import { Figure } from "./figure.model";
 import { setState } from "../decorators/set-state.decorator";
 import { Artboard } from "../services/artboard/artboard";
@@ -9,11 +13,8 @@ import { PointConcerns } from "./models/point-concerns.model";
 import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Guides } from "../services/guides/guides";
-import { Appearance } from "../services/appearance/appearance";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
-import { findMethodIterator } from "@/common/iterators";
-import { fromDomEvent } from "@/dom/iterators";
 
 
 export class LineFigure implements Figure<SVGLineElement> {

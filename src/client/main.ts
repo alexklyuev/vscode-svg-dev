@@ -30,7 +30,6 @@ import {
     strokeControl,
     artboardControls,
 } from './src/services/hud';
-import { appearance } from './src/services/appearance';
 import { AppearanceResponse } from '../shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from './src/producers/inverse-interactive.producer';
 import { MoveKeyListener } from './src/listeners/move-key.listener';
@@ -44,8 +43,9 @@ import { undoPipe } from '../shared/pipes/undo.pipe';
 import { ConfigListener } from './src/listeners/config.listener';
 import { configPipe } from '../shared/pipes/config.pipe';
 
-import { editPointsHub } from '@/webview/services/edit-points-hub';
 import { findMethodIterator } from '@/common/iterators';
+import { appearance } from '@/webview/services/appearance';
+import { editPointsHub } from '@/webview/services/edit-points-hub';
 
 /**
  * 
