@@ -1,15 +1,17 @@
-import { PipeEndpoint, Pipe } from "../../../lib/common/pipe/pipe";
+import { makeMethodIterator } from "@/common/iterators";
+import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
+
 import { Artboard } from "../services/artboard/artboard";
 import { UndoRequest, UndoResponse } from '../../../shared/pipes/undo.pipe';
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { ElementHolder } from "../services/picker/element-holder";
-import { EventBus, connectEvent } from "../../../lib/common/events";
+// import { EventBus, connectEvent } from "@/common/events";
 
 
 export class UndoListener {
     private client: PipeEndpoint<UndoRequest, UndoResponse, 'undo'>;
 
-    public readonly renderStateEvent = new EventBus<string>();
+    // public readonly renderStateEvent = new EventBus<string>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,
@@ -29,7 +31,8 @@ export class UndoListener {
         );
     }
 
-    @connectEvent('renderStateEvent')
+    // @connectEvent('renderStateEvent')
+    @makeMethodIterator()
     renderState(state: string) {
         try {
             this.artboard.box.innerHTML = state;

@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { WebviewPanel } from 'vscode';
+import * as path from 'path';
+import { WebviewPanel, ExtensionContext } from 'vscode';
 import { ContextManager } from './context-manager';
 import { AppContext } from '../app-context.type';
 import { Template } from '../models/template.model';
@@ -30,7 +31,7 @@ export class Editor {
     /**
      * 
      */
-    create() {
+    create(context: ExtensionContext) {
         this.webviewPanel = vscode.window.createWebviewPanel(
             this.viewType,
             this.title,
@@ -38,6 +39,7 @@ export class Editor {
             {
                 enableScripts: true,
                 retainContextWhenHidden: true,
+                localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'out', 'client', 'build'))],
             },
         );
         return this.webviewPanel;
@@ -47,7 +49,7 @@ export class Editor {
      * 
      */
     activate(webviewPanel: WebviewPanel, doc: string = this.template.defaultDocument) {
-        webviewPanel.webview.html = this.template.render(doc);
+        webviewPanel.webview.html = this.template.render(webviewPanel, doc);
         webviewPanel.onDidDispose(() => {
             this.contextManager.setMulti({
                 svgDevOpen: false,

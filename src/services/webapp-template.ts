@@ -1,5 +1,6 @@
 import { AssetsManager } from './assets-manager';
 import { Template } from '../models/template.model';
+import { WebviewPanel, Uri } from 'vscode';
 
 
 export class WebappTemplate implements Template {
@@ -16,23 +17,38 @@ export class WebappTemplate implements Template {
     /**
      * 
      */
-    render(doc: string) {
+    render(webviewPanel: WebviewPanel, doc: string) {
+        const mapFn = (uri: Uri) => {
+            if (webviewPanel.webview.asWebviewUri instanceof Function) {
+                // new way
+                return webviewPanel.webview.asWebviewUri(uri);
+            } else {
+                // old way
+                return uri.with({ scheme: 'vscode-resource' });
+            }
+        };
+        const styles = this.assetsManager.getStylesUris().map(mapFn);
+        const scripts = this.assetsManager.getScriptsUris().map(mapFn);
         return `<!DOCTYPE html>
 <html>
     <head>
-        ${ this.assetsManager.getStylesUris().map(uri => `<link rel="stylesheet" href="${ uri }?${ Math.random().toString().slice(2) }" />`).join('') }
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'none'; script-src ${ webviewPanel.webview.cspSource } 'unsafe-eval'; style-src ${ webviewPanel.webview.cspSource } 'unsafe-inline';"
+        />
+        ${ styles.map(uri => `<link rel="stylesheet" href="${ uri }?${ Math.random().toString().slice(2) }" />`).join('') }
     </head>
     <body>
         <div id="main">
             <div id="artboard">
-                ${doc}
+                ${ doc }
             </div>
             <div id="tools">
             </div>
             <div id="hud">
             </div>
         </div>
-        ${ this.assetsManager.getScriptsUris().map(uri => `<script src="${ uri }?${ Math.random().toString().slice(2) }"></script>`).join('') }
+        ${ scripts.map(uri => `<script src="${ uri }?${ Math.random().toString().slice(2) }"></script>`).join('') }
     </body>
 </html>`;
     }

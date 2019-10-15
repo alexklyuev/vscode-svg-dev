@@ -6,6 +6,7 @@ import { ColorRepresenterService } from "./color-representer.service";
 import { ArtboardListener } from "../../listeners/artboard.listener";
 import { ArtboardRequest, ArtboardResponse } from "../../../../shared/pipes/artboard.pipe";
 import { Outlet } from "./models/outlet.model";
+import { findMethodIterator } from "../../../../lib/common/iterators";
 
 
 export class ArtboardControls implements Outlet {
@@ -103,14 +104,25 @@ export class ArtboardControls implements Outlet {
             this.artboardListener.updateAttributes(this.artboard.svg, 'height', value!);
         };
 
-        this.artboardListener.changeProperty.on(({property, value}) => {
-            if (property === 'width') {
-                this.updateArtboardWidth(value);
+        // this.artboardListener.changeProperty.on(({property, value}) => {
+        //     if (property === 'width') {
+        //         this.updateArtboardWidth(value);
+        //     }
+        //     if (property === 'height') {
+        //         this.updateArtboardHeight(value);
+        //     }
+        // });
+        (async () => {
+            const artboardAttributesUpdates = findMethodIterator(this.artboardListener.updateAttributes);
+            for await (const { property, value } of artboardAttributesUpdates) {
+                if (property === 'width') {
+                    this.updateArtboardWidth(value);
+                }
+                if (property === 'height') {
+                    this.updateArtboardHeight(value);
+                }
             }
-            if (property === 'height') {
-                this.updateArtboardHeight(value);
-            }
-        });
+        })();
     }
 
     appendTo(parentElement: HTMLElement) {

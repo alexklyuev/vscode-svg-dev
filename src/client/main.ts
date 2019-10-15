@@ -106,12 +106,14 @@ const zoomListener = new ZoomListener(webviewEndpoint, zoomPipe, artboard, zoom)
 zoomListener.listen();
 
 /**
- * 
+ * draw artboard styles on artboard attributes changes
  */
-artboardListener.listen();
-artboardListener.changeProperty.on(() => {
-    guides.setContainerStyles();
-});
+(async () => {
+    const artboardPropertyChanges = findMethodIterator(artboardListener.updateAttributes);
+    for await (const _pair of artboardPropertyChanges) {
+        guides.setContainerStyles();
+    }
+})();
 
 /**
  * Webview artboard style pipe client
@@ -171,13 +173,21 @@ cancelListener.listen();
  */
 const moveKeyListener = new MoveKeyListener(webviewEndpoint, moveKeyPipe, holder, figuresCollection);
 moveKeyListener.listen();
-moveKeyListener.moveEvent.on(_key => {
-    guides.setContainerStyles();
-    guides.setSelectionStyles(holder.elements);
-});
 
 /**
- * 
+ * rebuild guides and remove editing mode on arrow key events
+ */
+(async () => {
+    const keys = findMethodIterator(moveKeyListener.fireMoveEvent);
+    for await (const _key of keys) {
+        editPointsHub.purge();
+        guides.setContainerStyles();
+        guides.setSelectionStyles(holder.elements);
+    }
+})();
+
+/**
+ * send message to host on element(s) selection
  */
 (async () => {
     const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
@@ -198,7 +208,7 @@ moveKeyListener.moveEvent.on(_key => {
 })();
 
 /**
- * 
+ * change appearance on element(s) selection
  */
 (async () => {
     const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
@@ -258,27 +268,49 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
         el.setAttribute(name, value);
     });
 };
-fillControl.appearanceRequest.on(appearanceRequestCallback);
-strokeControl.appearanceRequest.on(appearanceRequestCallback);
+(async () => {
+    const requests = findMethodIterator(fillControl.makeAppearanceGetRequest);
+    for await (const request of requests) {
+        appearanceRequestCallback(request);
+    }
+})();
+(async () => {
+    const requests = findMethodIterator(strokeControl.makeAppearanceGetRequest);
+    for await (const request of requests) {
+        appearanceRequestCallback(request);
+    }
+})();
 
 /**
  * Create elements by hud shape tools
  */
-shapesOutlet.createShapeEvent.on(shapeName => {
-    inverseInteractiveEndpoint.makeSetRequest({});
-    figuresCollection.delegate(shapeName)! .create(shapeName, {});
-});
+(async () => {
+    const creates = findMethodIterator(shapesOutlet.createShape);
+    for await (const shapeName of creates) {
+        inverseInteractiveEndpoint.makeSetRequest({});
+        figuresCollection.delegate(shapeName)! .create(shapeName, {});
+    }
+})();
 
-groupControls.groupEvent.on(_event => {
-    if (holder.elements.length > 0) {
+/**
+ * group/ungroup selected elements by button
+ */
+(async () => {
+    const group = findMethodIterator(groupControls.fireGroupEvent);
+    for await (const _event of group) {
         groupListener.group();
     }
-});
+})();
+(async () => {
+    const ungroup = findMethodIterator(groupControls.fireUngroupEvent);
+    for await (const _event of ungroup) {
+        groupListener.ungroup();
+    }
+})();
 
-groupControls.ungroupEvent.on(_event => {
-    groupListener.ungroup();
-});
-
+/**
+ * rebuild container and selection on element copy
+ */
 (async () => {
     const copyElement = findMethodIterator(elementListener.copyInPlaceElement);
     for await (const _element of copyElement) {
@@ -313,18 +345,31 @@ groupControls.ungroupEvent.on(_event => {
 const listAttributesListener = new ListAttributesListener(webviewEndpoint, listAttributesPipe, holder);
 listAttributesListener.listen();
 
-hints.hintEvent.on(hintKey => {
-    infomessageEndpoint.makeSetRequest(hintKey);
-});
+/**
+ * send request to host to show info message on hint
+ */
+(async () => {
+    const hintEvents = findMethodIterator(hints.fireHintEvent);
+    for await (const hintKey of hintEvents) {
+        infomessageEndpoint.makeSetRequest(hintKey);
+    }
+})();
 
 const undoListener = new UndoListener(webviewEndpoint, undoPipe, artboard, holder);
 undoListener.listen();
-undoListener.renderStateEvent.on(_state => {
-    guides.setContainerStyles();
-    guides.setSelectionStyles(holder.elements);
-    artboardControls.updateArtboardWidth(artboard.width);
-    artboardControls.updateArtboardHeight(artboard.height);
-});
+
+/**
+ * draw guides and set artboard controls on undo/redo
+ */
+(async () => {
+    const renders = findMethodIterator(undoListener.renderState);
+    for await (const _state of renders) {
+        guides.setContainerStyles();
+        guides.setSelectionStyles(holder.elements);
+        artboardControls.updateArtboardWidth(artboard.width);
+        artboardControls.updateArtboardHeight(artboard.height);
+    }
+})();
 
 const configListener = new ConfigListener(webviewEndpoint, configPipe, appearance);
 configListener.listen();

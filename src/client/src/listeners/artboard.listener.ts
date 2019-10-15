@@ -1,20 +1,22 @@
+// import { EventBus, connectEvent } from "@/common/events";
+import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
+import { makeMethodIterator } from "@/common/iterators";
+
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { ArtboardRequest, ArtboardResponse } from "../../../shared/pipes/artboard.pipe";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
-import { EventBus, connectEvent } from "../../../lib/common/events";
 
 
-const enum ArtboardListenerEvents {
-    changeProperty = 'changeProperty',
-}
+// const enum ArtboardListenerEvents {
+//     changeProperty = 'changeProperty',
+// }
 
 
 export class ArtboardListener {
     private artboardClient: PipeEndpoint<ArtboardRequest, ArtboardResponse, 'artboard'>;
 
-    public readonly [ArtboardListenerEvents.changeProperty] = new EventBus<{property: string, value: string}>();
+    // public readonly [ArtboardListenerEvents.changeProperty] = new EventBus<{property: string, value: string}>();
 
     constructor(
         private webviewEndpoint: WebviewEndpoint,
@@ -40,8 +42,9 @@ export class ArtboardListener {
         );
     }
 
+    @makeMethodIterator()
     @setState
-    @connectEvent(ArtboardListenerEvents.changeProperty)
+    // @connectEvent(ArtboardListenerEvents.changeProperty)
     updateAttributes(svg: SVGElement, property: string, value: string) {
         svg.setAttribute(property, value!);
         if (property === 'width' || property === 'height') {

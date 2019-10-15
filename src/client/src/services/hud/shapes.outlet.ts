@@ -1,11 +1,12 @@
+import { makeMethodIterator } from "@/common/iterators";
 import { Shape } from "./shapes/shape";
-import { EventBus, connectEvent } from "../../../../lib/common/events";
+// import { EventBus, connectEvent } from "../../../../lib/common/events";
 import { Outlet } from "./models/outlet.model";
 
 
 export class ShapesOutlet implements Outlet {
 
-    public readonly createShapeEvent = new EventBus<string>();
+    // public readonly createShapeEvent = new EventBus<string>();
 
     private el: HTMLElement;
     private shapes: Shape[];
@@ -31,7 +32,8 @@ export class ShapesOutlet implements Outlet {
         parentElement.appendChild(this.el);
     }
 
-    @connectEvent('createShapeEvent')
+    // @connectEvent('createShapeEvent')
+    @makeMethodIterator()
     createShape(name: string) {
         return name;
     }

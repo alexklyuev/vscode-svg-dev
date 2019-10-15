@@ -34,7 +34,7 @@ export class AssetsManager {
         return (
             collection
             .map(rel => Uri.file(path.join(this.extensionPath, ...rel)))
-            .map(uri => uri.with({ scheme: 'vscode-resource' }))
+            // .map(uri => uri.with({ scheme: 'vscode-resource' }))
         );
     }
 

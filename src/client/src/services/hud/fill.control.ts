@@ -1,4 +1,5 @@
-import { EventBus, connectEvent } from "@/common/events";
+// import { EventBus, connectEvent } from "@/common/events";
+import { makeMethodIterator } from "@/common/iterators";
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { Appearance } from "@/webview/services/appearance/appearance";
 
@@ -7,13 +8,13 @@ import { AppearanceResponse, AppearanceRequest } from "../../../../shared/pipes/
 import { Outlet } from "./models/outlet.model";
 
 
-const enum FillControlEvents {
-    appearanceRequest = 'appearanceRequest',
-}
+// const enum FillControlEvents {
+//     appearanceRequest = 'appearanceRequest',
+// }
 
 export class FillControl implements Outlet {
 
-    public readonly [FillControlEvents.appearanceRequest] = new EventBus<Promise<AppearanceResponse>>();
+    // public readonly [FillControlEvents.appearanceRequest] = new EventBus<Promise<AppearanceResponse>>();
 
     private fillEl: HTMLElement;
     private fillBtn: HTMLElement;
@@ -69,7 +70,8 @@ export class FillControl implements Outlet {
         parentElement.appendChild(this.fillEl);
     }
 
-    @connectEvent(FillControlEvents.appearanceRequest)
+    // @connectEvent(FillControlEvents.appearanceRequest)
+    @makeMethodIterator()
     async makeAppearanceGetRequest(request: AppearanceRequest): Promise<AppearanceResponse> {
         return await this.appearanceProducer.makeGetRequest(request);
     }

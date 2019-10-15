@@ -188,7 +188,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(
         vscode.commands.registerCommand('svgDevNew', async () => {
-            const panel = editor.create();
+            const panel = editor.create(context);
             await editor.activate(panel);
             const hostEndpoint = new HostEndpoint(panel);
             connectionsManager.each(connection => connection.connect(hostEndpoint));
@@ -212,7 +212,7 @@ export function activate(context: vscode.ExtensionContext) {
             const { activeTextEditor } = vscode.window;
             if (activeTextEditor) {
                 const content = activeTextEditor.document.getText();
-                const panel = editor.create();
+                const panel = editor.create(context);
                 await editor.activate(panel, content);
                 const hostEndpoint = new HostEndpoint(panel);
                 connectionsManager.each(connection => connection.connect(hostEndpoint));

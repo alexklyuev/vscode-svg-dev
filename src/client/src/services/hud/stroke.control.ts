@@ -1,19 +1,20 @@
 import { Appearance } from "@/webview/services/appearance/appearance";
-import { EventBus, connectEvent } from "@/common/events";
+import { makeMethodIterator } from "@/common/iterators";
 import { PipeEndpoint } from "@/common/pipe/pipe";
+// import { EventBus, connectEvent } from "@/common/events";
 
 import { AppearanceRequest, AppearanceResponse } from "../../../../shared/pipes/appearance.pipe";
 import { Outlet } from "./models/outlet.model";
 import { ColorRepresenterService } from "./color-representer.service";
 
 
-const enum StrokeControlEvents {
-    appearanceRequest = 'appearanceRequest',
-}
+// const enum StrokeControlEvents {
+    // appearanceRequest = 'appearanceRequest',
+// }
 
 export class StrokeControl implements Outlet {
 
-    public readonly [StrokeControlEvents.appearanceRequest] = new EventBus<Promise<AppearanceResponse>>();
+    // public readonly [StrokeControlEvents.appearanceRequest] = new EventBus<Promise<AppearanceResponse>>();
 
     private strokeEl: HTMLElement;
     private strokeBtn: HTMLElement;
@@ -68,7 +69,8 @@ export class StrokeControl implements Outlet {
         parentElement.appendChild(this.strokeEl);
     }
 
-    @connectEvent(StrokeControlEvents.appearanceRequest)
+    // @connectEvent(StrokeControlEvents.appearanceRequest)
+    @makeMethodIterator()
     async makeAppearanceGetRequest(request: AppearanceRequest): Promise<AppearanceResponse> {
         return await this.appearanceProducer.makeGetRequest(request);
     }

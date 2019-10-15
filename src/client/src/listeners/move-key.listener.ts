@@ -1,15 +1,16 @@
+import { makeMethodIterator } from "@/common/iterators";
+import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
+
 import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
 import { MoveKeyRequest } from "../../../shared/pipes/move-key.pipe";
 import { ElementHolder } from "../services/picker/element-holder";
 import { FiguresCollection } from "../figures/figures-collection";
-import { EventBus, connectEvent } from "../../../lib/common/events";
 
 
 export class MoveKeyListener {
     private moveKeyClient: PipeEndpoint<MoveKeyRequest, {}, 'move-key'>;
 
-    public readonly moveEvent = new EventBus<'left' | 'up' | 'right' | 'down'>();
+    // public readonly moveEvent = new EventBus<'left' | 'up' | 'right' | 'down'>();
     
     constructor(
         private webviewEndpoint: WebviewEndpoint,
@@ -36,7 +37,8 @@ export class MoveKeyListener {
         );
     }
 
-    @connectEvent('moveEvent')
+    // @connectEvent('moveEvent')
+    @makeMethodIterator()
     fireMoveEvent(key: 'left' | 'up' | 'right' | 'down') {
         return key;
     }

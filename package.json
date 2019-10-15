@@ -204,10 +204,6 @@
             {
                 "command": "svgDevDefaultZoom",
                 "title": "Zoom 100%"
-            },
-            {
-                "command": "svgDevFromOpen",
-                "title": "SVG Dev: Edit"
             }
         ],
         "viewsContainers": {
@@ -363,10 +359,11 @@
     "devDependencies": {
         "@types/mocha": "^2.2.42",
         "@types/node": "^7.0.43",
+        "@types/vscode": "^1.39.0",
         "awesome-typescript-loader": "^5.2.1",
         "tslint": "^5.8.0",
         "typescript": "^2.6.1",
-        "vscode": "^1.1.6",
+        "vscode-test": "^1.2.0",
         "webpack": "^4.20.2",
         "webpack-cli": "^3.1.2"
     }

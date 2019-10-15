@@ -1,4 +1,4 @@
-import { EventBus, connectEvent } from "../../../../lib/common/events";
+import { makeMethodIterator } from "@/common/iterators";
 import { Outlet } from "./models/outlet.model";
 
 
@@ -6,9 +6,9 @@ export class GroupControls implements Outlet {
 
     private el: HTMLElement;
 
-    public readonly groupEvent = new EventBus<MouseEvent>();
+    // public readonly groupEvent = new EventBus<MouseEvent>();
 
-    public readonly ungroupEvent = new EventBus<MouseEvent>();
+    // public readonly ungroupEvent = new EventBus<MouseEvent>();
 
     constructor() {
         this.el = document.createElement('div');
@@ -68,12 +68,14 @@ export class GroupControls implements Outlet {
         parent.appendChild(this.el);
     }
 
-    @connectEvent('groupEvent')
+    // @connectEvent('groupEvent')
+    @makeMethodIterator()
     fireGroupEvent(event: MouseEvent) {
         return event;
     }
 
-    @connectEvent('ungroupEvent')
+    // @connectEvent('ungroupEvent')
+    @makeMethodIterator()
     fireUngroupEvent(event: MouseEvent) {
         return event;
     }

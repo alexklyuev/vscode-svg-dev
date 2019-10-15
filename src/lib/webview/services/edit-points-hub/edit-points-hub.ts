@@ -16,6 +16,11 @@ export class EditPointsHub {
         return element === this.innerElement;
     }
 
+    purge() {
+        this.takeActiveElement(null);
+        this.takeCancelationFn(() => {});
+    }
+
     takeActiveElement(element: SVGElement | null) {
         this.innerElement = element;
     }
