@@ -115,31 +115,30 @@ export class RectPointsEditor {
                             let y$ = parseFloat( element.getAttribute('y')! );
                             let width$ = parseFloat( element.getAttribute('width')! );
                             let height$ = parseFloat( element.getAttribute('height')! );
-                            const cond = (horizontalInvert || verticalInvert) && !(horizontalInvert && verticalInvert);
                             switch (circleIndex) {
                                 case 0:
-                                    x$ = x$ + (relDeltaX * (cond ? 0 : 1));
-                                    y$ = y$ + (relDeltaY * (cond ? 0 : 1));
-                                    width$ = width$ + (relDeltaX * (cond ? 1 : -1));
-                                    height$ = height$ + (relDeltaY * (cond ? 1 : -1));
+                                    x$ = x$ + (relDeltaX * (horizontalInvert ? 0 : 1));
+                                    y$ = y$ + (relDeltaY * (verticalInvert ? 0 : 1));
+                                    width$ = width$ + (relDeltaX * (horizontalInvert ? 1 : -1));
+                                    height$ = height$ + (relDeltaY * (verticalInvert ? 1 : -1));
                                     break;
                                 case 1:
-                                    x$ = x$ + (relDeltaX * (cond ? 1 : 0));
-                                    y$ = y$ + (relDeltaY * (cond ? 0 : 1));
-                                    width$ =  width$ + (relDeltaX * (cond ? -1 : 1));
-                                    height$ = height$ + (relDeltaY * (cond ? 1 : -1));
+                                    x$ = x$ + (relDeltaX * (horizontalInvert ? 1 : 0));
+                                    y$ = y$ + (relDeltaY * (verticalInvert ? 0 : 1));
+                                    width$ =  width$ + (relDeltaX * (horizontalInvert ? -1 : 1));
+                                    height$ = height$ + (relDeltaY * (verticalInvert ? 1 : -1));
                                     break;
                                 case 2:
-                                    x$ = x$ + (relDeltaX * (cond ? 1 : 0));
-                                    y$ = y$ + (relDeltaY * (cond ? 1 : 0));
-                                    width$ = width$ + (relDeltaX * (cond ? -1 : 1));
-                                    height$ = height$ + (relDeltaY * (cond ? -1 : 1));
+                                    x$ = x$ + (relDeltaX * (horizontalInvert ? 1 : 0));
+                                    y$ = y$ + (relDeltaY * (verticalInvert ? 1 : 0));
+                                    width$ = width$ + (relDeltaX * (horizontalInvert ? -1 : 1));
+                                    height$ = height$ + (relDeltaY * (verticalInvert ? -1 : 1));
                                     break;
                                 case 3:
-                                    x$ = x$ + (relDeltaX * (cond ? 0 : 1));
-                                    y$ = y$ + (relDeltaY * (cond ? 1 : 0));
-                                    width$ = width$ + (relDeltaX * (cond ? 1 : -1));
-                                    height$ = height$ + (relDeltaY * (cond ? -1 : 1));
+                                    x$ = x$ + (relDeltaX * (horizontalInvert ? 0 : 1));
+                                    y$ = y$ + (relDeltaY * (verticalInvert ? 1 : 0));
+                                    width$ = width$ + (relDeltaX * (horizontalInvert ? 1 : -1));
+                                    height$ = height$ + (relDeltaY * (verticalInvert ? -1 : 1));
                                     break;
                             }
                             if (width$ < 0) {

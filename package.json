@@ -354,7 +354,7 @@
         "compile:extension": "npm run styles && tsc -p ./",
         "compile:web": "webpack --config src/client/webpack.config.js",
         "compile:web:watch": "npm run compile:web -- --watch",
-        "styles": "cp ./src/client/src/artboard.css ./out/client/build/artboard.css",
+        "styles": "cp ./src/client/artboard.css ./out/client/build/artboard.css",
         "webview": "npm run compile:web:watch"
     },
     "devDependencies": {
