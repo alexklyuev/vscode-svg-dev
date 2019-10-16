@@ -1,7 +1,6 @@
 import { findMethodIterator } from "@/common/iterators";
-
-import { figuresCollection } from "../../../../client/src/figures";
-import { cancelListener } from "../../../../client/src/listeners";
+import { figuresCollection } from "@/webview/services/figures-collection";
+import { cancelListener } from "@/webview/listeners";
 
 
 export class EditPointsHub {
