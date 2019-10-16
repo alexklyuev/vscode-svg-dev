@@ -1,9 +1,9 @@
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { artboard } from "@/webview/services/artboard";
 
 import { ElementHolder } from "../services/picker/element-holder";
 import { setState } from "../decorators/set-state.decorator";
-import { Artboard } from "../services/artboard/artboard";
 
 
 export class GroupListener {
@@ -13,7 +13,6 @@ export class GroupListener {
     constructor(
         private groupPipe: Pipe<'group' | 'ungroup', {}, 'group'>,
         private holder: ElementHolder,
-        private artboard: Artboard,
     ) {
         this.groupClient = webviewEndpoint.createFromPipe(this.groupPipe);
     }
@@ -46,7 +45,7 @@ export class GroupListener {
         this.holder.elements.forEach(el => el.setAttribute(tempAttr, '1'));
         const els = Array.from(document.querySelectorAll(`[${ tempAttr }]`));
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        this.artboard.svg.appendChild(g);
+        artboard.svg.appendChild(g);
         els.forEach(el => g.appendChild(el));
         els.forEach(el => el.removeAttribute(tempAttr));
         this.holder.elements = [g];

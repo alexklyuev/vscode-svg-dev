@@ -1,8 +1,8 @@
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { Appearance } from "@/webview/services/appearance/appearance";
+import { artboard } from "@/webview/services/artboard";
 
 import { Figure } from "./figure.model";
-import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 import { DraggerValue } from "../services/dragger/dragger-value";
 import { Mover } from "../services/mover/mover.model";
@@ -17,7 +17,6 @@ export class TextFigure implements Figure<SVGTextElement> {
     constructor(
         public drag: DraggerValue,
         public readonly move: Mover,
-        private artboard: Artboard,
         private appearance: Appearance,
         private textReverseEndpoint: PipeEndpoint<{}, {text: string}, 'text-reverse'>,
     ) {}
@@ -29,7 +28,7 @@ export class TextFigure implements Figure<SVGTextElement> {
             const { text } = await this.textReverseEndpoint.makeGetRequest({});
             Object.assign(attributes, { innerText: text });
         }
-        const svg = this.artboard.svg;
+        const svg = artboard.svg;
         const text = document.createElementNS('http://www.w3.org/2000/svg', this.name) as SVGTextElement;
         svg.appendChild(text);
         text.setAttribute('x', '50');

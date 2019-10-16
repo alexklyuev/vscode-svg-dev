@@ -1,8 +1,8 @@
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { artboard } from "@/webview/services/artboard";
 
 import { ArrangePipeRequest } from "../../../shared/pipes/arrange.pipe";
-import { Artboard } from "../services/artboard/artboard";
 import { ElementHolder } from "../services/picker/element-holder";
 import { setState } from "../decorators/set-state.decorator";
 
@@ -12,7 +12,6 @@ export class ArrangeListener {
 
     constructor(
         private arrangePipe: Pipe<ArrangePipeRequest, {}, 'arrange'>,
-        private artboard: Artboard,
         private readonly holder: ElementHolder,
     ) {
         this.arrangeClient = webviewEndpoint.createFromPipe(this.arrangePipe);
@@ -33,36 +32,36 @@ export class ArrangeListener {
     arrange(element: SVGElement, request: ArrangePipeRequest) {
         switch (request) {
             case 'bringToFront': 
-                this.artboard.svg.appendChild(element);
+                artboard.svg.appendChild(element);
                 break;
             case 'sendToBack':
-                const { firstChild } = this.artboard.svg;
+                const { firstChild } = artboard.svg;
                 if (firstChild) {
-                    this.artboard.svg.insertBefore(element, firstChild);
+                    artboard.svg.insertBefore(element, firstChild);
                 }
                 break;
             case 'moveForward':
-                const { childNodes: childNodes1 } = this.artboard.svg;
+                const { childNodes: childNodes1 } = artboard.svg;
                 const selfIndex1 = Array.from(childNodes1).reduce((akk, child, index) => {
                     return child === element ? index : akk;
                 }, -1);
                 const anchorIndex = selfIndex1 + 2;
                 const anchor = childNodes1[anchorIndex];
                 if (anchor) {
-                    this.artboard.svg.insertBefore(element, anchor);
+                    artboard.svg.insertBefore(element, anchor);
                 } else {
-                    this.artboard.svg.appendChild(element);
+                    artboard.svg.appendChild(element);
                 }
                 break;
             case 'moveBackward':
-                const { childNodes: childNodes2 } = this.artboard.svg;
+                const { childNodes: childNodes2 } = artboard.svg;
                 const selfIndex2 = Array.from(childNodes2).reduce((akk, child, index) => {
                     return child === element ? index : akk;
                 }, -1);
                 const prevIndex = selfIndex2 - 1;
                 const prev = childNodes2[prevIndex];
                 if (prev) {
-                    this.artboard.svg.insertBefore(element, prev);
+                    artboard.svg.insertBefore(element, prev);
                 }
                 break;
         }

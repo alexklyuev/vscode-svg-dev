@@ -1,5 +1,6 @@
+import { artboard } from "@/webview/services/artboard";
+
 import { Figure } from "./figure.model";
-import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 import { DraggerDelegate } from "../services/dragger/dragger-delegate";
 import { Mover } from "../services/mover/mover.model";
@@ -14,7 +15,6 @@ export class GFigure implements Figure<SVGGElement> {
     constructor(
         public readonly drag: DraggerDelegate,
         public readonly move: Mover,
-        private artboard: Artboard,
     ) {}
 
     /**
@@ -22,7 +22,7 @@ export class GFigure implements Figure<SVGGElement> {
      */
     @setState
     create(_elementName: string, _attributes: {[K: string]: string}): void {
-        const { svg } = this.artboard;
+        const { svg } = artboard;
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         svg.appendChild(g);
     }

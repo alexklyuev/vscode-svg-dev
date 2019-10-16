@@ -1,5 +1,5 @@
-import { host } from "@/webview/services/host-api/index";
-import { artboard } from "../services/artboard";
+import { vscodeHost } from "@/webview/services/host-api/index";
+import { artboard } from "@/webview/services/artboard";
 import { historyProducer } from "../producers/history.producer";
 
 let timeout: number | null = null;
@@ -10,7 +10,7 @@ let prev: string;
  */
 export function persistState() {
     const state = artboard.svg.outerHTML;
-    host.api.setState(state);
+    vscodeHost.api.setState(state);
 
     if (state === prev) {
         return;

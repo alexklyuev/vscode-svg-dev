@@ -1,5 +1,5 @@
 import { makeMethodIterator } from "@/common/iterators";
-import { Artboard } from "../../services/artboard/artboard";
+import { artboard } from "@/webview/services/artboard";
 
 
 /**
@@ -8,10 +8,6 @@ import { Artboard } from "../../services/artboard/artboard";
 export class Zoom {
 
     private zoom = 1;
-
-    constructor(
-        private artboard: Artboard,
-    ) {}
 
     /**
      * zoom value getter
@@ -31,7 +27,7 @@ export class Zoom {
         if (abs) {
             this.zoom = abs;
         }
-        Object.assign(this.artboard.box.style, {
+        Object.assign(artboard.box.style, {
             transform: `scale(${ this.zoom })`,
         });
         return this.zoom;

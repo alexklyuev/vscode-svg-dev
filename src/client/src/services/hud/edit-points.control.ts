@@ -1,6 +1,7 @@
 import { makeMethodIterator } from "@/common/iterators";
+import { spawner } from "@/dom/spawner";
+
 import { Outlet } from "./models/outlet.model";
-import { Spawn } from "../../../../lib/dom/spawner/spawn";
 
 
 export class EditPointsControl implements Outlet {
@@ -17,10 +18,8 @@ export class EditPointsControl implements Outlet {
   <line x1="1.96" y1="3.2199999999999998" x2="3.4999999999999996" y2="5.6" stroke="white" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5"></line><line x1="5.820000000000001" y1="3.14" x2="4.14" y2="5.619999999999999" stroke="white" fill="none" stroke-linecap="butt" stroke-linejoin="miter" stroke-width=".5" stroke-dasharray=".5"></line><circle fill="none" stroke="white" cx="3.84" cy="6.58" r="1" stroke-width=".5"></circle><circle fill="none" stroke="white" cx="1.44" cy="2.38" r="1" stroke-width=".5"></circle><circle fill="none" stroke="white" cx="6.48" cy="2.32" r="1" stroke-width=".5" stroke-dasharray=".5"></circle></svg>
   `;
 
-  constructor(
-    private spawn: Spawn,
-  ) {
-    this.el = this.spawn.html.div(
+  constructor() {
+    this.el = spawner.html.div(
       {},
       {
         display: 'inline-block',
@@ -35,8 +34,8 @@ export class EditPointsControl implements Outlet {
         'user-select': 'none',
       }
     );
-    const text = this.spawn.html.span();
-    const icon = this.spawn.html.span();
+    const text = spawner.html.span();
+    const icon = spawner.html.span();
     text.innerText = 'edit points';
     icon.innerHTML = this.svg;
     this.el.appendChild(icon);
@@ -54,11 +53,11 @@ export class EditPointsControl implements Outlet {
   }
 
   show() {
-    this.spawn.html.update(this.el).styles({ 'display': 'inline-block' });
+    spawner.html.update(this.el).styles({ 'display': 'inline-block' });
   }
 
   hide() {
-    this.spawn.html.update(this.el).styles({ 'display': 'none' });
+    spawner.html.update(this.el).styles({ 'display': 'none' });
   }
 
   @makeMethodIterator()

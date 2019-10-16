@@ -1,12 +1,13 @@
-import { Artboard } from "../artboard/artboard";
+import { artboard } from "@/webview/services/artboard";
+import { PipeEndpoint } from "@/common/pipe/pipe";
+import { findMethodIterator } from "@/common/iterators";
+
 import { ArtboardStyleListener } from "../../listeners/artboard-style.listener";
-import { PipeEndpoint } from "../../../../lib/common/pipe/pipe";
 import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../../../shared/pipes/artboard-style.pipe";
 import { ColorRepresenterService } from "./color-representer.service";
 import { ArtboardListener } from "../../listeners/artboard.listener";
 import { ArtboardRequest, ArtboardResponse } from "../../../../shared/pipes/artboard.pipe";
 import { Outlet } from "./models/outlet.model";
-import { findMethodIterator } from "../../../../lib/common/iterators";
 
 
 export class ArtboardControls implements Outlet {
@@ -17,7 +18,6 @@ export class ArtboardControls implements Outlet {
     private abColor: HTMLElement;
 
     constructor(
-        private readonly artboard: Artboard,
         private readonly artboardStyleConsumer: ArtboardStyleListener,
         private readonly artboardStyleProducer: PipeEndpoint<ArtboardStyleRequest, ArtboardStyleResponse, 'artboard-style-inverse'>,
         private readonly colorRepresenter: ColorRepresenterService,
@@ -51,8 +51,8 @@ export class ArtboardControls implements Outlet {
             'user-select': 'none',
         });
 
-        this.abHeight.innerHTML = `${ this.artboard.height }`;
-        this.abWidth.innerHTML = `${ this.artboard.width }`;
+        this.abHeight.innerHTML = `${ artboard.height }`;
+        this.abWidth.innerHTML = `${ artboard.width }`;
 
         [this.abHeight, this.abWidth].forEach(el => {
             Object.assign(el.style, {
@@ -65,7 +65,7 @@ export class ArtboardControls implements Outlet {
 
         this.abColor = document.createElement('span');
         this.artboardEl.appendChild(this.abColor);
-        const bg = this.artboard.svg.style.backgroundColor!;
+        const bg = artboard.svg.style.backgroundColor!;
         Object.assign(this.abColor.style, {
             'margin-left': '7px',
             'margin-bottom': '-2px',
@@ -82,7 +82,7 @@ export class ArtboardControls implements Outlet {
                 styleName: 'background',
                 styleValue: bg,
             });
-            this.artboardStyleConsumer.setStyle(this.artboard.svg, 'background', styleValue!);
+            this.artboardStyleConsumer.setStyle(artboard.svg, 'background', styleValue!);
             Object.assign(this.abColor.style, {
                 background: this.colorRepresenter.representColorButtonBackground(styleValue!),
                 border: this.colorRepresenter.representColorButtonBorder(styleValue!),
@@ -91,17 +91,17 @@ export class ArtboardControls implements Outlet {
         this.abWidth.onclick = async (_event: MouseEvent) => {
             const { value } = await this.artboardInverseEndpoint.makeGetRequest({
                 property: 'width',
-                value: `${this.artboard.width}`,
+                value: `${artboard.width}`,
             });
-            this.artboardListener.updateAttributes(this.artboard.svg, 'width', value!);
+            this.artboardListener.updateAttributes(artboard.svg, 'width', value!);
         };
 
         this.abHeight.onclick = async (_event: MouseEvent) => {
             const { value } = await this.artboardInverseEndpoint.makeGetRequest({
                 property: 'height',
-                value: `${this.artboard.height}`,
+                value: `${artboard.height}`,
             });
-            this.artboardListener.updateAttributes(this.artboard.svg, 'height', value!);
+            this.artboardListener.updateAttributes(artboard.svg, 'height', value!);
         };
 
         // this.artboardListener.changeProperty.on(({property, value}) => {

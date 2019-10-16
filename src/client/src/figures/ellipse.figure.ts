@@ -1,20 +1,20 @@
+import { artboard } from "@/webview/services/artboard";
+import { UserEventManager } from "@/webview/services/user-event/user-event-manager";
 import { findMethodIterator } from "@/common/iterators";
 import { Spawn } from "@/dom/spawner/spawn";
 import { Appearance } from "@/webview/services/appearance/appearance";
 
 import { Figure } from "./figure.model";
-import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 import { DraggerValue } from "../services/dragger/dragger-value";
 import { Zoom } from "../services/zoom/zoom";
 import { CancelListener } from "../listeners/cancel.listener";
-import { UserEventManager } from "../services/user-event/user-event-manager";
-import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Guides } from "../services/guides/guides";
 import { PointConcerns } from "./models/point-concerns.model";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
+import { artboardMove } from "@/webview/services/artboard-move";
 
 
 export class EllipseFigure implements Figure<SVGEllipseElement> {
@@ -26,8 +26,6 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
     constructor(
         public readonly drag: DraggerValue,
         public readonly move: Mover,
-        public readonly artboard: Artboard,
-        public readonly artboardMove: ArtboardMove,
         public readonly zoom: Zoom,
         public readonly cancelListener: CancelListener,
         public readonly userEventMan: UserEventManager,
@@ -49,7 +47,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
     @setState
     create(_elementName: string, _attributes: {[K: string]: string}): void {
         let points = Array<PointConcerns>();
-        this.artboard.box.classList.add('interactive-points');
+        artboard.box.classList.add('interactive-points');
         let pseudoElement: SVGEllipseElement | null = null;
         this.userEventMan.mode = 'interactive';
         const pointsListener = (event: MouseEvent) => {
@@ -58,8 +56,8 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
             points.push({
                 client: [clientX, clientY],
                 scroll: [scrollLeft, scrollTop],
-                margin: [this.artboardMove.left, this.artboardMove.top],
-                board: [this.artboard.width, this.artboard.height],
+                margin: [artboardMove.left, artboardMove.top],
+                board: [artboard.width, artboard.height],
                 zoom: this.zoom.value,
             });
             if (points.length === 1) {
@@ -74,7 +72,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
                 this.renderCoordsAttributes(element, [x1, y1], [x2, y2], shiftKey);
                 element.setAttribute('stroke', this.appearance.stroke);
                 element.setAttribute('fill', this.appearance.fill);
-                this.artboard.svg.appendChild(element);
+                artboard.svg.appendChild(element);
             }
         };
         window.addEventListener('click', pointsListener);
@@ -83,7 +81,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
             window.removeEventListener('click', pointsListener);
             // this.cancelListener.keyEvent.off(cancel);
             cancelEvents.return! ();
-            this.artboard.box.classList.remove('interactive-points');
+            artboard.box.classList.remove('interactive-points');
             if (pseudoElement) {
                 this.guides.guidesContainer!.removeChild(pseudoElement);
             }

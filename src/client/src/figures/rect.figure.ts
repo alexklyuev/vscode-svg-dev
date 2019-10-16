@@ -1,20 +1,20 @@
+import { artboard } from "@/webview/services/artboard";
+import { UserEventManager } from "@/webview/services/user-event/user-event-manager";
 import { findMethodIterator } from "@/common/iterators";
 import { Spawn } from "@/dom/spawner/spawn";
 import { Appearance } from "@/webview/services/appearance/appearance";
 
 import { Figure } from "./figure.model";
-import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 import { DraggerValue } from "../services/dragger/dragger-value";
 import { PointConcerns } from "./models/point-concerns.model";
-import { UserEventManager } from "../services/user-event/user-event-manager";
-import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Zoom } from "../services/zoom/zoom";
 import { Guides } from "../services/guides/guides";
 import { Coorinator } from "../services/coordinator/coordinator";
 import { CancelListener } from "../listeners/cancel.listener";
 import { Mover } from "../services/mover/mover.model";
 import { RectPointsEditor } from "../points-editor/rect.points-editor";
+import { artboardMove } from "@/webview/services/artboard-move";
 
 
 export class RectFigure implements Figure<SVGRectElement> {
@@ -26,9 +26,7 @@ export class RectFigure implements Figure<SVGRectElement> {
     constructor(
         public readonly drag: DraggerValue,
         public readonly move: Mover,
-        private artboard: Artboard,
         private userEventMan: UserEventManager,
-        private artboardMove: ArtboardMove,
         private zoom: Zoom,
         private guides: Guides,
         private coords: Coorinator,
@@ -40,7 +38,7 @@ export class RectFigure implements Figure<SVGRectElement> {
 
     create(_elementName: string, _attributes: {[K: string]: string}): void {
         const points = Array<PointConcerns>();
-        this.artboard.box.classList.add('interactive-points');
+        artboard.box.classList.add('interactive-points');
         let tempDestroyer: (() => void) | null = null;
         this.userEventMan.mode = 'interactive';
         const pointsListener = (event: MouseEvent) => {
@@ -53,8 +51,8 @@ export class RectFigure implements Figure<SVGRectElement> {
             const point: PointConcerns = {
                 client: [clientX, clientY],
                 scroll: [scrollLeft, scrollTop],
-                margin: [this.artboardMove.left, this.artboardMove.top],
-                board: [this.artboard.width, this.artboard.height],
+                margin: [artboardMove.left, artboardMove.top],
+                board: [artboard.width, artboard.height],
                 zoom: this.zoom.value,
             };
             if (points.length === 1 && shiftKey) {
@@ -85,7 +83,7 @@ export class RectFigure implements Figure<SVGRectElement> {
             window.removeEventListener('click', pointsListener);
             // this.cancelListener.keyEvent.off(cancel);
             cancelEvents.return! ();
-            this.artboard.box.classList.remove('interactive-points');
+            artboard.box.classList.remove('interactive-points');
             if (tempDestroyer instanceof Function) {
                 tempDestroyer();
             }
@@ -149,7 +147,7 @@ export class RectFigure implements Figure<SVGRectElement> {
      */
     @setState
     renderFinal(points: PointConcerns[]): void {
-        const { svg } = this.artboard;
+        const { svg } = artboard;
         const element = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         svg.appendChild(element);
 

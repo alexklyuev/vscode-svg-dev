@@ -1,6 +1,7 @@
 import { makeMethodIterator } from "@/common/iterators";
+import { spawner } from "@/dom/spawner";
+
 import { Outlet } from "./models/outlet.model";
-import { Spawn } from "../../../../lib/dom/spawner/spawn";
 
 
 export class EditOnPick implements Outlet {
@@ -9,10 +10,8 @@ export class EditOnPick implements Outlet {
 
   private isOn = false;
 
-  constructor(
-    private spawn: Spawn,
-  ) {
-    this.el = this.spawn.html.div(
+  constructor() {
+    this.el = spawner.html.div(
       {},
       {
         display: 'inline-block',
@@ -27,7 +26,7 @@ export class EditOnPick implements Outlet {
         'user-select': 'none',
       }
     );
-    const text = this.spawn.html.span();
+    const text = spawner.html.span();
     text.innerText = 'edit on pick is off';
     this.el.appendChild(text);
     this.el.onclick = (event: MouseEvent) => {

@@ -1,11 +1,13 @@
+import { artboardMove } from "@/webview/services/artboard-move";
+import { artboard } from "@/webview/services/artboard";
+import { userEventMan } from "@/webview/services/user-event";
 import { appearance } from "@/webview/services/appearance";
-import { spawn } from "@/dom/spawner/index";
+import { spawner } from "@/dom/spawner/index";
 
 import { FiguresCollection } from "./figures-collection";
 import { CircleFigure } from "./circle.figure";
 import { RectFigure } from "./rect.figure";
 import { TextFigure } from "./text.figure";
-import { artboard, artboardMove } from "../services/artboard";
 import { zoom } from "../services/zoom";
 import { GFigure } from "./g.figure";
 import { EllipseFigure } from "./ellipse.figure";
@@ -13,7 +15,6 @@ import { LineFigure } from "./line.figure";
 import { DraggerValue } from "../services/dragger/dragger-value";
 import { DraggerDelegate } from "../services/dragger/dragger-delegate";
 import { cancelListener } from "../listeners";
-import { userEventMan } from "../services/user-event";
 import { PolygonFigure } from "./polygon.figure";
 import { DraggerPoints } from "../services/dragger/dragger-points";
 import { PolylineFigure } from "./polyline.figure";
@@ -68,8 +69,6 @@ figuresCollection.add(
     new CircleFigure(
         draggerCenter,
         moverCenter,
-        artboard,
-        artboardMove,
         userEventMan,
         zoom,
         coordinator,
@@ -77,13 +76,11 @@ figuresCollection.add(
         guides,
         appearance,
         hints,
-        spawn,
+        spawner,
     ),
     new EllipseFigure(
         draggerCenter,
         moverCenter,
-        artboard,
-        artboardMove,
         zoom,
         cancelListener,
         userEventMan,
@@ -91,39 +88,33 @@ figuresCollection.add(
         coordinator,
         appearance,
         hints,
-        spawn,
+        spawner,
     ),
     new RectFigure(
         draggerLeftTop, 
         moverLeftTop,
-        artboard,
         userEventMan,
-        artboardMove,
         zoom,
         guides,
         coordinator,
         cancelListener,
         appearance,
-        spawn,
+        spawner,
         rectPointsEditor,
     ),
     new TextFigure(
         draggerLeftTop,
         moverLeftTop,
-        artboard,
         appearance,
         textReverseEndpoint,
     ),
     new GFigure(
         draggerDelegate,
         moverDelegate,
-        artboard,
     ),
     new LineFigure(
         draggerDouble,
         moverLine,
-        artboard,
-        artboardMove,
         zoom,
         cancelListener,
         userEventMan,
@@ -135,8 +126,6 @@ figuresCollection.add(
     new PolygonFigure(
         draggerPoints,
         moverPoints,
-        artboard,
-        artboardMove,
         zoom,
         cancelListener,
         userEventMan,
@@ -147,8 +136,6 @@ figuresCollection.add(
     new PolylineFigure(
         draggerPoints,
         moverPoints,
-        artboard,
-        artboardMove,
         zoom,
         cancelListener,
         userEventMan,

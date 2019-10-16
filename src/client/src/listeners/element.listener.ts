@@ -1,4 +1,4 @@
-import { spawn } from "@/dom/spawner";
+import { spawner } from "@/dom/spawner";
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
 import { makeMethodIterator } from "@/common/iterators";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
@@ -66,7 +66,7 @@ export class ElementListener {
     @setState
     copyInPlaceElement(element: SVGElement) {
         const elHtml = element.outerHTML;
-        const g = spawn.svg.create('g');
+        const g = spawner.svg.create('g');
         g.innerHTML = elHtml;
         const copy = g.children[0] as SVGElement;
         element.insertAdjacentElement('afterend', copy);

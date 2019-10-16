@@ -1,11 +1,11 @@
 import { findMethodIterator } from "@/common/iterators";
 import { fromDomEvent } from "@/dom/iterators";
-import { spawn } from "@/dom/spawner";
+import { spawner } from "@/dom/spawner";
 import { appearance } from "@/webview/services/appearance";
+import { artboard } from "@/webview/services/artboard";
 
 import { zoom } from "../../src/services/zoom";
 import { guides } from "../../src/services/guides";
-import { artboard } from "../../src/services/artboard";
 
 
 /**
@@ -35,7 +35,7 @@ export class RectPointsEditor {
         return points.map(point => {
             const [ cx, cy ] = point;
             const { value: zoomValue } = zoom;
-            const circle = spawn.svg.circle(
+            const circle = spawner.svg.circle(
                 {
                     cx: `${ cx * zoomValue }`,
                     cy: `${ cy * zoomValue }`,
@@ -152,7 +152,7 @@ export class RectPointsEditor {
                                 y$ -= height$;
                                 verticalInvert = !verticalInvert;
                             }
-                            spawn.svg.update(element, {
+                            spawner.svg.update(element, {
                                 x: `${ x$ }`,
                                 y: `${ y$ }`,
                                 width: `${ width$ }`,

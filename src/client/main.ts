@@ -2,13 +2,14 @@ import { findMethodIterator } from '@/common/iterators';
 import { appearance } from '@/webview/services/appearance';
 import { editPointsHub } from '@/webview/services/edit-points-hub';
 import { webviewEndpoint } from '@/webview/services/webview-endpoint';
+import { artboard } from '@/webview/services/artboard';
+import { artboardMove } from '@/webview/services/artboard-move';
 
 import { zoomPipe } from '../shared/pipes/zoom.pipe';
 import { remoteAttributePipe } from '../shared/pipes/remote-attribute.pipe';
 import { createPipe } from '../shared/pipes/create.pipe';
 import { editPipe } from '../shared/pipes/edit.pipe';
 import { flushPipe } from '../shared/pipes/flush.pipe';
-import { artboard, artboardMove } from './src/services/artboard';
 import { RemoteAttributeListener } from './src/listeners/remote-attribute.listener';
 import { CreateListener } from './src/listeners/create.listener';
 import { FlushListener } from './src/listeners/flush.listener';
@@ -103,7 +104,7 @@ picker.listen();
 /**
  * 
  */
-const zoomListener = new ZoomListener(zoomPipe, artboard, zoom);
+const zoomListener = new ZoomListener(zoomPipe, zoom);
 zoomListener.listen();
 
 /**
@@ -143,13 +144,13 @@ editListener.listen();
 /**
  * 
  */
-const flushListener = new FlushListener(flushPipe, artboard);
+const flushListener = new FlushListener(flushPipe);
 flushListener.listen();
 
 /**
  * 
  */
-const arrangeListener = new ArrangeListener(arrangePipe, artboard, holder);
+const arrangeListener = new ArrangeListener(arrangePipe, holder);
 arrangeListener.listen();
 
 /**
@@ -161,7 +162,7 @@ elementListener.listen();
 /**
  * 
  */
-const groupListener = new GroupListener(groupPipe, holder, artboard);
+const groupListener = new GroupListener(groupPipe, holder);
 groupListener.listen();
 
 /**
@@ -356,7 +357,7 @@ listAttributesListener.listen();
     }
 })();
 
-const undoListener = new UndoListener(undoPipe, artboard, holder);
+const undoListener = new UndoListener(undoPipe, holder);
 undoListener.listen();
 
 /**

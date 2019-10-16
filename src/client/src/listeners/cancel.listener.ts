@@ -1,18 +1,16 @@
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
-import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
+import { PipeEndpoint } from "@/common/pipe/pipe";
 import { makeMethodIterator } from "@/common/iterators";
 
-import { CancelPipeRequest, CancelKeys } from "../../../shared/pipes/cancel.pipe";
+import { CancelPipeRequest, CancelKeys, cancelPipe } from "../../../shared/pipes/cancel.pipe";
 
 
 export class CancelListener {
 
     private endpoint: PipeEndpoint<CancelPipeRequest, {}, 'cancel'>;
 
-    constructor(
-        private cancelPipe: Pipe<CancelPipeRequest, {}, 'cancel'>,
-    ) {
-        this.endpoint = webviewEndpoint.createFromPipe(this.cancelPipe);
+    constructor() {
+        this.endpoint = webviewEndpoint.createFromPipe(cancelPipe);
     }
 
     listen() {

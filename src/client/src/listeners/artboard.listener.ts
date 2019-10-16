@@ -1,10 +1,9 @@
-// import { EventBus, connectEvent } from "@/common/events";
-import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
+import { artboard } from "@/webview/services/artboard";
+import { PipeEndpoint } from "@/common/pipe/pipe";
 import { makeMethodIterator } from "@/common/iterators";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
-import { ArtboardRequest, ArtboardResponse } from "../../../shared/pipes/artboard.pipe";
-import { Artboard } from "../services/artboard/artboard";
+import { ArtboardRequest, ArtboardResponse, artboardPipe } from "../../../shared/pipes/artboard.pipe";
 import { setState } from "../decorators/set-state.decorator";
 
 
@@ -12,22 +11,20 @@ export class ArtboardListener {
     private artboardClient: PipeEndpoint<ArtboardRequest, ArtboardResponse, 'artboard'>;
 
     constructor(
-        private artboardPipe: Pipe<ArtboardRequest, ArtboardResponse, 'artboard'>,
-        private artboard: Artboard,
     ) {
-        this.artboardClient = webviewEndpoint.createFromPipe(this.artboardPipe);
+        this.artboardClient = webviewEndpoint.createFromPipe(artboardPipe);
     }
 
     listen() {
         this.artboardClient.listenGetRequest(
-            _request => this.artboard.svg,
+            _request => artboard.svg,
             (request, svg) => {
                 const { property } = request;
                 return {value: svg.getAttribute(property)};
             },
         );
         this.artboardClient.listenSetRequest(
-            _request => this.artboard.svg,
+            _request => artboard.svg,
             ({ property, value }, svg) => {
                 this.updateAttributes(svg, property, value!);
             },

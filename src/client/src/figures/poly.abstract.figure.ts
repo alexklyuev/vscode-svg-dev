@@ -1,19 +1,19 @@
+import { artboard } from "@/webview/services/artboard";
+import { UserEventManager } from "@/webview/services/user-event/user-event-manager";
 import { Appearance } from "@/webview/services/appearance/appearance";
 import { findMethodIterator } from "@/common/iterators";
 
 import { Figure } from "./figure.model";
 import { Dragger } from "../services/dragger/dragger.interface";
-import { Artboard } from "../services/artboard/artboard";
 import { Zoom } from "../services/zoom/zoom";
 import { CancelListener } from "../listeners/cancel.listener";
-import { UserEventManager } from "../services/user-event/user-event-manager";
 import { setState } from "../decorators/set-state.decorator";
 import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { PointConcerns } from "./models/point-concerns.model";
 import { Guides } from "../services/guides/guides";
-import { ArtboardMove } from "../services/artboard/artboard-move";
 import { MoverPoints } from "../services/mover/mover-points";
 import { Hints } from "../services/hints/hints";
+import { artboardMove } from "@/webview/services/artboard-move";
 
 
 export abstract class PolyFigure implements Figure<SVGElement> {
@@ -27,8 +27,6 @@ export abstract class PolyFigure implements Figure<SVGElement> {
     constructor(
         public readonly drag: Dragger,
         public readonly move: MoverPoints,
-        private artboard: Artboard,
-        private artboardMove: ArtboardMove,
         public zoom: Zoom,
         private cancelListener: CancelListener,
         private userEventMan: UserEventManager,
@@ -43,7 +41,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
     create(_elementName: string, _attributest: {[K: string]: string}) {
         // let points = Array<[[number, number], [number, number]]>();
         let cpoints = Array<PointConcerns>();
-        this.artboard.box.classList.add('interactive-points');
+        artboard.box.classList.add('interactive-points');
         let toolsSvgRemover: null | (() => void) = null;
         this.userEventMan.mode = 'interactive';
         const pointsListener = (event: MouseEvent) => {
@@ -56,8 +54,8 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             const cpoint: PointConcerns = {
                 client: [clientX, clientY],
                 scroll: [scrollLeft, scrollTop],
-                margin: [this.artboardMove.left, this.artboardMove.top],
-                board: [this.artboard.width, this.artboard.height],
+                margin: [artboardMove.left, artboardMove.top],
+                board: [artboard.width, artboard.height],
                 zoom: this.zoom.value,
             };
             if (cpoints.length > 0 && shiftKey) {
@@ -84,7 +82,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             window.removeEventListener('click', pointsListener);
             // this.cancelListener.keyEvent.off(stop);
             cancelEvents.return! ();
-            this.artboard.box.classList.remove('interactive-points');
+            artboard.box.classList.remove('interactive-points');
             if (toolsSvgRemover instanceof Function) {
                 toolsSvgRemover();
                 toolsSvgRemover = null;
@@ -113,15 +111,15 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             });
             return `${ x },${ y }`;
         }).join(' '));
-        this.artboard.svg.appendChild(element);
+        artboard.svg.appendChild(element);
     }
 
     renderTools(points: Array<PointConcerns>) {
         const { scrollLeft, scrollTop } = document.scrollingElement!;
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        const artboardBox = this.artboard.svg.getBoundingClientRect();
-        const artboardWidth = parseInt(this.artboard.svg.getAttribute('width')!);
-        const artboardHeight = parseInt(this.artboard.svg.getAttribute('height')!);
+        const artboardBox = artboard.svg.getBoundingClientRect();
+        const artboardWidth = parseInt(artboard.svg.getAttribute('width')!);
+        const artboardHeight = parseInt(artboard.svg.getAttribute('height')!);
         svg.setAttribute('width', String(this.zoom.value * artboardWidth));
         svg.setAttribute('height', String(this.zoom.value * artboardHeight));
         Object.assign(svg.style, {
@@ -129,7 +127,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
             top: artboardBox.top + scrollTop + 'px',
             left: artboardBox.left + scrollLeft + 'px',
         });
-        this.artboard.tools.appendChild(svg);
+        artboard.tools.appendChild(svg);
         points.forEach(({ client, scroll, margin, board, zoom }, index) => {
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             const [cx, cy] = [0, 1].map(d => {
@@ -229,7 +227,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
         }
         return () => {
             mousemoveRemover();
-            this.artboard.tools.removeChild(svg);
+            artboard.tools.removeChild(svg);
         };
     }
 

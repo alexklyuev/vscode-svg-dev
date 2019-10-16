@@ -1,3 +1,3 @@
 import { VscodeHost } from "./vscode-host";
 
-export const host = new VscodeHost();
+export const vscodeHost = new VscodeHost();

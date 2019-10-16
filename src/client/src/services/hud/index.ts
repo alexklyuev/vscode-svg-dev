@@ -1,4 +1,3 @@
-import { spawn } from "@/dom/spawner";
 import { appearance } from "@/webview/services/appearance";
 
 import { Hud } from "./hud";
@@ -7,7 +6,6 @@ import { AppearanceOutlet } from "./appearance.outlet";
 import { ArtboardControls } from "./artboard.controls";
 import { FillControl } from "./fill.control";
 import { StrokeControl } from "./stroke.control";
-import { artboard } from "../artboard";
 import { artboardStyleListener, artboardListener } from "../../listeners";
 import { artboardInverseEndpoint } from "../../producers/artboard-inverse.producer";
 import { artboardStyleInverseProducer } from "../../producers/artboard-style-inverse.producer";
@@ -20,7 +18,6 @@ import { EditOnPick } from "./edit-on-pick.control";
 
 export const colorRepresenter = new ColorRepresenterService();
 export const artboardControls = new ArtboardControls(
-  artboard,
   artboardStyleListener,
   artboardStyleInverseProducer,
   colorRepresenter,
@@ -48,8 +45,8 @@ export const shapesOutlet = new ShapesOutlet(
   textShape,
 );
 export const groupControls = new GroupControls();
-export const editPointsControl = new EditPointsControl(spawn);
-export const editOnPick = new EditOnPick(spawn);
+export const editPointsControl = new EditPointsControl();
+export const editOnPick = new EditOnPick();
 export const firstRowOutlet = new AppearanceOutlet(
   artboardControls,
   fillControl,

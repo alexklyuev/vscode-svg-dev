@@ -1,6 +1,6 @@
 import { makeMethodIterator } from "@/common/iterators";
-import { Artboard } from "./artboard";
-import { UserEventManager } from "../user-event/user-event-manager";
+import { artboard } from "@/webview/services/artboard";
+import { userEventMan } from "@/webview/services/user-event";
 
 
 const initialX = 50;
@@ -21,14 +21,12 @@ export class ArtboardMove {
     public readonly initialY = initialY;
 
     constructor(
-        private artboard: Artboard,
-        private userEventMan: UserEventManager,
     ) {
         this.bindedOnMouseDown = this.onMouseDown.bind(this);
         this.bindedOnMouseMove = this.onMouseMove.bind(this);
         this.bindedOnMouseUp = this.onMouseUp.bind(this);
 
-        Object.assign(this.artboard.box.style, {
+        Object.assign(artboard.box.style, {
             position: 'absolute',
             top: `${ initialY }px`,
             left: `${ initialX }px`,
@@ -54,7 +52,7 @@ export class ArtboardMove {
     
     @makeMethodIterator()
     onMouseDown(event: MouseEvent) {
-        if (this.userEventMan.mode === 'interactive') {
+        if (userEventMan.mode === 'interactive') {
             return event;
         }
         const { clientX, clientY } = event;
@@ -70,7 +68,7 @@ export class ArtboardMove {
     @makeMethodIterator()
     onMouseMove(event: MouseEvent) {
         const { clientX, clientY } = event;
-        const box = this.artboard.box;
+        const box = artboard.box;
         const deltaX = clientX - this.coords.clientX;
         const deltaY = clientY - this.coords.clientY;
         this.marginLeft = deltaX;

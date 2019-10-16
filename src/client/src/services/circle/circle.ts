@@ -1,4 +1,4 @@
-import { Artboard } from "../../services/artboard/artboard";
+import { Artboard } from "../../../../lib/webview/services/artboard/artboard";
 
 
 export class Circle {

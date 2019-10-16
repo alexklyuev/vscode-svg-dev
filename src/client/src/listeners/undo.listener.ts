@@ -1,8 +1,8 @@
 import { makeMethodIterator } from "@/common/iterators";
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { artboard } from "@/webview/services/artboard";
 
-import { Artboard } from "../services/artboard/artboard";
 import { UndoRequest, UndoResponse } from '../../../shared/pipes/undo.pipe';
 import { ElementHolder } from "../services/picker/element-holder";
 
@@ -14,7 +14,6 @@ export class UndoListener {
 
     constructor(
         private undoPipe: Pipe<UndoRequest, UndoResponse, 'undo'>,
-        private artboard: Artboard,
         private holder: ElementHolder,
     ) {
         this.client = webviewEndpoint.createFromPipe(this.undoPipe);
@@ -22,7 +21,7 @@ export class UndoListener {
 
     listen() {
         this.client.listenSetRequest(
-            _request => this.artboard,
+            _request => artboard,
             ({ state }) => {
                 this.renderState(state);
             },
@@ -33,9 +32,9 @@ export class UndoListener {
     @makeMethodIterator()
     renderState(state: string) {
         try {
-            this.artboard.box.innerHTML = state;
+            artboard.box.innerHTML = state;
         } catch {}
-        this.artboard.clearCache();
+        artboard.clearCache();
         this.holder.elements = [];
         return state;
     }

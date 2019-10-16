@@ -1,8 +1,8 @@
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { artboard } from "@/webview/services/artboard";
 
 import { FlushPayload } from "../../../shared/pipes/flush.pipe";
-import { Artboard } from "../services/artboard/artboard";
 
 
 export class FlushListener {
@@ -10,14 +10,13 @@ export class FlushListener {
 
     constructor(
         private flushPipe: Pipe<FlushPayload, FlushPayload, 'flush'>,
-        private artboard: Artboard,
     ) {
         this.flushEndpoint = webviewEndpoint.createFromPipe(this.flushPipe);
     }
 
     listen() {
         this.flushEndpoint.listenGetRequest(
-            _request => this.artboard.svg,
+            _request => artboard.svg,
             ({}, svg) => {
                 const content = this.format(svg.outerHTML);
                 return { content };

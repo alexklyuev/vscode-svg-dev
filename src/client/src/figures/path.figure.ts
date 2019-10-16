@@ -1,12 +1,11 @@
+import { Artboard } from "@/webview/services/artboard/artboard";
+import { UserEventManager } from "@/webview/services/user-event/user-event-manager";
 import { Appearance } from "@/webview/services/appearance/appearance";
 import { findMethodIterator } from "@/common/iterators";
 
 import { Figure } from "./figure.model";
 import { setState } from "../decorators/set-state.decorator";
-import { Artboard } from "../services/artboard/artboard";
 import { Dragger } from "../services/dragger/dragger.interface";
-import { UserEventManager } from "../services/user-event/user-event-manager";
-import { ArtboardMove } from "../services/artboard/artboard-move";
 import { Zoom } from "../services/zoom/zoom";
 import { CancelListener } from "../listeners/cancel.listener";
 import { Guides } from "../services/guides/guides";
@@ -16,6 +15,7 @@ import { PointConcerns, PointSharedConcerns } from "./models/point-concerns.mode
 import { Coorinator } from "../services/coordinator/coordinator";
 import { Mover } from "../services/mover/mover.model";
 import { Hints } from "../services/hints/hints";
+import { ArtboardMove } from "@/webview/services/artboard-move/artboard-move";
 
 
 export class PathFigure implements Figure<SVGPathElement> {

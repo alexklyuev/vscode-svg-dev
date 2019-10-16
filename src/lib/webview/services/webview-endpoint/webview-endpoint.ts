@@ -1,5 +1,5 @@
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
-import { host } from "@/webview/services/host-api";
+import { vscodeHost } from "@/webview/services/host-api";
 
 
 export class WebviewEndpoint {
@@ -11,7 +11,7 @@ export class WebviewEndpoint {
                 window.addEventListener('message', listener);
                 return () => window.removeEventListener('message', listener);
             },
-            data => host.api.postMessage(data),
+            data => vscodeHost.api.postMessage(data),
         );
     }
 

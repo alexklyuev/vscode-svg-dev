@@ -1,6 +1,6 @@
-import { Artboard } from "../artboard/artboard";
-import { EventBus, connectEvent } from "../../../../lib/common/events";
-import { Spawn } from "../../../../lib/dom/spawner/spawn";
+import { EventBus, connectEvent } from "@/common/events";
+import { spawner } from "@/dom/spawner";
+import { artboard } from "@/webview/services/artboard";
 
 
 const enum GuidesEvents {
@@ -20,12 +20,6 @@ export class Guides {
 
     public readonly [GuidesEvents.selectionDrawn] = new EventBus<ClientRect>();
     public readonly [GuidesEvents.selectionDestroyed] = new EventBus<null>();
-
-    constructor(
-        private artboard: Artboard,
-        private spawn: Spawn,
-    ) {
-    }
 
     async * aiDrawn(): AsyncIterableIterator<ClientRect> {
         return yield * {
@@ -58,15 +52,15 @@ export class Guides {
      * 
      */
     createContainer() {
-        this.container = this.spawn.svg.svg();
-        this.artboard.tools.appendChild(this.container);
+        this.container = spawner.svg.svg();
+        artboard.tools.appendChild(this.container);
         this.setContainerStyles();
     }
 
     setContainerStyles() {
         if (this.container) {
-            const { left, top, width, height } = this.artboard.svg.getBoundingClientRect();
-            this.spawn.svg.update(this.container, {}, {
+            const { left, top, width, height } = artboard.svg.getBoundingClientRect();
+            spawner.svg.update(this.container, {}, {
                 position: 'absolute',
                 border: this.borderStyle,
                 left: `${ left - 0.5 }px`,
@@ -82,7 +76,7 @@ export class Guides {
      */
     destroyContainer() {
         if (this.container) {
-            this.artboard.tools.removeChild(this.container);
+            artboard.tools.removeChild(this.container);
             this.container = null;
         }
     }
@@ -92,7 +86,7 @@ export class Guides {
      */
     drawSelection(elements: Element[]): void {
         if (this.container) {
-            this.selection = this.spawn.svg.rect();
+            this.selection = spawner.svg.rect();
             const firstChild = this.container.children[0];
             if (firstChild) {
                 firstChild.insertAdjacentElement('beforebegin', this.selection);
@@ -115,7 +109,7 @@ export class Guides {
             const bottom = rects.map(({ bottom }) => bottom).reduce((acc, bottom) => bottom > acc ? bottom : acc, -Infinity);
             const { left: containerLeft, top: containerTop } = this.container.getBoundingClientRect();
             if ( [left, top, bottom, right].every(d => Number.isFinite(d)) ) {
-                this.spawn.svg.update(this.selection, {
+                spawner.svg.update(this.selection, {
                     'x': `${ left - containerLeft - 1 }`,
                     'y': `${ top - containerTop - 1 }`,
                     'width': `${ right - left + 1 }`,

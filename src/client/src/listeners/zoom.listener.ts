@@ -1,7 +1,8 @@
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { artboard } from "@/webview/services/artboard";
+
 import { Zoom } from "../services/zoom/zoom";
-import { Artboard } from "../services/artboard/artboard";
 import { ZoomRequest } from "../../../shared/pipes/zoom.pipe";
 
 
@@ -10,7 +11,6 @@ export class ZoomListener {
 
     constructor(
         private zoomPipe: Pipe<ZoomRequest, {}, 'zoom'>,
-        private artboard: Artboard,
         private zoom: Zoom,
     ) {
         this.zoomer = webviewEndpoint.createFromPipe(this.zoomPipe);
@@ -18,7 +18,7 @@ export class ZoomListener {
 
     listen() {
         this.zoomer.listenSetRequest(
-            _request => this.artboard.box,
+            _request => artboard.box,
             (request, _box) => {
                 const { delta, abs } = request;
                 // this.zoom.update(delta, abs);

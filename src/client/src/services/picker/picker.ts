@@ -1,10 +1,11 @@
 import { makeMethodIterator } from "@/common/iterators";
-import { Artboard } from "../../services/artboard/artboard";
+import { spawner } from "@/dom/spawner";
+import { userEventMan } from "@/webview/services/user-event";
+import { artboard } from "@/webview/services/artboard";
+
 import { ElementHolder } from "./element-holder";
 import { Zoom } from "../zoom/zoom";
 import { FiguresCollection } from "../../figures/figures-collection";
-import { UserEventManager } from "../user-event/user-event-manager";
-import { spawn } from "../../../../lib/dom/spawner";
 
 
 export class Picker {
@@ -34,7 +35,7 @@ export class Picker {
      */
     @makeMethodIterator()
     onMousedown(event: MouseEvent) {
-        if (this.userEventMan.mode === 'interactive') {
+        if (userEventMan.mode === 'interactive') {
             return event;
         }
         this.controlPropagation(event);
@@ -65,12 +66,11 @@ export class Picker {
             }
             if (event.altKey) {
                 const outer = target.outerHTML;
-                // const g = document.createElement NS('http://www.w3.org/2000/svg', 'g') as SVGGElement;
-                const g = spawn.svg.create('g');
+                const g = spawner.svg.create('g');
                 g.innerHTML = outer;
                 const copy = g.children[0] as SVGElement;
                 copy.removeAttribute('id');
-                const svg = this.artboard.svg;
+                const svg = artboard.svg;
                 svg.insertBefore(copy, target);
                 target.insertAdjacentElement('afterend', copy);
                 this.holder.elements = [copy];
@@ -81,7 +81,7 @@ export class Picker {
                     event,
                 );
             });
-            this.artboard.svg.addEventListener('mousemove', this.bindedMousemove);
+            artboard.svg.addEventListener('mousemove', this.bindedMousemove);
         } else {
             this.holder.elements = [];
         }
@@ -100,16 +100,14 @@ export class Picker {
                 event,
             );
         });
-        this.artboard.svg.removeEventListener('mousemove', this.bindedMousemove);
+        artboard.svg.removeEventListener('mousemove', this.bindedMousemove);
         return event;
     }
 
     constructor(
-        private readonly artboard: Artboard,
         private readonly holder: ElementHolder,
         private figuresCollection: FiguresCollection,
         public readonly zoom: Zoom,
-        private userEventMan: UserEventManager,
     ) {
         this.bindedMousedown = this.onMousedown.bind(this);
         this.bindedMousemove = this.onMousemove.bind(this);
@@ -120,7 +118,7 @@ export class Picker {
      * 
      */
     listen() {
-        this.artboard.box.addEventListener('mousedown', this.bindedMousedown);
+        artboard.box.addEventListener('mousedown', this.bindedMousedown);
         window.addEventListener('mouseup', this.bindedMouseup);
     }
 
