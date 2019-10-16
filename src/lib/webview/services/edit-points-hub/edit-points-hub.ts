@@ -1,5 +1,7 @@
 import { findMethodIterator } from "@/common/iterators";
-import { CancelListener } from "../../../../client/src/listeners/cancel.listener";
+
+import { figuresCollection } from "../../../../client/src/figures";
+import { cancelListener } from "../../../../client/src/listeners";
 
 
 export class EditPointsHub {
@@ -8,9 +10,25 @@ export class EditPointsHub {
 
     private innerElement: SVGElement | null = null;
 
-    constructor(
-        private cancelListner: CancelListener,
-    ) {}
+    /**
+     * //
+     */
+    startEditing(element: SVGElement | null) {
+        if (element) {
+            if (!this.isSameElement(element)) {
+                this.takeActiveElement(element);
+                const delegate = figuresCollection.delegate(element);
+                if (delegate && delegate.edit instanceof Function) {
+                    const cancelFn = delegate.edit(element);
+                    if (cancelFn instanceof Function) {
+                        this.takeCancelationFn(cancelFn);
+                    }
+                }
+            }
+        } else {
+            this.purge();
+        }
+    }
 
     isSameElement(element: SVGElement) {
         return element === this.innerElement;
@@ -18,7 +36,7 @@ export class EditPointsHub {
 
     purge() {
         this.takeActiveElement(null);
-        this.takeCancelationFn(() => {});
+        this.takeCancelationFn(() => void 0);
     }
 
     takeActiveElement(element: SVGElement | null) {
@@ -26,7 +44,7 @@ export class EditPointsHub {
     }
 
     takeCancelationFn(fn: () => void) {
-        const cancelEvents = findMethodIterator(this.cancelListner.eventReceived);
+        const cancelEvents = findMethodIterator(cancelListener.eventReceived);
         if (this.cancelFn instanceof Function) {
             cancelEvents.return! ();
             this.cancelFn();

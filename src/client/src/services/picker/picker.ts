@@ -1,7 +1,7 @@
 import { makeMethodIterator } from "@/common/iterators";
 import { Artboard } from "../../services/artboard/artboard";
 import { ElementHolder } from "./element-holder";
-import { HostApi } from "../host-api/host-api.interface";
+import { HostApi } from "../../../../lib/webview/services/host-api/host-api.interface";
 import { Zoom } from "../zoom/zoom";
 import { FiguresCollection } from "../../figures/figures-collection";
 import { UserEventManager } from "../user-event/user-event-manager";

@@ -255,7 +255,7 @@ moveKeyListener.listen();
 (async () => {
     const pickerMouseUps = findMethodIterator(picker.onMouseup);
     for await (const _event of pickerMouseUps) {
-        editListener.editElement();
+        editPointsHub.startEditing(holder.elements[0]);
     }
 })();
 
@@ -327,7 +327,7 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
 (async () => {
     const copyElement = findMethodIterator(elementListener.copyInPlaceElement);
     for await (const _element of copyElement) {
-        editListener.editElement();
+        editPointsHub.startEditing(holder.elements[0]);
     }
 })();
 
@@ -381,6 +381,6 @@ configListener.listen();
     const clicks = findMethodIterator(editPointsControl.editPoints);
     for await ( const _event of clicks ) {
         inverseInteractiveEndpoint.makeSetRequest({});
-        editListener.editElement();
+        editPointsHub.startEditing(holder.elements[0]);
     }
 })();

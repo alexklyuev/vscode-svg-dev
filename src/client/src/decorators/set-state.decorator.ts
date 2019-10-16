@@ -1,4 +1,4 @@
-import { host } from "../services/host-api";
+import { host } from "@/webview/services/host-api/index";
 import { artboard } from "../services/artboard";
 import { historyProducer } from "../producers/history.producer";
 

@@ -181,9 +181,7 @@ export class RectPointsEditor {
         let mouseUpIter: AsyncIterableIterator<MouseEvent>;
         const mouseDownIter = fromDomEvent(element, 'mousedown');
         (async () => {
-            console.log('listener set');
             for await (const _down of mouseDownIter) {
-                // const listeningTarget = element.parentElement!;
                 const listeningTarget = artboard.svg;
                 mouseMoveIter = fromDomEvent(listeningTarget, 'mousemove');
                 mouseUpIter = fromDomEvent(listeningTarget, 'mouseup');

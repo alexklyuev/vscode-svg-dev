@@ -1,5 +1,5 @@
 import { PipeEndpoint, Pipe } from "../../../../lib/common/pipe/pipe";
-import { HostApi } from "../host-api/host-api.interface";
+import { HostApi } from "@/webview/services/host-api/host-api.interface";
 
 
 export class WebviewEndpoint {

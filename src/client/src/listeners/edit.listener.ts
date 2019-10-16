@@ -12,7 +12,7 @@ export class EditListener {
     constructor(
         private webviewEndpoint: WebviewEndpoint,
         private editPipe: Pipe<EditRequest, {}, 'edit'>,
-        private figuresCollection: FiguresCollection,
+        public figuresCollection: FiguresCollection,
         private holder: ElementHolder,
         private cancelHub: EditPointsHub,
     ) {
@@ -28,23 +28,9 @@ export class EditListener {
         );
     }
 
-    editElement() {
+    private editElement() {
         const element = this.holder.elements[0];
-        if (element) {
-            if (!this.cancelHub.isSameElement(element)) {
-                this.cancelHub.takeActiveElement(element);
-                const delegate = this.figuresCollection.delegate(element);
-                if (delegate && delegate.edit instanceof Function) {
-                    const cancelFn = delegate.edit(element);
-                    if (cancelFn instanceof Function) {
-                        this.cancelHub.takeCancelationFn(cancelFn);
-                    }
-                }
-            }
-        } else {
-            this.cancelHub.takeActiveElement(null);
-            this.cancelHub.takeCancelationFn(() => void 0);
-        }
+        this.cancelHub.startEditing(element);
     }
 
 }
