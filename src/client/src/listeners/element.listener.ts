@@ -1,9 +1,9 @@
 import { spawn } from "@/dom/spawner";
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
 import { makeMethodIterator } from "@/common/iterators";
+import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
 import { ElementCommand } from "../../../shared/pipes/element.pipe";
-import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { ElementHolder } from "../services/picker/element-holder";
 import { setState } from "../decorators/set-state.decorator";
 import { FiguresCollection } from "../figures/figures-collection";
@@ -13,12 +13,11 @@ export class ElementListener {
     private elementReceiver: PipeEndpoint<ElementCommand, {}, 'element'>;
 
     constructor(
-        private webviewEndpoint: WebviewEndpoint,
         private elementPipe: Pipe<ElementCommand, {}, 'element'>,
         private holder: ElementHolder,
         private figuresCollection: FiguresCollection,
     ) {
-        this.elementReceiver = this.webviewEndpoint.createFromPipe(this.elementPipe);
+        this.elementReceiver = webviewEndpoint.createFromPipe(this.elementPipe);
     }
 
     listen() {

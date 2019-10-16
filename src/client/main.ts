@@ -1,10 +1,14 @@
+import { findMethodIterator } from '@/common/iterators';
+import { appearance } from '@/webview/services/appearance';
+import { editPointsHub } from '@/webview/services/edit-points-hub';
+import { webviewEndpoint } from '@/webview/services/webview-endpoint';
+
 import { zoomPipe } from '../shared/pipes/zoom.pipe';
 import { remoteAttributePipe } from '../shared/pipes/remote-attribute.pipe';
 import { createPipe } from '../shared/pipes/create.pipe';
 import { editPipe } from '../shared/pipes/edit.pipe';
 import { flushPipe } from '../shared/pipes/flush.pipe';
 import { artboard, artboardMove } from './src/services/artboard';
-import { webviewEndpoint } from './src/services/endpoint';
 import { RemoteAttributeListener } from './src/listeners/remote-attribute.listener';
 import { CreateListener } from './src/listeners/create.listener';
 import { FlushListener } from './src/listeners/flush.listener';
@@ -43,9 +47,6 @@ import { undoPipe } from '../shared/pipes/undo.pipe';
 import { ConfigListener } from './src/listeners/config.listener';
 import { configPipe } from '../shared/pipes/config.pipe';
 
-import { findMethodIterator } from '@/common/iterators';
-import { appearance } from '@/webview/services/appearance';
-import { editPointsHub } from '@/webview/services/edit-points-hub';
 
 /**
  * 
@@ -102,7 +103,7 @@ picker.listen();
 /**
  * 
  */
-const zoomListener = new ZoomListener(webviewEndpoint, zoomPipe, artboard, zoom);
+const zoomListener = new ZoomListener(zoomPipe, artboard, zoom);
 zoomListener.listen();
 
 /**
@@ -124,43 +125,43 @@ artboardStyleListener.listen();
 /**
  * 
  */
-const remoteAttributeListener = new RemoteAttributeListener(webviewEndpoint, remoteAttributePipe, holder);
+const remoteAttributeListener = new RemoteAttributeListener(remoteAttributePipe, holder);
 remoteAttributeListener.listen();
 
 /**
  * 
  */
-const createListener = new CreateListener(webviewEndpoint, createPipe, figuresCollection);
+const createListener = new CreateListener(createPipe, figuresCollection);
 createListener.listen();
 
 /**
  * 
  */
-const editListener = new EditListener(webviewEndpoint, editPipe, figuresCollection, holder, editPointsHub);
+const editListener = new EditListener(editPipe, figuresCollection, holder);
 editListener.listen();
 
 /**
  * 
  */
-const flushListener = new FlushListener(webviewEndpoint, flushPipe, artboard);
+const flushListener = new FlushListener(flushPipe, artboard);
 flushListener.listen();
 
 /**
  * 
  */
-const arrangeListener = new ArrangeListener(webviewEndpoint, arrangePipe, artboard, holder);
+const arrangeListener = new ArrangeListener(arrangePipe, artboard, holder);
 arrangeListener.listen();
 
 /**
  * 
  */
-const elementListener = new ElementListener(webviewEndpoint, elementPipe, holder, figuresCollection);
+const elementListener = new ElementListener(elementPipe, holder, figuresCollection);
 elementListener.listen();
 
 /**
  * 
  */
-const groupListener = new GroupListener(webviewEndpoint, groupPipe, holder, artboard);
+const groupListener = new GroupListener(groupPipe, holder, artboard);
 groupListener.listen();
 
 /**
@@ -171,7 +172,7 @@ cancelListener.listen();
 /**
  * 
  */
-const moveKeyListener = new MoveKeyListener(webviewEndpoint, moveKeyPipe, holder, figuresCollection);
+const moveKeyListener = new MoveKeyListener(moveKeyPipe, holder, figuresCollection);
 moveKeyListener.listen();
 
 /**
@@ -342,7 +343,7 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
     }
 })();
 
-const listAttributesListener = new ListAttributesListener(webviewEndpoint, listAttributesPipe, holder);
+const listAttributesListener = new ListAttributesListener(listAttributesPipe, holder);
 listAttributesListener.listen();
 
 /**
@@ -355,7 +356,7 @@ listAttributesListener.listen();
     }
 })();
 
-const undoListener = new UndoListener(webviewEndpoint, undoPipe, artboard, holder);
+const undoListener = new UndoListener(undoPipe, artboard, holder);
 undoListener.listen();
 
 /**
@@ -371,7 +372,7 @@ undoListener.listen();
     }
 })();
 
-const configListener = new ConfigListener(webviewEndpoint, configPipe, appearance);
+const configListener = new ConfigListener(configPipe, appearance);
 configListener.listen();
 
 /**

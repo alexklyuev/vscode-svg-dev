@@ -1,10 +1,12 @@
-import { HostApi, Messenger } from "./host-api.interface";
-
+interface Messenger {
+    postMessage(data: any): void;
+    setState(state: any): void;
+}
 
 declare const acquireVsCodeApi: () => Messenger;
 
 
-export class VscodeHost implements HostApi {
+export class VscodeHost {
 
     private vscode: Messenger | null = null;
 

@@ -1,29 +1,21 @@
 // import { EventBus, connectEvent } from "@/common/events";
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
 import { makeMethodIterator } from "@/common/iterators";
+import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
-import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { ArtboardRequest, ArtboardResponse } from "../../../shared/pipes/artboard.pipe";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
 
 
-// const enum ArtboardListenerEvents {
-//     changeProperty = 'changeProperty',
-// }
-
-
 export class ArtboardListener {
     private artboardClient: PipeEndpoint<ArtboardRequest, ArtboardResponse, 'artboard'>;
 
-    // public readonly [ArtboardListenerEvents.changeProperty] = new EventBus<{property: string, value: string}>();
-
     constructor(
-        private webviewEndpoint: WebviewEndpoint,
         private artboardPipe: Pipe<ArtboardRequest, ArtboardResponse, 'artboard'>,
         private artboard: Artboard,
     ) {
-        this.artboardClient = this.webviewEndpoint.createFromPipe(this.artboardPipe);
+        this.artboardClient = webviewEndpoint.createFromPipe(this.artboardPipe);
     }
 
     listen() {
@@ -44,7 +36,6 @@ export class ArtboardListener {
 
     @makeMethodIterator()
     @setState
-    // @connectEvent(ArtboardListenerEvents.changeProperty)
     updateAttributes(svg: SVGElement, property: string, value: string) {
         svg.setAttribute(property, value!);
         if (property === 'width' || property === 'height') {

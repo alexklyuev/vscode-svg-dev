@@ -1,6 +1,7 @@
-import { PipeEndpoint, Pipe } from "../../../lib/common/pipe/pipe";
+import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
+import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+
 import { ListAttributesRequest, ListAttributesResponse } from "../../../shared/pipes/list-attributes.pipe";
-import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
 import { ElementHolder } from "../services/picker/element-holder";
 
 
@@ -8,11 +9,10 @@ export class ListAttributesListener {
     private client: PipeEndpoint<ListAttributesRequest, ListAttributesResponse, 'list-attributes'>;
 
     constructor(
-        private webviewEndpoint: WebviewEndpoint,
         private listAttributesPipe: Pipe<ListAttributesRequest, ListAttributesResponse, 'list-attributes'>,
         private holder: ElementHolder,
     ) {
-        this.client = this.webviewEndpoint.createFromPipe(this.listAttributesPipe);
+        this.client = webviewEndpoint.createFromPipe(this.listAttributesPipe);
     }
 
     listen() {

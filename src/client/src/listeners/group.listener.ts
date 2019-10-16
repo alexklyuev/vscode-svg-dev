@@ -1,5 +1,6 @@
-import { PipeEndpoint, Pipe } from "../../../lib/common/pipe/pipe";
-import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
+import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
+import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+
 import { ElementHolder } from "../services/picker/element-holder";
 import { setState } from "../decorators/set-state.decorator";
 import { Artboard } from "../services/artboard/artboard";
@@ -10,12 +11,11 @@ export class GroupListener {
     private groupClient: PipeEndpoint<'group' | 'ungroup', {}, 'group'>;
 
     constructor(
-        private webviewEndpoinnt: WebviewEndpoint,
         private groupPipe: Pipe<'group' | 'ungroup', {}, 'group'>,
         private holder: ElementHolder,
         private artboard: Artboard,
     ) {
-        this.groupClient = this.webviewEndpoinnt.createFromPipe(this.groupPipe);
+        this.groupClient = webviewEndpoint.createFromPipe(this.groupPipe);
     }
 
     listen() {

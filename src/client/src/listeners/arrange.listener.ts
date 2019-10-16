@@ -1,5 +1,6 @@
-import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
+import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
+import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+
 import { ArrangePipeRequest } from "../../../shared/pipes/arrange.pipe";
 import { Artboard } from "../services/artboard/artboard";
 import { ElementHolder } from "../services/picker/element-holder";
@@ -10,12 +11,11 @@ export class ArrangeListener {
     private arrangeClient: PipeEndpoint<ArrangePipeRequest, {}, 'arrange'>;
 
     constructor(
-        private webviewEndpoint: WebviewEndpoint,
         private arrangePipe: Pipe<ArrangePipeRequest, {}, 'arrange'>,
         private artboard: Artboard,
         private readonly holder: ElementHolder,
     ) {
-        this.arrangeClient = this.webviewEndpoint.createFromPipe(this.arrangePipe);
+        this.arrangeClient = webviewEndpoint.createFromPipe(this.arrangePipe);
     }
 
     listen() {

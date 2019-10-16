@@ -1,9 +1,9 @@
-import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
+import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
+import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+
 import { RemoteAttributeRequest, RemoteAttributeResponse } from "../../../shared/pipes/remote-attribute.pipe";
 import { ElementHolder } from "../services/picker/element-holder";
 import { setState } from "../decorators/set-state.decorator";
-// import { updateSelection } from "../decorators/update-selection.decorator";
 import { rehold } from "../decorators/rehold.decorator";
 
 
@@ -11,11 +11,10 @@ export class RemoteAttributeListener {
     remoteAttributeClient: PipeEndpoint<RemoteAttributeRequest, RemoteAttributeResponse, "remoteAttribute">;
 
     constructor(
-        private webviewEndpoint: WebviewEndpoint,
         private remoteAttributePipe: Pipe<RemoteAttributeRequest, RemoteAttributeResponse, 'remoteAttribute'>,
         private holder: ElementHolder,
     ) {
-        this.remoteAttributeClient = this.webviewEndpoint.createFromPipe(this.remoteAttributePipe);
+        this.remoteAttributeClient = webviewEndpoint.createFromPipe(this.remoteAttributePipe);
     }
 
     /**

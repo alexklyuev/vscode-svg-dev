@@ -1,5 +1,6 @@
-import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
+import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
+import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+
 import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../../shared/pipes/artboard-style.pipe";
 import { Artboard } from "../services/artboard/artboard";
 import { setState } from "../decorators/set-state.decorator";
@@ -14,12 +15,11 @@ export class ArtboardStyleListener {
     private artboardStyleClient: PipeEndpoint<ArtboardStyleRequest, ArtboardStyleResponse, PipeTags.artboardStyle>;
 
     constructor(
-        private webviewEndpoint: WebviewEndpoint,
         private artboardStylePipe: Pipe<ArtboardStyleRequest, ArtboardStyleResponse, PipeTags.artboardStyle>,
         private artboard: Artboard,
         private notationConverter: CssJsNotationConverter,
     ) {
-        this.artboardStyleClient = this.webviewEndpoint.createFromPipe(this.artboardStylePipe);
+        this.artboardStyleClient = webviewEndpoint.createFromPipe(this.artboardStylePipe);
     }
 
     /**

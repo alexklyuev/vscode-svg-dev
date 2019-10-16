@@ -1,5 +1,6 @@
-import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
+import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
+import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+
 import { FlushPayload } from "../../../shared/pipes/flush.pipe";
 import { Artboard } from "../services/artboard/artboard";
 
@@ -8,11 +9,10 @@ export class FlushListener {
     private flushEndpoint: PipeEndpoint<FlushPayload, FlushPayload, "flush">;
 
     constructor(
-        private webviewEndpoint: WebviewEndpoint,
         private flushPipe: Pipe<FlushPayload, FlushPayload, 'flush'>,
         private artboard: Artboard,
     ) {
-        this.flushEndpoint = this.webviewEndpoint.createFromPipe(this.flushPipe);
+        this.flushEndpoint = webviewEndpoint.createFromPipe(this.flushPipe);
     }
 
     listen() {

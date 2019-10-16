@@ -1,5 +1,6 @@
-import { WebviewEndpoint } from "../services/endpoint/webview-endpoint";
-import { Pipe, PipeEndpoint } from "../../../lib/common/pipe/pipe";
+import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
+import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+
 import { CreatePipeRequest, ElementsDict } from "../../../shared/pipes/create.pipe";
 import { FiguresCollection } from "../figures/figures-collection";
 import { setState } from "../decorators/set-state.decorator";
@@ -9,11 +10,10 @@ export class CreateListener {
     private createClient: PipeEndpoint<CreatePipeRequest<keyof ElementsDict>, {}, "create">;
 
     constructor(
-        private webviewEndpoint: WebviewEndpoint,
         private createPipe: Pipe<CreatePipeRequest<keyof ElementsDict>, {}, 'create'>,
         private figuresCollection: FiguresCollection,
     ) {
-        this.createClient = this.webviewEndpoint.createFromPipe(this.createPipe);
+        this.createClient = webviewEndpoint.createFromPipe(this.createPipe);
     }
 
     listen() {

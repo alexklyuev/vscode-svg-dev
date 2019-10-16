@@ -1,4 +1,5 @@
-import { webviewEndpoint } from "../services/endpoint";
+import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+
 import { inverseInteractivePipe } from "../../../shared/pipes/inverse-interactive.pipe";
 
 

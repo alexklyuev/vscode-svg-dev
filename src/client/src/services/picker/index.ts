@@ -1,5 +1,3 @@
-import { host } from "@/webview/services/host-api";
-
 import { ElementHolder } from "./element-holder";
 import { Picker } from "./picker";
 import { artboard } from "../artboard";
@@ -9,4 +7,4 @@ import { userEventMan } from "../user-event";
 
 
 export const holder = new ElementHolder();
-export const picker = new Picker(artboard, holder, figuresCollection, host, zoom, userEventMan);
+export const picker = new Picker(artboard, holder, figuresCollection, zoom, userEventMan);
