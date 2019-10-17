@@ -15,18 +15,14 @@ type ControlPointsCollection = SVGCircleElement[];
 type ReturnablesCollection = AsyncIterableIterator<MouseEvent>[];
 
 
-export class RectPointsEditor {
+export class CirclePointsEditor {
 
-    getPoints(element: SVGRectElement) { 
-        const width = parseFloat(element.getAttribute('width')!);
-        const height = parseFloat(element.getAttribute('height')!);
-        const x = parseFloat(element.getAttribute('x')!);
-        const y = parseFloat(element.getAttribute('y')!);
+    getPoints(element: SVGCircleElement) { 
+        const cx = parseFloat(element.getAttribute('cx')!);
+        const cy = parseFloat(element.getAttribute('cy')!);
+        const r = parseFloat(element.getAttribute('r')!);
         const points = Array<[number, number]>(
-            [x, y],
-            [x + width, y],
-            [x + width, y + height],
-            [x, y + height],
+            [cx + r, cy],
         );
         return points;
     }
@@ -64,7 +60,7 @@ export class RectPointsEditor {
     }
 
     updateCircles(
-        element: SVGRectElement,
+        element: SVGCircleElement,
         circles: ControlPointsCollection,
         returnables: ReturnablesCollection,
     ) {
@@ -76,9 +72,9 @@ export class RectPointsEditor {
 
         circles.push(...newCircles);
 
-        newCircles.forEach((circle, circleIndex) => {
+        newCircles.forEach((circle, _circleIndex) => {
             let horizontalInvert = false;
-            let verticalInvert = false;
+            // let verticalInvert = false;
             const circleMouseDown = fromDomEvent<MouseEvent>(circle, 'mousedown');
             returnables.push(circleMouseDown);
             (async () => {
@@ -110,51 +106,14 @@ export class RectPointsEditor {
                             const relDeltaY = absDeltaY - usedDeltaY;
                             usedDeltaX += relDeltaX;
                             usedDeltaY += relDeltaY;
-                            let x$ = parseFloat( element.getAttribute('x')! );
-                            let y$ = parseFloat( element.getAttribute('y')! );
-                            let width$ = parseFloat( element.getAttribute('width')! );
-                            let height$ = parseFloat( element.getAttribute('height')! );
-                            switch (circleIndex) {
-                                case 0:
-                                    x$ = x$ + (relDeltaX * (horizontalInvert ? 0 : 1));
-                                    y$ = y$ + (relDeltaY * (verticalInvert ? 0 : 1));
-                                    width$ = width$ + (relDeltaX * (horizontalInvert ? 1 : -1));
-                                    height$ = height$ + (relDeltaY * (verticalInvert ? 1 : -1));
-                                    break;
-                                case 1:
-                                    x$ = x$ + (relDeltaX * (horizontalInvert ? 1 : 0));
-                                    y$ = y$ + (relDeltaY * (verticalInvert ? 0 : 1));
-                                    width$ =  width$ + (relDeltaX * (horizontalInvert ? -1 : 1));
-                                    height$ = height$ + (relDeltaY * (verticalInvert ? 1 : -1));
-                                    break;
-                                case 2:
-                                    x$ = x$ + (relDeltaX * (horizontalInvert ? 1 : 0));
-                                    y$ = y$ + (relDeltaY * (verticalInvert ? 1 : 0));
-                                    width$ = width$ + (relDeltaX * (horizontalInvert ? -1 : 1));
-                                    height$ = height$ + (relDeltaY * (verticalInvert ? -1 : 1));
-                                    break;
-                                case 3:
-                                    x$ = x$ + (relDeltaX * (horizontalInvert ? 0 : 1));
-                                    y$ = y$ + (relDeltaY * (verticalInvert ? 1 : 0));
-                                    width$ = width$ + (relDeltaX * (horizontalInvert ? 1 : -1));
-                                    height$ = height$ + (relDeltaY * (verticalInvert ? -1 : 1));
-                                    break;
-                            }
-                            if (width$ < 0) {
-                                width$ = -width$;
-                                x$ -= width$;
+                            let r$ = parseFloat( element.getAttribute('r')! );
+                            r$ += relDeltaX * (horizontalInvert ? -1 : 1);
+                            if (r$ < 0) {
+                                r$ *= -1;
                                 horizontalInvert = !horizontalInvert;
                             }
-                            if (height$ < 0) {
-                                height$ = -height$;
-                                y$ -= height$;
-                                verticalInvert = !verticalInvert;
-                            }
                             spawner.svg.update(element, {
-                                x: `${ x$ }`,
-                                y: `${ y$ }`,
-                                width: `${ width$ }`,
-                                height: `${ height$ }`,
+                                r: `${ r$ }`,
                             });
                             this.updateCircles(element, circles, returnables);
                         }
@@ -172,7 +131,7 @@ export class RectPointsEditor {
         });
     }
 
-    edit(element: SVGRectElement) {
+    edit(element: SVGCircleElement) {
         const returnables: ReturnablesCollection = Array<AsyncIterableIterator<MouseEvent>>();
         const circles: ControlPointsCollection = Array<SVGCircleElement>();
         let mouseMoveIter: AsyncIterableIterator<MouseEvent>;
