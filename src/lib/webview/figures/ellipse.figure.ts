@@ -14,6 +14,7 @@ import { guides } from "@/webview/services/guides";
 import { hints } from "@/webview/services/hints";
 import { Figure } from "@/webview/models/figure.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
+import { ellipsePointsEdtitor } from "../points-editor";
 
 
 export class EllipseFigure implements Figure<SVGEllipseElement> {
@@ -143,117 +144,7 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
 
     edit(element: SVGEllipseElement) {
         hints.setHint('finishEdit');
-        const pseudoEls = Array<SVGElement>();
-        const draw = () => {
-            const cx = parseFloat(element.getAttribute('cx')!);
-            const cy = parseFloat(element.getAttribute('cy')!);
-            const rx = parseFloat(element.getAttribute('rx')!);
-            const ry = parseFloat(element.getAttribute('ry')!);
-            const points = Array<[number, number]>(
-                [cx + rx, cy],
-                [cx, cy + ry],
-            );
-            points.forEach((point, pointIndex) => {
-                const [ cx$, cy$ ] = point;
-                const { value: zoomValue } = zoom;
-                const circle = spawner.svg.circle(
-                    {
-                        cx: `${ cx$ * zoomValue }`,
-                        cy: `${ cy$ * zoomValue }`,
-                        fill: appearance.editControlPointFill,
-                        stroke: appearance.editControlPointStroke,
-                        'stroke-dasharray': appearance.editControlPointStrokeDasharray,
-                        r: appearance.editControlPointRadius,
-                    },
-                    {
-                        pointerEvents: 'fill',
-                    },
-                );
-                guides.guidesContainer! .appendChild(circle);
-                pseudoEls.push(circle);
-                let vx = 0;
-                let vy = 0;
-                let ax = cx;
-                let ay = cy;
-                let lx = cx;
-                let ly = cy;
-                const onMouseMove = (event: MouseEvent) => {
-                    event.stopPropagation();
-                    const { clientX, clientY} = event;
-                    const dx = (clientX - vx) / zoom.value;
-                    const dy = (clientY - vy) / zoom.value;
-                    lx = ax + dx;
-                    ly = ay + dy;
-                    const nx = lx * zoom.value;
-                    const ny = ly * zoom.value;
-                    spawner.svg.update(circle, {
-                        cx: `${ pointIndex === 0 ? nx : lx }`,
-                        cy: `${ pointIndex === 1 ? ny : ly }`,
-                    });
-                    let rx$ = rx;
-                    let ry$ = ry;
-                    switch (pointIndex) {
-                        case 0:
-                            rx$ = rx + dx;
-                            break;
-                        case 1:
-                            ry$ = ry + dy;
-                            break;
-                    }
-                    if (rx$ < 0 ) {
-                        rx$ = -rx$;
-                    }
-                    if (ry$ < 0) {
-                        ry$ = -ry$;
-                    }
-                    spawner.svg.update(element, {
-                        rx: `${ rx$ }`,
-                        ry: `${ ry$ }`,
-                    });
-                    redraw();
-                 };
-                 const onMouseUp = (event: MouseEvent) => {
-                    event.stopPropagation();
-                    window.removeEventListener('mousemove', onMouseMove);
-                    window.removeEventListener('mouseup', onMouseUp);
-                    redraw();
-                 };
-                 const onMouseDown = (event: MouseEvent) => {
-                    event.stopPropagation();
-                    guides.removeSelection();
-                    window.addEventListener('mousemove', onMouseMove);
-                    window.addEventListener('mouseup', onMouseUp);
-                    const {
-                        clientX,
-                        clientY,
-                    } = event;
-                    vx = clientX;
-                    vy = clientY;
-                    ax = lx;
-                    ay = ly;
-                 };
-                 circle.addEventListener('mousedown', onMouseDown);
-            });
-        };
-        const undraw = () => {
-            pseudoEls.forEach(circle => guides.guidesContainer!.removeChild(circle));
-            pseudoEls.length = 0;
-        };
-        const redraw = () => {
-            undraw();
-            draw();
-        };
-        draw();
-        // zoom.valueChange.on(redraw);
-        const elementOnMouseMove = (_event: MouseEvent) => {
-            redraw();
-        };
-        element.addEventListener('mousemove', elementOnMouseMove);
-        return () => {
-            undraw();
-            // zoom.valueChange.off(redraw);
-            element.removeEventListener('mousemove', elementOnMouseMove);
-        };
+        return ellipsePointsEdtitor.edit(element);
     }
 
 }
