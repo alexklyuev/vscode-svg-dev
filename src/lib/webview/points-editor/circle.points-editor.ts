@@ -1,5 +1,5 @@
 import { spawner } from "@/dom/spawner";
-import { BasePointsEditor } from "./base.points-editor";
+import { BasePointsEditor } from "@/webview/points-editor/base.points-editor";
 
 
 export class CirclePointsEditor extends BasePointsEditor<SVGCircleElement> {
@@ -19,6 +19,7 @@ export class CirclePointsEditor extends BasePointsEditor<SVGCircleElement> {
         _circleIndex: number,
         relDelta: [number, number],
         mirror: [boolean, boolean],
+        _event: MouseEvent,
     ) {
         const [ relDeltaX, ] = relDelta;
         const [ horizontalInvert, ] = mirror;

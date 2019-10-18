@@ -1,5 +1,5 @@
 import { spawner } from "@/dom/spawner";
-import { BasePointsEditor } from "./base.points-editor";
+import { BasePointsEditor } from "@/webview/points-editor/base.points-editor";
 
 
 export class RectPointsEditor extends BasePointsEditor<SVGRectElement> {
@@ -23,6 +23,7 @@ export class RectPointsEditor extends BasePointsEditor<SVGRectElement> {
         circleIndex: number,
         relDelta: [number, number],
         mirror: [boolean, boolean],
+        _event: MouseEvent,
     ) {
         let x$ = parseFloat( element.getAttribute('x')! );
         let y$ = parseFloat( element.getAttribute('y')! );

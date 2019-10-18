@@ -136,10 +136,6 @@ export class EllipseFigure implements Figure<SVGEllipseElement> {
             'rx': `${ rx }`,
             'ry': `${ ry }`,
         });
-        // element.setAttribute('cx', `${ cx }`);
-        // element.setAttribute('cy', `${ cy }`);
-        // element.setAttribute('rx', `${ rx }`);
-        // element.setAttribute('ry', `${ ry }`);
     }
 
     edit(element: SVGEllipseElement) {

@@ -1,6 +1,5 @@
 import { artboard } from "@/webview/services/artboard";
 import { findMethodIterator } from "@/common/iterators";
-import { fromDomEvent } from "@/dom/iterators";
 import { PointConcerns } from "@/webview/models/point-concerns.model";
 import { artboardMove } from "@/webview/services/artboard-move";
 import { draggerDouble } from "@/webview/draggers";
@@ -14,6 +13,7 @@ import { hints } from "@/webview/services/hints";
 import { zoom } from "@/webview/services/zoom";
 import { Figure } from "@/webview/models/figure.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
+import { linePointsEditor } from "../points-editor";
 
 
 export class LineFigure implements Figure<SVGLineElement> {
@@ -147,129 +147,7 @@ export class LineFigure implements Figure<SVGLineElement> {
 
     edit(element: SVGLineElement) {
         hints.setHint('finishEdit');
-        // userEventMan.mode = 'interactive';
-        guides.removeSelection();
-        const pseudoEls = Array<SVGElement>();
-        const draw = () => {
-            const x1 = element.getAttribute('x1')!;
-            const y1 = element.getAttribute('y1')!;
-            const x2 = element.getAttribute('x2')!;
-            const y2 = element.getAttribute('y2')!;
-            [[x1, y1], [x2, y2]].forEach((coords, pairIndex) => {
-                const [cx, cy] = coords.map(c => parseFloat(c));
-                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                guides.guidesContainer!.appendChild(circle);
-                circle.setAttribute('fill', 'none');
-                circle.setAttribute('stroke', '#666');
-                circle.setAttribute('stroke-dasharray', '1');
-                circle.setAttribute('cx', `${ cx * zoom.value }`);
-                circle.setAttribute('cy', `${ cy * zoom.value }`);
-                circle.setAttribute('r', '10');
-                circle.style.pointerEvents = 'fill';
-                
-                const x1$ = parseFloat(element.getAttribute('x1')!);
-                const y1$ = parseFloat(element.getAttribute('y1')!);
-                const x2$ = parseFloat(element.getAttribute('x2')!);
-                const y2$ = parseFloat(element.getAttribute('y2')!);
-                let x = 0;
-                let y = 0;
-                let curCx = cx;
-                let curCy = cy;
-                let rcx = cx;
-                let rcy = cy;
-                const onMouseMove = (event: MouseEvent) => {
-                    event.stopPropagation();
-                    const { clientX, clientY} = event;
-                    const dx = (clientX - x) / zoom.value;
-                    const dy = (clientY - y) / zoom.value;
-                    curCx = rcx + dx;
-                    curCy = rcy + dy;
-                    circle.setAttribute('cx', `${ curCx * zoom.value }`);
-                    circle.setAttribute('cy', `${ curCy * zoom.value }`);
-                    if (pairIndex === 0) {
-                        element.setAttribute('x1', `${ x1$ + dx }`);
-                        element.setAttribute('y1', `${ y1$ + dy }`);
-                    }
-                    if (pairIndex === 1) {
-                        element.setAttribute('x2', `${ x2$ + dx }`);
-                        element.setAttribute('y2', `${ y2$ + dy }`);
-                    }
-                    redraw();
-                };
-                const onMouseUp = (event: MouseEvent) => {
-                    event.stopPropagation();
-                    window.removeEventListener('mousemove', onMouseMove);
-                    window.removeEventListener('mouseup', onMouseUp);
-                    redraw();
-                };
-                const onMouseDown = (event: MouseEvent) => {
-                    event.stopPropagation();
-                    window.addEventListener('mousemove', onMouseMove);
-                    window.addEventListener('mouseup', onMouseUp);
-                    const {
-                        clientX,
-                        clientY,
-                    } = event;
-                    x = clientX;
-                    y = clientY;
-                    rcx = curCx;
-                    rcy = curCy;
-                };
-                circle.addEventListener('mousedown', onMouseDown);
-                pseudoEls.push(circle);
-            });
-        };
-
-        const undraw = () => {
-            pseudoEls.forEach(circle => guides.guidesContainer!.removeChild(circle));
-            pseudoEls.length = 0;
-        };
-
-        const redraw = () => {
-            undraw();
-            draw();
-        };
-
-        draw();
-
-        const zoomIter = findMethodIterator<number>(zoom.update);
-        (async () => {
-            for await (const _value of zoomIter) {
-                console.log('redraw line edit by zoom');
-                redraw();
-            }
-        })();
-
-        let mouseMoveIter: AsyncIterableIterator<MouseEvent>;
-        let mouseUpIter: AsyncIterableIterator<MouseEvent>;
-        const mouseDownIter = fromDomEvent(element, 'mousedown');
-        (async () => {
-            for await (const _down of mouseDownIter) {
-                mouseMoveIter = fromDomEvent(element, 'mousemove');
-                mouseUpIter = fromDomEvent(element, 'mouseup');
-                (async () => {
-                    for await (const _event of mouseMoveIter) {
-                        redraw();
-                    }
-                })();
-                (async () => {
-                    for await (const _up of mouseUpIter) {
-                        mouseUpIter.return!();
-                        mouseMoveIter.return!();
-                    }
-                })();
-            }
-        })();
-
-        const cancel = () => {
-            undraw();
-            zoomIter.return!();
-            mouseDownIter.return!();
-            mouseMoveIter.return!();
-            mouseUpIter.return!();
-        };
-
-        return cancel;
+        return linePointsEditor.edit(element);
     }
 
 }

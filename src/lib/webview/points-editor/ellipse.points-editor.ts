@@ -21,28 +21,27 @@ export class EllipsePointsEditor extends BasePointsEditor<SVGEllipseElement> {
         circleIndex: number,
         relDelta: [number, number],
         mirror: [boolean, boolean],
+        _event: MouseEvent,
     ) {
-        const rx = parseFloat( element.getAttribute('rx')! );
-        const ry = parseFloat( element.getAttribute('ry')! );
-        let rx$ = rx;
-        let ry$ = ry;
-        const [ dx, dy ] = relDelta;
-        const [ hi, vi ] = mirror;
+        let rx$ = parseFloat( element.getAttribute('rx')! );
+        let ry$ = parseFloat( element.getAttribute('ry')! );
+        const [ relDeltaX, relDeltaY ] = relDelta;
+        const [ horizontalInvert, verticalInvert ] = mirror;
         switch (circleIndex) {
             case 0:
-                rx$ += dx * (hi ? -1 : 1);
+                rx$ += relDeltaX * (horizontalInvert ? -1 : 1);
                 break;
             case 1:
-                ry$ += dy * (vi ? -1 : 1);
+                ry$ += relDeltaY * (verticalInvert ? -1 : 1);
                 break;
         }
         if (rx$ < 0 ) {
             rx$ = -rx$;
-            mirror[0] = !hi;
+            mirror[0] = !horizontalInvert;
         }
         if (ry$ < 0) {
             ry$ = -ry$;
-            mirror[1] = !vi;
+            mirror[1] = !verticalInvert;
         }
         spawner.svg.update(element, {
             rx: `${ rx$ }`,

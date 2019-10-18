@@ -24,6 +24,7 @@ export abstract class BasePointsEditor<E extends SVGElement> {
         circleIndex: number,
         relDelta: [number, number],
         mirror: [boolean, boolean],
+        event: MouseEvent,
     ): void;
 
     createCircles(points: number[][]) {
@@ -103,7 +104,7 @@ export abstract class BasePointsEditor<E extends SVGElement> {
                             const relDeltaY = absDeltaY - usedDeltaY;
                             usedDeltaX += relDeltaX;
                             usedDeltaY += relDeltaY;
-                            this.onMove(element, circleIndex, [relDeltaX, relDeltaY], mirror);
+                            this.onMove(element, circleIndex, [relDeltaX, relDeltaY], mirror, circleMoveEvent);
                             this.updateCircles(element, circles, returnables);
                         }
                     })();

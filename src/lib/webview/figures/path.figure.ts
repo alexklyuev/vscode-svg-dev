@@ -16,6 +16,7 @@ import { zoom } from "@/webview/services/zoom";
 import { artboardMove } from "@/webview/services/artboard-move";
 import { Figure } from "@/webview/models/figure.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
+import { pathPointsEditor } from "../points-editor";
 
 
 export class PathFigure implements Figure<SVGPathElement> {
@@ -228,7 +229,7 @@ export class PathFigure implements Figure<SVGPathElement> {
     /**
      * //
      */
-    edit(element: SVGPathElement) {
+    xedit(element: SVGPathElement) {
         let d = element.getAttribute('d');
         if (d) {
             hints.setHint('finishEdit');
@@ -381,6 +382,11 @@ export class PathFigure implements Figure<SVGPathElement> {
             // cancelListener.keyEvent.on(cancel);
 
         }
+    }
+
+    edit(element: SVGPathElement) {
+        hints.setHint('finishEdit');
+        return pathPointsEditor.edit(element);
     }
 
 }

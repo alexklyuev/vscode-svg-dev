@@ -11,9 +11,9 @@ import { cancelListener } from "@/webview/listeners";
 import { zoom } from "@/webview/services/zoom";
 import { appearance } from "@/webview/services/appearance";
 import { hints } from "@/webview/services/hints";
-import { guides } from "@/webview/services/guides";
 import { Figure } from "@/webview/models/figure.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
+import { polyPointsEditor } from "@/webview/points-editor";
 
 
 export abstract class PolyFigure implements Figure<SVGElement> {
@@ -223,133 +223,8 @@ export abstract class PolyFigure implements Figure<SVGElement> {
     }
 
     edit(element: SVGElement) {
-        let points = element.getAttribute('points');
         hints.setHint('finishEdit');
-        // userEventMan.mode = 'interactive';
-        guides.removeSelection();
-        const pseudoEls = Array<SVGElement>();
-        const draw = () => {
-            points = element.getAttribute('points')!;
-            return points.split(/[,\s]+/).map(c => parseFloat(c))
-            .reduce((acc, coord, index) => {
-                if (index % 2 === 0) {
-                    acc.push([coord, NaN]);
-                } else {
-                    acc[acc.length - 1][1] = coord;
-                }
-                return acc;
-            }, Array<[number, number]>())
-            .map((pair, pairIndex) => {
-                const [ cx, cy ] = pair;
-                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                guides.guidesContainer!.appendChild(circle);
-                circle.setAttribute('fill', 'none');
-                circle.setAttribute('stroke', '#666');
-                circle.setAttribute('stroke-dasharray', '1');
-                circle.setAttribute('cx', `${ cx * zoom.value }`);
-                circle.setAttribute('cy', `${ cy * zoom.value }`);
-                circle.setAttribute('r', '10');
-                circle.style.pointerEvents = 'fill';
-
-                // let d0 = element.getAttribute('d')!;
-                let p0 = element.getAttribute('points')!;
-                let x = 0;
-                let y = 0;
-                let curCx = cx;
-                let curCy = cy;
-                let rcx = cx;
-                let rcy = cy;
-                const onMouseMove = (event: MouseEvent) => {
-                    event.stopPropagation();
-                    const { clientX, clientY} = event;
-                    const dx = (clientX - x) / zoom.value;
-                    const dy = (clientY - y) / zoom.value;
-                    curCx = rcx + dx;
-                    curCy = rcy + dy;
-                    circle.setAttribute('cx', `${ curCx * zoom.value }`);
-                    circle.setAttribute('cy', `${ curCy * zoom.value }`);
-                    const points$ = p0.split(/[,\s]+/).map(c => parseFloat(c))
-                    .reduce((acc, coord, index) => {
-                        if (index % 2 === 0) {
-                            acc.push([coord, NaN]);
-                        } else {
-                            acc[acc.length - 1][1] = coord;
-                        }
-                        return acc;
-                    }, Array<[number, number]>())
-                    .map((pair1, pairIndex1) => {
-                        if (pairIndex !== pairIndex1) {
-                            return pair1.join(',');
-                        } else {
-                            const [x, y] = pair;
-                            return [
-                                x + dx,
-                                y + dy,
-                            ].join(',');
-                        }
-                    })
-                    .join(' ');
-                    element.setAttribute('points', points$);
-                    redraw();
-                };
-                const onMouseUp = (event: MouseEvent) => {
-                    event.stopPropagation();
-                    window.removeEventListener('mousemove', onMouseMove);
-                    window.removeEventListener('mouseup', onMouseUp);
-                    redraw();
-                };
-                const onMouseDown = (event: MouseEvent) => {
-                    event.stopPropagation();
-                    guides.removeSelection();
-                    window.addEventListener('mousemove', onMouseMove);
-                    window.addEventListener('mouseup', onMouseUp);
-                    const {
-                        clientX,
-                        clientY,
-                    } = event;
-                    x = clientX;
-                    y = clientY;
-                    rcx = curCx;
-                    rcy = curCy;
-                };
-
-                circle.addEventListener('mousedown', onMouseDown);
-
-                return circle;
-            })
-            .forEach(circle => pseudoEls.push(circle));
-        };
-
-        const undraw = () => {
-            pseudoEls.forEach(circle => guides.guidesContainer!.removeChild(circle));
-            pseudoEls.length = 0;
-        };
-
-        const redraw = () => {
-            undraw();
-            draw();
-        };
-
-        draw();
-
-        // zoom.valueChange.on(redraw);
-
-        const elementOnMouseMove = (_event: MouseEvent) => {
-            redraw();
-        };
-        element.addEventListener('mousemove', elementOnMouseMove);
-
-        const cancel = () => {
-            // userEventMan.mode = 'pick';
-            // guides.drawSelection([element]);
-            undraw();
-            // zoom.valueChange.off(redraw);
-            // cancelListener.keyEvent.off(cancel);
-            element.removeEventListener('mousemove', elementOnMouseMove);
-        };
-
-        // cancelListener.keyEvent.on(cancel);
-        return cancel;
+        return polyPointsEditor.edit(element);
     }
 
 }
