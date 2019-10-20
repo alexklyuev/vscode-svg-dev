@@ -12,6 +12,7 @@ import {
     fillControl,
     strokeControl,
     artboardControls,
+    editOnPick,
 } from '@/webview/hud';
 
 import { zoomPipe } from '../shared/pipes/zoom.pipe';
@@ -231,12 +232,43 @@ moveKeyListener.listen();
 })();
 
 /**
+ * hide edit points control when edit on pick mode is on
+ */
+(async () => {
+    const toggles = findMethodIterator(editOnPick.toggle);
+    for await (const isOn of toggles) {
+        if (isOn) {
+            editPointsControl.hide();
+        }
+    }
+})();
+
+/**
+ * remove editing on selection if edit on pick is off
+ * and active element changed
+ */
+(async () => {
+    const elementsSet = findMethodIterator(holder.elementsHasBeenSet);
+    for await (const elements of elementsSet) {
+        const activeElement = editPointsHub.element;
+        if (!editPointsHub.editOnPick) {
+            if (elements.length > 1) {
+                editPointsHub.purge();
+            }
+            if (!activeElement || !elements.includes(activeElement)) {
+                editPointsHub.purge();
+            }
+        }
+    }
+})();
+
+/**
  * show/hide edit button
  */
 (async () => {
     const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
     for await (const elements of elementsHasBeenSet) {
-        if (elements.length > 0) {
+        if (elements.length > 0 && !editPointsHub.editOnPick) {
             const element = elements[0];
             const delegate = figuresCollection.delegate(element);
             if (delegate && delegate.edit instanceof Function) {
@@ -250,15 +282,39 @@ moveKeyListener.listen();
     }
 })();
 
+(async () => {
+    const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
+    for await (const elements of elementsHasBeenSet) {
+        if (elements.length !== 1) {
+            editPointsHub.purge();
+        }
+    }
+})();
+
 /**
  * edit on pick
  */
 (async () => {
     const pickerMouseUps = findMethodIterator(picker.onMouseup);
     for await (const _event of pickerMouseUps) {
-        editPointsHub.startEditing(holder.elements[0]);
+        if (editPointsHub.editOnPick && holder.elements.length === 1) {
+            editPointsHub.startEditing(holder.elements[0]);
+        }
     }
 })();
+
+/**
+ * edit on copy
+ */
+(async () => {
+    const copyElement = findMethodIterator(elementListener.copyInPlaceElement);
+    for await (const _element of copyElement) {
+        if (editPointsHub.editOnPick) {
+            editPointsHub.startEditing(holder.elements[0]);
+        }
+    }
+})();
+
 
 /**
  * //
@@ -322,15 +378,6 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
     }
 })();
 
-/**
- * edit on copy
- */
-(async () => {
-    const copyElement = findMethodIterator(elementListener.copyInPlaceElement);
-    for await (const _element of copyElement) {
-        editPointsHub.startEditing(holder.elements[0]);
-    }
-})();
 
 /**
  * remove editing on delete

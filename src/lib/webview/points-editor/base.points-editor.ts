@@ -26,7 +26,7 @@ export abstract class BasePointsEditor<E extends SVGElement> {
         event: MouseEvent,
     ): void;
 
-    createCircles(points: number[][]): SVGElement[] {
+    createControls(points: number[][]): SVGElement[] {
         return points.map(point => {
             const [ cx, cy ] = point;
             const { value: zoomValue } = zoom;
@@ -48,7 +48,7 @@ export abstract class BasePointsEditor<E extends SVGElement> {
         });
     }
 
-    destroyCircles(circles: ControlPointsCollection) {
+    destroyControls(circles: ControlPointsCollection) {
         circles.forEach(circle => guides.guidesContainer!. removeChild(circle));
         circles.length = 0;
     }
@@ -58,18 +58,18 @@ export abstract class BasePointsEditor<E extends SVGElement> {
         returnables.length = 0;
     }
 
-    updateCircles(
+    update(
         element: E,
-        circles: ControlPointsCollection,
+        controls: ControlPointsCollection,
         returnables: ReturnablesCollection,
     ) {
-        this.destroyCircles(circles);
+        this.destroyControls(controls);
         this.destroyReturnables(returnables);
 
         const points = this.getPoints(element);
-        const newCircles = this.createCircles(points);
+        const newCircles = this.createControls(points);
 
-        circles.push(...newCircles);
+        controls.push(...newCircles);
 
         newCircles.forEach((circle, circleIndex) => {
             const mirror: [boolean, boolean] = [false, false];
@@ -104,7 +104,7 @@ export abstract class BasePointsEditor<E extends SVGElement> {
                             usedDeltaX += relDeltaX;
                             usedDeltaY += relDeltaY;
                             this.onMove(element, circleIndex, [relDeltaX, relDeltaY], mirror, circleMoveEvent);
-                            this.updateCircles(element, circles, returnables);
+                            this.update(element, controls, returnables);
                         }
                     })();
                     (async () => {
@@ -112,7 +112,7 @@ export abstract class BasePointsEditor<E extends SVGElement> {
                             circleUpEvent.stopPropagation();
                             circleMouseMove.return! ();
                             circleMouseUp.return! ();
-                            this.updateCircles(element, circles, returnables);
+                            this.update(element, controls, returnables);
                         }
                     })();
                 }
@@ -135,25 +135,25 @@ export abstract class BasePointsEditor<E extends SVGElement> {
                 mouseUpIter = fromDomEvent(listeningTarget, 'mouseup');
                 (async () => {
                     for await (const _moveEvent of mouseMoveIter) {
-                        this.updateCircles(element, controls, returnables);
+                        this.update(element, controls, returnables);
                     }
                 })();
                 (async () => {
                     for await (const _upEvent of mouseUpIter) {
                         mouseUpIter.return! ();
                         mouseMoveIter.return! ();
-                        this.updateCircles(element, controls, returnables);
+                        this.update(element, controls, returnables);
                     }
                 })();
             }
         })();
 
-        this.updateCircles(element, controls, returnables);
+        this.update(element, controls, returnables);
 
         const zoomIter = findMethodIterator(zoom.update);
         (async () => {
             for await (const _value of zoomIter) {
-                this.updateCircles(element, controls, returnables);
+                this.update(element, controls, returnables);
             }
         })();
 
@@ -168,7 +168,7 @@ export abstract class BasePointsEditor<E extends SVGElement> {
             .forEach(iter => {
                 iter.return!();
             });
-            this.destroyCircles(controls);
+            this.destroyControls(controls);
             this.destroyReturnables(returnables);
         };
         return cancel;

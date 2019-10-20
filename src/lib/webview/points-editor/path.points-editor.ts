@@ -109,7 +109,6 @@ export class PathPointsEditor {
                 const isPoint = pairIndex === (point.length - 1);
                 const selfControl = isPoint ? false : (pairIndex === $pairs.length - 2);
 
-
                 const control = spawner.svg.circle(
                     {
                         cx: `${ cx * zoom.value }`,
@@ -124,21 +123,20 @@ export class PathPointsEditor {
                     },
                 );
 
-                // guides.guidesContainer!.appendChild(control);
-                // controls.push(control);
                 (isPoint ? controlPoints : controlBeziers).push(control);
 
                 if (!isPoint) {
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('stroke', 'red');
-                    line.setAttribute('stroke-dasharray', '1');
                     const $prevPairs = $points[pointIndex$ - 1];
                     const $pair = (pairIndex === $pairs.length - 2) ? $pairs[$pairs.length - 1] : $prevPairs[$prevPairs.length -1];
-                    const [ $x, $y ] = $pair;
-                    line.setAttribute('x1', `${ cx * zoom.value }`);
-                    line.setAttribute('y1', `${ cy * zoom.value }`);
-                    line.setAttribute('x2', `${ $x * zoom.value }`);
-                    line.setAttribute('y2', `${ $y * zoom.value }`);
+                    const [ x2, y2 ] = $pair;
+                    const line = spawner.svg.element('line', {
+                        'x1': `${ cx * zoom.value }`,
+                        'y1': `${ cy * zoom.value }`,
+                        'x2': `${ x2 * zoom.value }`,
+                        'y2': `${ y2 * zoom.value }`,
+                        stroke: appearance.editBezierPointLineStroke,
+                        'stroke-dasharray': appearance.editBezierPointLineStrokeDasharray,
+                    }, {});
                     controlLines.push(line);
                 }
 

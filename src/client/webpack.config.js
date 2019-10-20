@@ -2,7 +2,7 @@
 
 const path = require('path');
 
-const isDevelopment = true;
+const isDevelopment = false;
 
 /**
  * @returns {webpack.Configuration}

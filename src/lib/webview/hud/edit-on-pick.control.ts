@@ -2,13 +2,12 @@ import { makeMethodIterator } from "@/common/iterators";
 import { spawner } from "@/dom/spawner";
 
 import { Outlet } from "./models/outlet.model";
+import { editPointsHub } from "../services/edit-points-hub";
 
 
 export class EditOnPick implements Outlet {
 
   public readonly el: HTMLElement;
-
-  private isOn = false;
 
   constructor() {
     this.el = spawner.html.div(
@@ -31,7 +30,7 @@ export class EditOnPick implements Outlet {
     this.el.appendChild(text);
     this.el.onclick = (event: MouseEvent) => {
       this.toggle(event);
-      text.innerText = this.isOn ? 'edit on pick is on' : 'edit on pick is off';
+      text.innerText =  `edit on pick: ${ editPointsHub.editOnPick ? 'on' : 'off' }`;
     };
   }
 
@@ -43,8 +42,8 @@ export class EditOnPick implements Outlet {
   toggle(event: MouseEvent) {
     event.preventDefault();
     event.stopPropagation();
-    this.isOn = !this.isOn;
-    return this.isOn;
+    editPointsHub.editOnPick = !editPointsHub.editOnPick;
+    return editPointsHub.editOnPick;
   }
 
 }

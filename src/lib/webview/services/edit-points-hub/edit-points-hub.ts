@@ -9,6 +9,23 @@ export class EditPointsHub {
 
     private innerElement: SVGElement | null = null;
 
+    get element(): SVGElement | null {
+        return this.innerElement;
+    }
+
+    private editOnPickInner = false;
+
+    get editOnPick(): boolean {
+        return this.editOnPickInner;
+    }
+
+    set editOnPick(val: boolean) {
+        this.editOnPickInner = val;
+        if (val === false) {
+            this.purge();
+        }
+    }
+
     /**
      * //
      */
