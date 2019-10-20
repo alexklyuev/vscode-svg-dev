@@ -21,11 +21,11 @@ export class PolyPointsEditor extends BasePointsEditor<SVGElement> {
         circleIndex: number,
         relDelta: [number, number],
         _mirror: [boolean, boolean],
-        event: MouseEvent,
+        _event: MouseEvent,
     ) {
-        const [ dx, dy ] = relDelta;
-        let p0 = element.getAttribute('points')!;
-        const points$ = p0.split(/[,\s]+/).map(c => parseFloat(c))
+        const [ relDeltaX, relDeltaY ] = relDelta;
+        let pointsAttr = element.getAttribute('points')!;
+        const newPoints = pointsAttr.split(/[,\s]+/).map(c => parseFloat(c))
         .reduce((acc, coord, index) => {
             if (index % 2 === 0) {
                 acc.push([coord, NaN]);
@@ -40,13 +40,13 @@ export class PolyPointsEditor extends BasePointsEditor<SVGElement> {
             } else {
                 const [x, y] = pair1;
                 return [
-                    x + dx,
-                    y + dy,
+                    x + relDeltaX,
+                    y + relDeltaY,
                 ].join(',');
             }
         })
         .join(' ');
-        element.setAttribute('points', points$);
+        element.setAttribute('points', newPoints);
     }
 
 }

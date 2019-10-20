@@ -3,15 +3,14 @@ import { fromDomEvent } from "@/dom/iterators";
 import { spawner } from "@/dom/spawner";
 import { appearance } from "@/webview/services/appearance";
 import { artboard } from "@/webview/services/artboard";
-
-import { zoom } from "../services/zoom";
-import { guides } from "../services/guides";
+import { zoom } from "@/webview/services/zoom";
+import { guides } from "@/webview/services/guides";
 
 
 /**
  * refactor to Sets
  */
-type ControlPointsCollection = SVGCircleElement[];
+type ControlPointsCollection = SVGElement[];
 type ReturnablesCollection = AsyncIterableIterator<MouseEvent>[];
 
 
@@ -27,7 +26,7 @@ export abstract class BasePointsEditor<E extends SVGElement> {
         event: MouseEvent,
     ): void;
 
-    createCircles(points: number[][]) {
+    createCircles(points: number[][]): SVGElement[] {
         return points.map(point => {
             const [ cx, cy ] = point;
             const { value: zoomValue } = zoom;
@@ -86,11 +85,11 @@ export abstract class BasePointsEditor<E extends SVGElement> {
                     } = circleDownEvent;
                     const downX = clientX;
                     const downY = clientY;
+                    let usedDeltaX = 0;
+                    let usedDeltaY = 0;
                     const listeningElement = window;
                     const circleMouseMove = fromDomEvent<MouseEvent>(listeningElement, 'mousemove');
                     const circleMouseUp = fromDomEvent<MouseEvent>(listeningElement, 'mouseup');
-                    let usedDeltaX = 0;
-                    let usedDeltaY = 0;
                     (async () => {
                         for await (const circleMoveEvent of circleMouseMove) {
                             const {
@@ -125,7 +124,7 @@ export abstract class BasePointsEditor<E extends SVGElement> {
 
     edit(element: E) {
         const returnables: ReturnablesCollection = Array<AsyncIterableIterator<MouseEvent>>();
-        const circles: ControlPointsCollection = Array<SVGCircleElement>();
+        const controls: ControlPointsCollection = Array<SVGCircleElement>();
         let mouseMoveIter: AsyncIterableIterator<MouseEvent>;
         let mouseUpIter: AsyncIterableIterator<MouseEvent>;
         const mouseDownIter = fromDomEvent(element, 'mousedown');
@@ -136,24 +135,25 @@ export abstract class BasePointsEditor<E extends SVGElement> {
                 mouseUpIter = fromDomEvent(listeningTarget, 'mouseup');
                 (async () => {
                     for await (const _moveEvent of mouseMoveIter) {
-                        this.updateCircles(element, circles, returnables);
+                        this.updateCircles(element, controls, returnables);
                     }
                 })();
                 (async () => {
                     for await (const _upEvent of mouseUpIter) {
                         mouseUpIter.return! ();
                         mouseMoveIter.return! ();
-                        this.updateCircles(element, circles, returnables);
+                        this.updateCircles(element, controls, returnables);
                     }
                 })();
             }
         })();
 
-        this.updateCircles(element, circles, returnables);
+        this.updateCircles(element, controls, returnables);
+
         const zoomIter = findMethodIterator(zoom.update);
         (async () => {
             for await (const _value of zoomIter) {
-                this.updateCircles(element, circles, returnables);
+                this.updateCircles(element, controls, returnables);
             }
         })();
 
@@ -168,7 +168,7 @@ export abstract class BasePointsEditor<E extends SVGElement> {
             .forEach(iter => {
                 iter.return!();
             });
-            this.destroyCircles(circles);
+            this.destroyCircles(controls);
             this.destroyReturnables(returnables);
         };
         return cancel;

@@ -23,6 +23,7 @@ export abstract class PolyFigure implements Figure<SVGElement> {
 
     abstract stroke: string;
     abstract fill: string;
+
     public readonly drag = draggerPoints;
     public readonly move = moverPoints;
 

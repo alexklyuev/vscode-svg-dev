@@ -1,118 +1,239 @@
-import { BasePointsEditor } from "@/webview/points-editor/base.points-editor";
-import { pathPoints } from "@/webview/services/path";
+import { findMethodIterator } from "@/common/iterators";
+import { fromDomEvent } from "@/dom/iterators";
 import { spawner } from "@/dom/spawner";
-import { appearance } from "@/webview/services/appearance";
+import { pathPoints } from "@/webview/services/path";
+import { artboard } from "@/webview/services/artboard";
 import { zoom } from "@/webview/services/zoom";
-import { guides } from "@/webview/services/guides";
+import { guides } from "@/webview//services/guides";
+import { appearance } from "../services/appearance";
 
 
-export class PathPointsEditor extends BasePointsEditor<SVGPathElement> {
+/**
+ * refactor to Sets
+ */
+type ControlPointsCollection = SVGElement[];
+type ReturnablesCollection = AsyncIterableIterator<MouseEvent>[];
 
-    private pointTypeMap = Array<boolean>();
-    private selfControls = Array<boolean>();
 
-    getPoints(element: SVGPathElement): [number, number][] {
-        const points = Array<[number, number]>();
-        const d = element.getAttribute('d')!;
-        const dirs = pathPoints.parseStr(d);
-        const allDims = pathPoints.getAllAbsCoords(dirs);
-        let i = -1;
-        allDims.forEach((dim, _dimIndex) => {
-            dim.forEach((pair, pairIndex) => {
-                i++;
-                const [ x, y ] = pair;
-                const isPoint = pairIndex === (dim.length - 1);
-                const selfControl = isPoint ? false : (pairIndex === dim.length - 2);
-                // points.push([x, y]);
-                points[i] = [x, y];
-                this.pointTypeMap[i] = isPoint;
-                this.selfControls[i] = selfControl;
-            });
-        });
-        // console.log(JSON.stringify(points, null, 2));
-        // console.log(JSON.stringify(this.pointTypeMap, null, 2));
-        // console.log(JSON.stringify(this.selfControls, null, 2));
-        return points;
-    }
-
-    onMove(
-        element: SVGPathElement,
-        circleIndex: number,
-        relDelta: [number, number],
-        _mirror: [boolean, boolean],
-        event: MouseEvent,
-    ) {
-        const { altKey } = event;
-        const [ dx, dy ] = relDelta;
-        const d = element.getAttribute('d')!;
-        const points = pathPoints.parseStr(d);
-        const newPoints = points
-        .map(([command, coords], pointIndex) => {
-            if (circleIndex !== pointIndex) {
-                return `${ command } ${ coords }`;
-            } else {
-                let newCoords = coords.split(pathPoints.delimeter).map(c => parseFloat(c));
-                const isPoint = this.pointTypeMap[circleIndex];
-                const selfControl = this.selfControls[circleIndex];
-                console.log(circleIndex);
-                console.log(isPoint);
-                console.log(selfControl);
-                if (!isPoint) {
-                    if (selfControl) {
-                        newCoords[newCoords.length - 4] += dx;
-                        newCoords[newCoords.length - 3] += dy;
-                    } else {
-                        newCoords[newCoords.length - 6] += dx;
-                        newCoords[newCoords.length - 5] += dy;
-                    }
-                } else {
-                    if (altKey) {
-                        newCoords = newCoords.map((c, ci) => c + [dx, dy][ci % 2]);
-                    } else {
-                        newCoords[newCoords.length - 2] += dx;
-                        newCoords[newCoords.length - 1] += dy;
-                    }
-                }
-                return `${ command } ${ newCoords.join(' ') }`;
-            }
-        })
-        .join(' ');
-        element.setAttribute('d', newPoints);
-    }
+export class PathPointsEditor {
 
     /**
-     * @override
+     *
      */
     edit(element: SVGPathElement) {
         const d = element.getAttribute('d')!;
         const newD = pathPoints.setPointsAbsolute(d);
         element.setAttribute('d', newD);
-        return super.edit(element);
+        const returnables: ReturnablesCollection = Array<AsyncIterableIterator<MouseEvent>>();
+        const controls: ControlPointsCollection = Array<SVGCircleElement>();
+        this.update(element, controls, returnables);
+
+        let mouseMoveIter: AsyncIterableIterator<MouseEvent>;
+        let mouseUpIter: AsyncIterableIterator<MouseEvent>;
+        const mouseDownIter = fromDomEvent(element, 'mousedown');
+        (async () => {
+            for await (const _down of mouseDownIter) {
+                const listeningTarget = artboard.svg;
+                mouseMoveIter = fromDomEvent(listeningTarget, 'mousemove');
+                mouseUpIter = fromDomEvent(listeningTarget, 'mouseup');
+                (async () => {
+                    for await (const _moveEvent of mouseMoveIter) {
+                        this.update(element, controls, returnables);
+                    }
+                })();
+                (async () => {
+                    for await (const _upEvent of mouseUpIter) {
+                        mouseUpIter.return! ();
+                        mouseMoveIter.return! ();
+                        this.update(element, controls, returnables);
+                    }
+                })();
+            }
+        })();
+        const zoomIter = findMethodIterator(zoom.update);
+        (async () => {
+            for await (const _value of zoomIter) {
+                this.update(element, controls, returnables);
+            }
+        })();
+        const cancel = () => {
+            [
+                zoomIter,
+                mouseDownIter,
+                mouseMoveIter,
+                mouseUpIter,
+            ]
+            .filter(iter => iter)
+            .forEach(iter => {
+                iter.return!();
+            });
+            this.destroyControls(controls);
+            this.destroyReturnables(returnables);
+        };
+        return cancel;
     }
 
     /**
-     * @override
+     *
      */
-    createCircles(points: number[][]) {
-        return points.map((point, pointIndex) => {
-            const isPoint = this.pointTypeMap[pointIndex];
-            const [ cx, cy ] = point;
-            const { value: zoomValue } = zoom;
-            const circle = spawner.svg.circle(
-                {
-                    cx: `${ cx * zoomValue }`,
-                    cy: `${ cy * zoomValue }`,
-                    fill: isPoint ? appearance.editControlPointFill : appearance.editBezierPointFill,
-                    stroke:isPoint ? appearance.editControlPointStroke : appearance.editBezierPointStroke,
-                    'stroke-dasharray': appearance.editControlPointStrokeDasharray,
-                    r: isPoint ? appearance.editControlPointRadius: appearance.editBezierPointRadius,
-                },
-                {
-                    pointerEvents: 'fill',
+    destroyControls(controls: ControlPointsCollection) {
+        controls.forEach(c => c.remove());
+        controls.length = 0;
+    }
+
+    /**
+     *
+     */
+    destroyReturnables(returnables: ReturnablesCollection) {
+        returnables.forEach(r => r.return! ());
+        returnables.length = 0;
+    }
+
+    /**
+     *
+     */
+    update(element: SVGPathElement, controls: SVGElement[], returnables: AsyncIterableIterator<MouseEvent>[]) {
+        this.destroyControls(controls);
+        this.destroyReturnables(returnables);
+
+        const controlPoints = Array<SVGElement>();
+        const controlBeziers = Array<SVGElement>();
+        const controlLines = Array<SVGElement>();
+
+        const d = element.getAttribute('d')!;
+        const points = pathPoints.parseStr(d);
+        const allDims = pathPoints.getAllAbsCoords(points);
+        allDims.forEach((point, pointIndex$, $points) => {
+            point.forEach((pair, pairIndex, $pairs) => {
+                let [ cx, cy ] = pair;
+                const isPoint = pairIndex === (point.length - 1);
+                const selfControl = isPoint ? false : (pairIndex === $pairs.length - 2);
+
+
+                const control = spawner.svg.circle(
+                    {
+                        cx: `${ cx * zoom.value }`,
+                        cy: `${ cy * zoom.value }`,
+                        fill: isPoint ? appearance.editControlPointFill : appearance.editBezierPointFill,
+                        stroke: isPoint ? appearance.editControlPointStroke : appearance.editBezierPointFill,
+                        'stroke-dasharray': isPoint ? appearance.editControlPointStrokeDasharray : appearance.editBezierPointStrokeDasharray,
+                        r: isPoint ? appearance.editControlPointRadius : appearance.editBezierPointRadius,
+                    },
+                    {
+                        pointerEvents: 'fill',
+                    },
+                );
+
+                // guides.guidesContainer!.appendChild(control);
+                // controls.push(control);
+                (isPoint ? controlPoints : controlBeziers).push(control);
+
+                if (!isPoint) {
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('stroke', 'red');
+                    line.setAttribute('stroke-dasharray', '1');
+                    const $prevPairs = $points[pointIndex$ - 1];
+                    const $pair = (pairIndex === $pairs.length - 2) ? $pairs[$pairs.length - 1] : $prevPairs[$prevPairs.length -1];
+                    const [ $x, $y ] = $pair;
+                    line.setAttribute('x1', `${ cx * zoom.value }`);
+                    line.setAttribute('y1', `${ cy * zoom.value }`);
+                    line.setAttribute('x2', `${ $x * zoom.value }`);
+                    line.setAttribute('y2', `${ $y * zoom.value }`);
+                    controlLines.push(line);
                 }
-            );
-            guides.appendControlPoint(circle);
-            return circle;
+
+                Array<SVGElement[]>(
+                    controlPoints,
+                    controlLines,
+                    controlBeziers,
+                ).forEach(collection => {
+                    collection.forEach(item => {
+                        guides.guidesContainer! .appendChild(item);
+                        controls.push(item);
+                    });
+                });
+
+                let d0 = element.getAttribute('d')!;
+                let x = 0;
+                let y = 0;
+                let curCx = cx;
+                let curCy = cy;
+                let rcx = cx;
+                let rcy = cy;
+
+                const controlMouseDown = fromDomEvent<MouseEvent>(control, 'mousedown');
+                returnables.push(controlMouseDown);
+                (async () => {
+                    for await (const downEvent of controlMouseDown) {
+                        downEvent.stopPropagation();
+                        const {
+                            clientX,
+                            clientY,
+                        } = downEvent;
+                        x = clientX;
+                        y = clientY;
+                        rcx = curCx;
+                        rcy = curCy;
+                        d0 = element.getAttribute('d')!;
+                        const listeningElement = window;
+                        const controlMouseMove = fromDomEvent<MouseEvent>(listeningElement, 'mousemove');
+                        const controlMouseUp = fromDomEvent<MouseEvent>(listeningElement, 'mouseup');    
+                        (async () => {
+                            for await (const moveEvent of controlMouseMove) {
+                                moveEvent.stopPropagation();
+                                const {
+                                    clientX,
+                                    clientY,
+                                    altKey,
+                                } = moveEvent;
+                                const dx = (clientX - x) / zoom.value;
+                                const dy = (clientY - y) / zoom.value;
+                                curCx = rcx + dx;
+                                curCy = rcy + dy;
+                                control.setAttribute('cx', `${ curCx * zoom.value }`);
+                                control.setAttribute('cy', `${ curCy * zoom.value }`);
+                                const points = pathPoints.parseStr(d0)
+                                .map(([command, coords], pointIndex) => {
+                                    if (pointIndex !== pointIndex$) {
+                                        return `${ command } ${ coords }`;
+                                    } else {
+                                        let newCoords = coords.split(pathPoints.delimeter).map(c => parseFloat(c));
+                                        if (!isPoint) {
+                                            if (selfControl) {
+                                                newCoords[newCoords.length - 4] += dx;
+                                                newCoords[newCoords.length - 3] += dy;
+                                            } else {
+                                                newCoords[newCoords.length - 6] += dx;
+                                                newCoords[newCoords.length - 5] += dy;
+                                            }
+                                        } else {
+                                            if (altKey) {
+                                                newCoords = newCoords.map((c, ci) => c + [dx, dy][ci % 2]);
+                                            } else {
+                                                newCoords[newCoords.length - 2] += dx;
+                                                newCoords[newCoords.length - 1] += dy;
+                                            }
+                                        }
+                                        return `${ command } ${ newCoords.join(' ') }`;
+                                    }
+                                })
+                                .join(' ');
+                                element.setAttribute('d', points);
+                                this.update(element, controls, returnables);
+                            }
+                        })();
+                        (async () => {
+                            for await (const upEvent of controlMouseUp) {
+                                upEvent.stopPropagation();
+                                controlMouseMove.return! ();
+                                controlMouseUp.return! ();
+                                this.update(element, controls, returnables);
+                            }
+                        })();
+                    }
+                })();
+
+            });
         });
     }
 

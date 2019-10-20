@@ -1,5 +1,5 @@
 import { artboard } from "@/webview/services/artboard";
-import { draggerPath } from "@/webview/draggers";
+import { draggerLeftTop } from "@/webview/draggers";
 import { moverPath } from "@/webview/movers";
 import { textReverseEndpoint } from "@/webview/producers/text-reverse.producer";
 import { appearance } from "@/webview/services/appearance";
@@ -13,7 +13,7 @@ export class TextFigure implements Figure<SVGTextElement> {
 
     readonly ctor = SVGTextElement;
 
-    public readonly drag = draggerPath;
+    public readonly drag = draggerLeftTop;
     public readonly move = moverPath;
 
     @setState
