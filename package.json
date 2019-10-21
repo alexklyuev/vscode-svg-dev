@@ -283,25 +283,25 @@
                     },
                     "SVGdev.appearance.editControlPointFill": {
                         "type": "string",
-                        "default": "none",
+                        "default": "rgba(255,255,255,.8)",
                         "description": "Default control point fill",
                         "scope": "window"
                     },
                     "SVGdev.appearance.editControlPointStroke": {
                         "type": "string",
-                        "default": "#666",
+                        "default": "blue",
                         "description": "Default control point stroke",
                         "scope": "window"
                     },
                     "SVGdev.appearance.editControlPointStrokeDasharray": {
                         "type": "integer",
-                        "default": 1,
+                        "default": 0,
                         "description": "Default control point dash-array",
                         "scope": "window"
                     },
                     "SVGdev.appearance.editControlPointRadius": {
                         "type": "integer",
-                        "default": 10,
+                        "default": 7,
                         "description": "Default control point radius",
                         "scope": "window"
                     },
