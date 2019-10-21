@@ -127,14 +127,3 @@ In this mode if you pick an editable shape it would automatically go to edit mod
    - new view and extension icons
 
 _(more in changelog)_
-
-
-## Todo
-- docs and examples
-- element tree
-- masks
-- flush current selection
-- conditional tools
-- strict position tool group
-- visual transform
-- beacons mode

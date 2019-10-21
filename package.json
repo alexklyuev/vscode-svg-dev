@@ -3,7 +3,7 @@
     "displayName": "SVG dev",
     "description": "SVG visual editor",
     "preview": true,
-    "version": "0.8.12",
+    "version": "0.8.13",
     "icon": "images/line-7_big.png",
     "publisher": "kontrail",
     "repository": {
@@ -11,7 +11,7 @@
         "url": "https://github.com/alexklyuev/vscode-svg-dev"
     },
     "engines": {
-        "vscode": "^1.29.0"
+        "vscode": "^1.39.0"
     },
     "categories": [
         "Other"
@@ -178,6 +178,18 @@
                 "mac": "cmd+shift+z",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevRedo"
+            },
+            {
+                "key": "alt+p",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevEditMode",
+                "args": "points"
+            },
+            {
+                "key": "alt+n",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevEditMode",
+                "args": "off"
             }
         ],
         "commands": [

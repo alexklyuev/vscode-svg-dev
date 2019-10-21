@@ -8,3 +8,4 @@ export const artboardListener = new ArtboardListener();
 
 export const artboardStyleListener = new ArtboardStyleListener();
 
+export { editModeListener } from './edit-mode';

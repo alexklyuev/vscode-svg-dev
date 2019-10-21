@@ -44,10 +44,12 @@ import {
     undoConnection,
     historyConnection,
     configConnection,
+    editModeConnection,
 } from './services/connection';
 import { CancelKeys } from './shared/pipes/cancel.pipe';
 import { MoveArrowKeys } from './shared/pipes/move-key.pipe';
 import { hintsDict } from './shared/hints/hints.dict';
+import { EditMode } from './shared/pipes/edit-mode.pipe';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -506,6 +508,11 @@ export function activate(context: vscode.ExtensionContext) {
                         endpoint.makeSetRequest({ state });
                     }
                 }
+            });
+        }),
+        vscode.commands.registerCommand('svgDevEditMode', (mode: EditMode) => {
+            editModeConnection.ifConnected(endpoint => {
+                endpoint.makeSetRequest({ mode });
             });
         }),
     );

@@ -1,4 +1,4 @@
-import { findMethodIterator } from "@/common/iterators";
+import { findMethodIterator, makeMethodIterator } from "@/common/iterators";
 import { figuresCollection } from "@/webview/services/figures-collection";
 import { cancelListener } from "@/webview/listeners";
 
@@ -21,9 +21,15 @@ export class EditPointsHub {
 
     set editOnPick(val: boolean) {
         this.editOnPickInner = val;
+        this.editOnPickSet(val);
         if (val === false) {
             this.purge();
         }
+    }
+
+    @makeMethodIterator()
+    editOnPickSet(val: boolean): boolean {
+        return val;
     }
 
     /**

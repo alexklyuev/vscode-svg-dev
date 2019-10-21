@@ -23,6 +23,7 @@ import { infomessagePipe } from "../../shared/pipes/infomessage.pipe";
 import { undoPipe } from "../../shared/pipes/undo.pipe";
 import { historyPipe } from "../../shared/pipes/history.pipe";
 import { configPipe } from "../../shared/pipes/config.pipe";
+import { editModePipe } from "../../shared/pipes/edit-mode.pipe";
 
 
 export const pickConnection = new PipeConnection(pickPipe);
@@ -49,8 +50,8 @@ export const infomessageConnection = new PipeConnection(infomessagePipe);
 export const undoConnection = new PipeConnection(undoPipe);
 export const historyConnection = new PipeConnection(historyPipe);
 export const configConnection = new PipeConnection(configPipe);
-
 export const appearanceConnection = new PipeConnection(appearancePipe);
+export const editModeConnection = new PipeConnection(editModePipe);
 
 const connections: PipeConnection<any, any, any>[] = [
     remoteAttributeConnnection,
@@ -78,6 +79,7 @@ const connections: PipeConnection<any, any, any>[] = [
     undoConnection,
     historyConnection,
     configConnection,
+    editModeConnection,
 ];
 
 export const connectionsManager = new ConnectionsManager();
