@@ -76,7 +76,10 @@ Also you can hold `alt` while moving shape to make copy of this shape.
 ### Editing shapes by points
 
 You can edit existing shapes (path, polygon, polyline, line) point by point clicking on "edit points" button in editor window (button would appear if editable shape selected), editing mode would be entered and editable points would be shown, you can drag them and see shape changes - when you done editing press `esc` or `enter` to exit point editing mode.
-You can also enter edit by points mode with keyboard shortcut `ctrl+e` (mac: `cmd+e`)
+You can also enter edit by points mode with keyboard shortcut `ctrl+e` (mac: `cmd+e`).
+
+### Edit-on-pick mode
+In this mode if you pick an editable shape it would automatically go to edit mode. You can switch it on/off by button in editor window.
 
 ## What`s new
  - 0.8.12
