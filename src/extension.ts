@@ -20,7 +20,7 @@ import { toolbox } from './tools';
 import {
     connectionsManager,
     pickConnection,
-    loggerConnection,
+    // loggerConnection,
     artboardConnection,
     artboardStyleConnection,
     artboardMoveConnection,
@@ -54,8 +54,6 @@ export function activate(context: vscode.ExtensionContext) {
 
     const config = vscode.workspace.getConfiguration('SVGdev');
 
-    // console.log(config);
-
     const contextManager = new ContextManager<AppContext>();
     const assetsManager = new AssetsManager(context.extensionPath);
     const webappTemplate = new WebappTemplate(assetsManager);
@@ -71,7 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.window.registerWebviewPanelSerializer(
         editor.viewType,
-        new EditorSerializer(editor, connectionsManager),
+        new EditorSerializer(editor, connectionsManager, config, configConnection),
     );
 
     // TODO: isolate
@@ -102,7 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
                 await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
                 const newValue = await vscode.window.showInputBox({ value });
                 await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
-                return {name, value: newValue!};
+                return { name, value: newValue! };
             },
         );
     });
@@ -190,23 +188,25 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('svgDevNew', async () => {
             const panel = editor.create(context);
             await editor.activate(panel);
+            console.log('New');
             const hostEndpoint = new HostEndpoint(panel);
             connectionsManager.each(connection => connection.connect(hostEndpoint));
             configConnection.ifConnected(endpoint => {
                 endpoint.makeSetRequest(config);
+                console.log('Config sent');
             });
             // @deprecated
-            loggerConnection.ifConnected(hostLogger => {
-                hostLogger.listenSetRequest(
-                    _request => true,
-                    request => {
-                        if (request.log) {console.log('===>>>', request.log);}
-                        if (request.warn) {console.warn('===>>>', request.warn);}
-                        if (request.error) {console.error('===>>>', request.error);}
-                    },
-                );
-                editor.panel!.onDidDispose(() => hostLogger.removeListeners());
-            });
+            // loggerConnection.ifConnected(hostLogger => {
+            //     hostLogger.listenSetRequest(
+            //         _request => true,
+            //         request => {
+            //             if (request.log) {console.log('===>>>', request.log);}
+            //             if (request.warn) {console.warn('===>>>', request.warn);}
+            //             if (request.error) {console.error('===>>>', request.error);}
+            //         },
+            //     );
+            //     editor.panel!.onDidDispose(() => hostLogger.removeListeners());
+            // });
         }),
         vscode.commands.registerCommand('svgDevFromOpen', async () => {
             const { activeTextEditor } = vscode.window;
