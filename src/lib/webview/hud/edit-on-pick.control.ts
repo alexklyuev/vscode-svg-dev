@@ -1,4 +1,4 @@
-import { makeMethodIterator, findMethodIterator } from "@/common/iterators";
+import { findMethodIterator } from "@/common/iterators";
 import { spawner } from "@/dom/spawner";
 
 import { Outlet } from "./models/outlet.model";
@@ -26,32 +26,27 @@ export class EditOnPick implements Outlet {
       }
     );
     const text = spawner.html.span();
-    text.innerText = 'edit on pick is off';
+    const render = () => {
+      text.innerHTML =  `edit on pick: ${ editPointsHub.editOnPick ? '<strong>on</strong>' : 'off' }`;
+    };
+    text.innerHTML = 'edit on pick: off';
     this.el.appendChild(text);
     this.el.onclick = (event: MouseEvent) => {
-      this.toggle(event);
+      event.preventDefault();
+      event.stopPropagation();
+      editPointsHub.editOnPick = !editPointsHub.editOnPick;
     };
+    render();
     (async () => {
       const toggles = findMethodIterator(editPointsHub.editOnPickSet);
-      for await (const val of toggles) {
-        text.innerText =  `edit on pick: ${ val ? 'on' : 'off' }`;
+      for await (const _val of toggles) {
+        render();
       }
     })();
   }
 
   appendTo(parent: HTMLElement) {
     parent.appendChild(this.el);
-  }
-
-  /**
-   * @todo remvoe iterator, use editHub.editOnPickSet
-   */
-  @makeMethodIterator()
-  toggle(event: MouseEvent) {
-    event.preventDefault();
-    event.stopPropagation();
-    editPointsHub.editOnPick = !editPointsHub.editOnPick;
-    return editPointsHub.editOnPick;
   }
 
 }

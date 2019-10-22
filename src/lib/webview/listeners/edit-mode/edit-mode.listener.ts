@@ -11,13 +11,7 @@ export class EditModeListener {
             _request => true,
             (request, _true) => {
                 const { mode } = request;
-                switch (mode) {
-                    case 'off':
-                        editPointsHub.editOnPick = false;
-                        break;
-                    case 'points':
-                        editPointsHub.editOnPick = true;
-                }
+                editPointsHub.dispatchEditMode(mode);
             },
         );
     }

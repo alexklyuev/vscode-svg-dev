@@ -1,6 +1,7 @@
 import { findMethodIterator, makeMethodIterator } from "@/common/iterators";
 import { figuresCollection } from "@/webview/services/figures-collection";
 import { cancelListener } from "@/webview/listeners";
+import { EditMode } from "../../../../shared/pipes/edit-mode.pipe";
 
 
 export class EditPointsHub {
@@ -30,6 +31,18 @@ export class EditPointsHub {
     @makeMethodIterator()
     editOnPickSet(val: boolean): boolean {
         return val;
+    }
+
+    @makeMethodIterator()
+    dispatchEditMode(mode: EditMode) {
+        switch (mode) {
+            case 'off':
+                this.editOnPick = false;
+                break;
+            case 'points':
+                this.editOnPick = true;
+        }
+        return mode;
     }
 
     /**

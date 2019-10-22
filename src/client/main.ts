@@ -12,7 +12,7 @@ import {
     fillControl,
     strokeControl,
     artboardControls,
-    editOnPick,
+    // editOnPick,
 } from '@/webview/hud';
 
 import { zoomPipe } from '../shared/pipes/zoom.pipe';
@@ -235,7 +235,7 @@ moveKeyListener.listen();
  * hide edit points control when edit on pick mode is on
  */
 (async () => {
-    const toggles = findMethodIterator(editOnPick.toggle);
+    const toggles = findMethodIterator(editPointsHub.editOnPickSet);
     for await (const isOn of toggles) {
         if (isOn) {
             editPointsControl.hide();
@@ -282,6 +282,9 @@ moveKeyListener.listen();
     }
 })();
 
+/**
+ * 
+ */
 (async () => {
     const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
     for await (const elements of elementsHasBeenSet) {
@@ -295,9 +298,18 @@ moveKeyListener.listen();
  * edit on pick
  */
 (async () => {
-    const pickerMouseUps = findMethodIterator(picker.onMouseup);
-    for await (const _event of pickerMouseUps) {
+    const events = findMethodIterator(picker.onMouseup);
+    for await (const _event of events) {
         if (editPointsHub.editOnPick && holder.elements.length === 1) {
+            editPointsHub.startEditing(holder.elements[0]);
+        }
+    }
+})();
+
+(async () => {
+    const dispathces = findMethodIterator(editPointsHub.dispatchEditMode);
+    for await (const mode of dispathces) {
+        if (mode === 'points' && holder.elements.length === 1) {
             editPointsHub.startEditing(holder.elements[0]);
         }
     }
@@ -312,6 +324,16 @@ moveKeyListener.listen();
         if (editPointsHub.editOnPick) {
             editPointsHub.startEditing(holder.elements[0]);
         }
+    }
+})();
+
+/**
+ * 
+ */
+(async () => {
+    const toggles = findMethodIterator(editPointsHub.editOnPickSet);
+    for await (const _val of toggles) {
+        holder.elements = [...holder.elements];
     }
 })();
 
