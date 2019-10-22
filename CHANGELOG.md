@@ -1,5 +1,10 @@
 # Change Log
 
+ - 0.8.13
+   - keyboard shortcuts for edit-on-pick mode
+     - `alt+p` - to switch it on
+     - `alt+o` - to switch it off
+   - edit buttons improvement
  - 0.8.12
    - edit-on-pick mode added - you can switch it on by button within editor window
  - 0.8.11

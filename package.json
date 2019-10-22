@@ -186,7 +186,7 @@
                 "args": "points"
             },
             {
-                "key": "alt+n",
+                "key": "alt+o",
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevEditMode",
                 "args": "off"

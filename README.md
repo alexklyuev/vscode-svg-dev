@@ -79,9 +79,14 @@ You can edit existing shapes (path, polygon, polyline, line) point by point clic
 You can also enter edit by points mode with keyboard shortcut `ctrl+e` (mac: `cmd+e`).
 
 ### Edit-on-pick mode
-In this mode if you pick an editable shape it would automatically go to edit mode. You can switch it on/off by button in editor window.
+In this mode if you pick an editable shape it would automatically go to edit mode. You can switch it on/off by button in editor window or by keyboard shortcuts - `alt+p` to switch it on and `alt+o` to switch it off.
 
 ## What`s new
+ - 0.8.13
+   - keyboard shortcuts for edit-on-pick mode
+     - `alt+p` - to switch it on
+     - `alt+o` - to switch it off
+   - edit buttons improvement
  - 0.8.12
    - edit-on-pick mode added - you can switch it on by button within editor window
  - 0.8.11
