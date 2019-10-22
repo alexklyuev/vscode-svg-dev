@@ -1,21 +1,21 @@
 import * as vscode from 'vscode';
-import { WebappTemplate } from './services/webapp-template';
-import { AssetsManager } from './services/assets-manager';
-import { Editor } from './services/editor';
-import { ContextManager } from './services/context-manager';
+import { WebappTemplate } from './lib/vschost/services/webapp-template';
+import { AssetsManager } from './lib/vschost/services/assets-manager';
+import { Editor } from './lib/vschost/services/editor';
+import { ContextManager } from './lib/vschost/services/context-manager';
 import { AppContext } from './app-context.type';
-import { ToolsTreeProvider } from './services/tools-tree-provider';
-import { RemoteAttributeInput } from './services/inputs/remote-attribute-input';
-import { HostEndpoint } from './services/host-endpoint/host-endpoint';
+import { ToolsTreeProvider } from './lib/vschost/services/tools-tree-provider';
+import { RemoteAttributeInput } from './lib/vschost/services/inputs/remote-attribute-input';
+import { HostEndpoint } from './lib/vschost/services/host-endpoint/host-endpoint';
 import { CreatePipeRequest, ElementsDict } from './lib/shared/pipes/create.pipe';
-import { EditorSerializer } from './services/editor-serializer';
+import { EditorSerializer } from './lib/vschost/services/editor-serializer';
 import { ArrangePipeRequest } from './lib/shared/pipes/arrange.pipe';
 import { ElementCommand } from './lib/shared/pipes/element.pipe';
 import { StatusBarItem, StatusBarAlignment } from 'vscode';
-import { BaseInput } from './services/inputs/base-input';
+import { BaseInput } from './lib/vschost/services/inputs/base-input';
 
 
-import { toolbox } from './tools';
+import { toolbox } from './lib/vschost/tools';
 
 import {
     connectionsManager,
@@ -45,7 +45,7 @@ import {
     historyConnection,
     configConnection,
     editModeConnection,
-} from './services/connection';
+} from './lib/vschost/services/connection';
 import { CancelKeys } from './lib/shared/pipes/cancel.pipe';
 import { MoveArrowKeys } from './lib/shared/pipes/move-key.pipe';
 import { hintsDict } from './lib/shared/hints/hints.dict';

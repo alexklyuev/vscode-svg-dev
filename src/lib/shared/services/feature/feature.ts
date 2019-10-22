@@ -1,7 +1,6 @@
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
 import { WebviewEndpoint } from "@/webview/services/webview-endpoint/webview-endpoint";
-
-import { PipeConnection } from "../../../../services/connection/pipe-connection";
+import { PipeConnection } from "@/vschost/services/connection/pipe-connection";
 
 
 /**

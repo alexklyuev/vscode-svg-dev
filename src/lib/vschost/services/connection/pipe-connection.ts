@@ -1,4 +1,4 @@
-import { Pipe, PipeEndpoint } from "../../lib/common/pipe/pipe";
+import { Pipe, PipeEndpoint } from "../../../common/pipe/pipe";
 import { HostEndpoint } from "../host-endpoint/host-endpoint";
 import { Connection } from "./connection.interface";
 
