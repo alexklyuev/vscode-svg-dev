@@ -4,9 +4,7 @@ const path = require('path');
 
 const isDevelopment = false;
 
-/**
- * @returns {webpack.Configuration}
- */
+/**@type {import('webpack').Configuration}*/
 module.exports = {
     mode: isDevelopment ? 'development' : 'production',
     entry: __dirname + '/main.ts',

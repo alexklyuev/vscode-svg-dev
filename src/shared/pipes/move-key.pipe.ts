@@ -1,4 +1,5 @@
-import { Pipe } from "../../lib/common/pipe/pipe";
+import { Pipe } from "@/common/pipe/pipe";
+
 
 export type MoveArrowKeys = 'left' | 'up' | 'right' | 'down';
 

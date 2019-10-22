@@ -1,4 +1,4 @@
-import { Pipe } from "../../lib/common/pipe/pipe";
+import { Pipe } from "@/common/pipe/pipe";
 
 export type ElementCommand =
     'delete' | 'copy' | 'copy-in-place'

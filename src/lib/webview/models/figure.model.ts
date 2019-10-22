@@ -16,6 +16,8 @@ export interface Figure<Ctor> {
 
     edit?(element: SVGElement): void | (() => void);
 
+    editBox?(element: SVGElement): () => void;
+
     move?: Mover;
 
 }
