@@ -2,7 +2,7 @@ import { makeMethodIterator } from "@/common/iterators";
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
-import { MoveKeyRequest, moveKeyPipe } from "../../../shared/pipes/move-key.pipe";
+import { MoveKeyRequest, moveKeyPipe } from "../../shared/pipes/move-key.pipe";
 import { holder } from "../services/holder";
 import { figuresCollection } from "../services/figures-collection";
 

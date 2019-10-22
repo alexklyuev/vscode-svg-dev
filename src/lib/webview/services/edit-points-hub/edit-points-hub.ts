@@ -1,7 +1,7 @@
 import { findMethodIterator, makeMethodIterator } from "@/common/iterators";
 import { figuresCollection } from "@/webview/services/figures-collection";
 import { cancelListener } from "@/webview/listeners";
-import { EditMode } from "../../../../shared/pipes/edit-mode.pipe";
+import { EditMode } from "../../../shared/pipes/edit-mode.pipe";
 
 
 export class EditPointsHub {

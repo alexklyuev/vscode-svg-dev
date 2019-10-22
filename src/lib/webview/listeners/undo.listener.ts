@@ -3,7 +3,7 @@ import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 import { artboard } from "@/webview/services/artboard";
 
-import { UndoRequest, UndoResponse } from '../../../shared/pipes/undo.pipe';
+import { UndoRequest, UndoResponse } from '../../shared/pipes/undo.pipe';
 import { ElementHolder } from "../services/holder/element-holder";
 
 

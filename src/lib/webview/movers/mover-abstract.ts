@@ -1,5 +1,5 @@
 import { Mover } from "@/webview/movers/mover.model";
-import { MoveArrowKeys } from "../../../shared/pipes/move-key.pipe";
+import { MoveArrowKeys } from "../../shared/pipes/move-key.pipe";
 
 
 export abstract class MoverAbstract implements Mover {

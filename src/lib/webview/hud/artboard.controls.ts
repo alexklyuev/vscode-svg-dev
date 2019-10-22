@@ -2,9 +2,9 @@ import { artboard } from "@/webview/services/artboard";
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { findMethodIterator } from "@/common/iterators";
 
-import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../../shared/pipes/artboard-style.pipe";
+import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../shared/pipes/artboard-style.pipe";
 import { ColorRepresenterService } from "./color-representer.service";
-import { ArtboardRequest, ArtboardResponse } from "../../../shared/pipes/artboard.pipe";
+import { ArtboardRequest, ArtboardResponse } from "../../shared/pipes/artboard.pipe";
 import { Outlet } from "./models/outlet.model";
 import { ArtboardStyleListener } from "../listeners/artboard-style.listener";
 import { ArtboardListener } from "../listeners/artboard.listener";

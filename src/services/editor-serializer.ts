@@ -3,7 +3,7 @@ import { Editor } from "./editor";
 import { HostEndpoint } from "./host-endpoint/host-endpoint";
 import { ConnectionsManager } from "./connection/connections-manager";
 import { PipeConnection } from "./connection/pipe-connection";
-import { ConfigRequest, ConfigResponse } from "../shared/pipes/config.pipe";
+import { ConfigRequest, ConfigResponse } from "../lib/shared/pipes/config.pipe";
 
 
 export class EditorSerializer implements WebviewPanelSerializer {

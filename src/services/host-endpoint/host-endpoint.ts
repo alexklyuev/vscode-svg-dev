@@ -1,6 +1,6 @@
 import { WebviewPanel } from "vscode";
 import { Pipe, PipeEndpoint } from "../../lib/common/pipe/pipe";
-import { TypedWire, TypedWireEndpoint } from "../../shared/services/typed-wire/typed-wire";
+import { TypedWire, TypedWireEndpoint } from "../../lib/shared/services/typed-wire/typed-wire";
 
 
 export class HostEndpoint {

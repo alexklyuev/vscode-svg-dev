@@ -4,7 +4,7 @@ import { PipeEndpoint } from "@/common/pipe/pipe";
 import { Appearance } from "@/webview/services/appearance/appearance";
 
 import { ColorRepresenterService } from "./color-representer.service";
-import { AppearanceResponse, AppearanceRequest } from "../../../shared/pipes/appearance.pipe";
+import { AppearanceResponse, AppearanceRequest } from "../../shared/pipes/appearance.pipe";
 import { Outlet } from "./models/outlet.model";
 
 

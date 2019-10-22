@@ -3,7 +3,7 @@ import { makeMethodIterator } from "@/common/iterators";
 import { PipeEndpoint } from "@/common/pipe/pipe";
 // import { EventBus, connectEvent } from "@/common/events";
 
-import { AppearanceRequest, AppearanceResponse } from "../../../shared/pipes/appearance.pipe";
+import { AppearanceRequest, AppearanceResponse } from "../../shared/pipes/appearance.pipe";
 import { Outlet } from "./models/outlet.model";
 import { ColorRepresenterService } from "./color-representer.service";
 

@@ -3,7 +3,7 @@ import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 import { artboard } from "@/webview/services/artboard";
 
 import { Zoom } from "../../../lib/webview/services/zoom/zoom";
-import { ZoomRequest } from "../../../shared/pipes/zoom.pipe";
+import { ZoomRequest } from "../../shared/pipes/zoom.pipe";
 
 
 export class ZoomListener {

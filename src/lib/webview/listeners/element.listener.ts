@@ -3,7 +3,7 @@ import { PipeEndpoint } from "@/common/pipe/pipe";
 import { makeMethodIterator } from "@/common/iterators";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
-import { ElementCommand, elementPipe } from "../../../shared/pipes/element.pipe";
+import { ElementCommand, elementPipe } from "../../shared/pipes/element.pipe";
 import { setState } from "../decorators/set-state.decorator";
 import { holder } from "../services/holder";
 import { figuresCollection } from "../services/figures-collection";

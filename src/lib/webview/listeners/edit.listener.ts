@@ -2,7 +2,7 @@ import { editPointsHub } from "@/webview/services/edit-points-hub";
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
-import { EditRequest, editPipe } from "../../../shared/pipes/edit.pipe";
+import { EditRequest, editPipe } from "../../shared/pipes/edit.pipe";
 import { holder } from "../services/holder";
 
 

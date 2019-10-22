@@ -1,7 +1,7 @@
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
-import { CreatePipeRequest, ElementsDict, createPipe } from "../../../shared/pipes/create.pipe";
+import { CreatePipeRequest, ElementsDict, createPipe } from "../../shared/pipes/create.pipe";
 import { setState } from "../decorators/set-state.decorator";
 import { figuresCollection } from "../services/figures-collection";
 

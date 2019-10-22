@@ -1,7 +1,7 @@
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
-import { RemoteAttributeRequest, RemoteAttributeResponse } from "../../../shared/pipes/remote-attribute.pipe";
+import { RemoteAttributeRequest, RemoteAttributeResponse } from "../../shared/pipes/remote-attribute.pipe";
 import { ElementHolder } from "../services/holder/element-holder";
 import { setState } from "../decorators/set-state.decorator";
 import { rehold } from "../decorators/rehold.decorator";

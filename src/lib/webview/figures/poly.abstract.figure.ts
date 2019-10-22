@@ -1,4 +1,4 @@
-import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
+import { CancelKeys } from "../../shared/pipes/cancel.pipe";
 import { artboard } from "@/webview/services/artboard";
 import { findMethodIterator } from "@/common/iterators";
 import { artboardMove } from "@/webview/services/artboard-move";

@@ -2,7 +2,7 @@ import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { makeMethodIterator } from "@/common/iterators";
 
-import { CancelPipeRequest, CancelKeys, cancelPipe } from "../../../shared/pipes/cancel.pipe";
+import { CancelPipeRequest, CancelKeys, cancelPipe } from "../../shared/pipes/cancel.pipe";
 
 
 export class CancelListener {

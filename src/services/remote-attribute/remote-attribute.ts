@@ -1,5 +1,5 @@
 import { PipeEndpoint } from "../../lib/common/pipe/pipe";
-import { RemoteAttributeRequest, RemoteAttributeResponse } from "../../shared/pipes/remote-attribute.pipe";
+import { RemoteAttributeRequest, RemoteAttributeResponse } from "../../lib/shared/pipes/remote-attribute.pipe";
 
 
 export class RemoteAttribute<Attribute extends string> {

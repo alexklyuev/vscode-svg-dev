@@ -1,7 +1,7 @@
 import { makeMethodIterator } from "@/common/iterators";
 
 // import { EventBus, connectEvent } from "../../../../lib/common/events";
-import { HintsDict } from "../../../../shared/hints/hints.dict";
+import { HintsDict } from "../../../shared/hints/hints.dict";
 
 
 export class Hints {

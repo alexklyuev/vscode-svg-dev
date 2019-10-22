@@ -7,10 +7,10 @@ import { AppContext } from './app-context.type';
 import { ToolsTreeProvider } from './services/tools-tree-provider';
 import { RemoteAttributeInput } from './services/inputs/remote-attribute-input';
 import { HostEndpoint } from './services/host-endpoint/host-endpoint';
-import { CreatePipeRequest, ElementsDict } from './shared/pipes/create.pipe';
+import { CreatePipeRequest, ElementsDict } from './lib/shared/pipes/create.pipe';
 import { EditorSerializer } from './services/editor-serializer';
-import { ArrangePipeRequest } from './shared/pipes/arrange.pipe';
-import { ElementCommand } from './shared/pipes/element.pipe';
+import { ArrangePipeRequest } from './lib/shared/pipes/arrange.pipe';
+import { ElementCommand } from './lib/shared/pipes/element.pipe';
 import { StatusBarItem, StatusBarAlignment } from 'vscode';
 import { BaseInput } from './services/inputs/base-input';
 
@@ -46,10 +46,10 @@ import {
     configConnection,
     editModeConnection,
 } from './services/connection';
-import { CancelKeys } from './shared/pipes/cancel.pipe';
-import { MoveArrowKeys } from './shared/pipes/move-key.pipe';
-import { hintsDict } from './shared/hints/hints.dict';
-import { EditMode } from './shared/pipes/edit-mode.pipe';
+import { CancelKeys } from './lib/shared/pipes/cancel.pipe';
+import { MoveArrowKeys } from './lib/shared/pipes/move-key.pipe';
+import { hintsDict } from './lib/shared/hints/hints.dict';
+import { EditMode } from './lib/shared/pipes/edit-mode.pipe';
 
 
 export function activate(context: vscode.ExtensionContext) {

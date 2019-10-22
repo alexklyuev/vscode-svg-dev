@@ -1,4 +1,4 @@
-import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
+import { CancelKeys } from "../../shared/pipes/cancel.pipe";
 
 import { findMethodIterator } from "@/common/iterators";
 import { PointConcerns, PointSharedConcerns } from "@/webview/models/point-concerns.model";
