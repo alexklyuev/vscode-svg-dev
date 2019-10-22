@@ -14,6 +14,7 @@ import { spawner } from "@/dom/spawner";
 import { zoom } from "@/webview/services/zoom";
 import { Figure } from "@/webview/models/figure.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
+import { rectBoxEditor } from "@/webview/box-editor";
 
 
 export class RectFigure implements Figure<SVGRectElement> {
@@ -173,6 +174,10 @@ export class RectFigure implements Figure<SVGRectElement> {
 
     edit(element: SVGRectElement) {
         return rectPointsEditor.edit(element);
+    }
+
+    editBox(element: SVGRectElement) {
+        return rectBoxEditor.editBox(element);
     }
 
 }

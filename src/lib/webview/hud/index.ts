@@ -15,6 +15,7 @@ import { artboardStyleListener, artboardListener } from "../listeners";
 import { artboardStyleInverseProducer } from "../producers/artboard-style-inverse.producer";
 import { artboardInverseEndpoint } from "../producers/artboard-inverse.producer";
 import { appearanceEndpoint } from "../producers/appearance.producer";
+import { EditBoxControl } from "./edit-box.control";
 
 export const colorRepresenter = new ColorRepresenterService();
 export const artboardControls = new ArtboardControls(
@@ -46,6 +47,7 @@ export const shapesOutlet = new ShapesOutlet(
 );
 export const groupControls = new GroupControls();
 export const editPointsControl = new EditPointsControl();
+export const editBoxControl = new EditBoxControl();
 export const editOnPick = new EditOnPick();
 export const firstRowOutlet = new AppearanceOutlet(
   artboardControls,
@@ -57,6 +59,7 @@ export const firstRowOutlet = new AppearanceOutlet(
 export const secondRowOutlet = new AppearanceOutlet(
     editOnPick,
     editPointsControl,
+    editBoxControl,
 );
 
 export const hud = new Hud(

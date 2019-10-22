@@ -12,6 +12,7 @@ import {
     fillControl,
     strokeControl,
     artboardControls,
+    editBoxControl,
     // editOnPick,
 } from '@/webview/hud';
 
@@ -263,12 +264,12 @@ moveKeyListener.listen();
 })();
 
 /**
- * show/hide edit button
+ * show/hide edit points button on select element
  */
 (async () => {
     const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
     for await (const elements of elementsHasBeenSet) {
-        if (elements.length > 0 && !editPointsHub.editOnPick) {
+        if (elements.length === 1 && !editPointsHub.editOnPick) {
             const element = elements[0];
             const delegate = figuresCollection.delegate(element);
             if (delegate && delegate.edit instanceof Function) {
@@ -283,6 +284,26 @@ moveKeyListener.listen();
 })();
 
 /**
+ * show/hide edit box button on select element
+ */
+(async () => {
+    const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
+    for await (const elements of elementsHasBeenSet) {
+        if (elements.length === 1 && !editPointsHub.editOnPick) {
+            const element = elements[0];
+            const delegate = figuresCollection.delegate(element);
+            if (delegate && delegate.editBox instanceof Function) {
+                editBoxControl.show();
+            } else {
+                editBoxControl.hide();
+            }
+        } else {
+            editBoxControl.hide();
+        }
+    }
+})();
+
+/**
  * 
  */
 (async () => {
@@ -290,6 +311,22 @@ moveKeyListener.listen();
     for await (const elements of elementsHasBeenSet) {
         if (elements.length !== 1) {
             editPointsHub.purge();
+        }
+    }
+})();
+
+(async () => {
+    const events = findMethodIterator(editBoxControl.editBox);
+    for await (const _event of events) {
+        const element = holder.elements[0];
+        if (element) {
+            const delegate = figuresCollection.delegate(element);
+            if (delegate && delegate.editBox instanceof Function) {
+                const fn = delegate.editBox(element);
+                editPointsHub.takeActiveElement(element);
+                editPointsHub.takeCancelationFn(fn);
+
+            }
         }
     }
 })();
