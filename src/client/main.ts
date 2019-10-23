@@ -48,7 +48,7 @@ import { configPipe } from '@/shared/pipes/config.pipe';
 import { holder } from '@/webview/services/holder';
 import { sprites } from '@/webview/services/sprites';
 
-import '@/webview/figures';
+import '@/webview/sprites';
 
 /**
  * 
