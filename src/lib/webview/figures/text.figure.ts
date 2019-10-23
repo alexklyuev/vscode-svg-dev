@@ -3,11 +3,11 @@ import { draggerLeftTop } from "@/webview/draggers";
 import { moverPath } from "@/webview/movers";
 import { textReverseEndpoint } from "@/webview/producers/text-reverse.producer";
 import { appearance } from "@/webview/services/appearance";
-import { Figure } from "@/webview/models/figure.model";
+import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 
 
-export class TextFigure implements Figure<SVGTextElement> {
+export class TextFigure implements Sprite<SVGTextElement> {
 
     readonly name = 'text';
 

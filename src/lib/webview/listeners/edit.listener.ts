@@ -1,4 +1,4 @@
-import { editPointsHub } from "@/webview/services/edit-points-hub";
+import { editHub } from "@/webview/services/edit-points-hub";
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
@@ -25,7 +25,7 @@ export class EditListener {
 
     private editElement() {
         const element = holder.elements[0];
-        editPointsHub.startEditing(element);
+        editHub.startEditing(element);
     }
 
 }

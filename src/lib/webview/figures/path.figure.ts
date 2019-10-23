@@ -14,12 +14,13 @@ import { appearance } from "@/webview/services/appearance";
 import { pathPoints } from "@/webview/services/path";
 import { zoom } from "@/webview/services/zoom";
 import { artboardMove } from "@/webview/services/artboard-move";
-import { Figure } from "@/webview/models/figure.model";
+import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 import { pathPointsEditor } from "../points-editor";
+import { BaseBoxEditor } from "../box-editor/base.box-editor";
 
 
-export class PathFigure implements Figure<SVGPathElement> {
+export class PathFigure implements Sprite<SVGPathElement> {
 
     stroke = 'white';
     fill = 'none';
@@ -229,6 +230,10 @@ export class PathFigure implements Figure<SVGPathElement> {
     edit(element: SVGPathElement) {
         hints.setHint('finishEdit');
         return pathPointsEditor.edit(element);
+    }
+
+    editBox(element: SVGPathElement) {
+        return new BaseBoxEditor() .editBox(element);
     }
 
 }

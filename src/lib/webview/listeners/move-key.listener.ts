@@ -4,7 +4,7 @@ import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
 import { MoveKeyRequest, moveKeyPipe } from "../../shared/pipes/move-key.pipe";
 import { holder } from "../services/holder";
-import { figuresCollection } from "../services/figures-collection";
+import { sprites } from "../services/sprites";
 
 
 export class MoveKeyListener {
@@ -20,7 +20,7 @@ export class MoveKeyListener {
             (request, _true) => {
                 const { key, shift } = request;
                 holder.elements.forEach(element => {
-                    const delegate = figuresCollection.delegate(element);
+                    const delegate = sprites.resolve(element);
                     if (delegate && delegate.move) {
                         delegate.move.byKey(element, key, shift);
                         this.fireMoveEvent(key);

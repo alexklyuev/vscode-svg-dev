@@ -1,11 +1,11 @@
 import { artboard } from "@/webview/services/artboard";
 import { draggerDelegate } from "@/webview/draggers";
 import { moverDelegate } from "@/webview/movers";
-import { Figure } from "@/webview/models/figure.model";
+import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 
 
-export class GFigure implements Figure<SVGGElement> {
+export class GFigure implements Sprite<SVGGElement> {
 
     readonly name = 'g';
 

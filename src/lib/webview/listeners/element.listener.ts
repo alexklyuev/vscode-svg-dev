@@ -6,7 +6,7 @@ import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 import { ElementCommand, elementPipe } from "../../shared/pipes/element.pipe";
 import { setState } from "../decorators/set-state.decorator";
 import { holder } from "../services/holder";
-import { figuresCollection } from "../services/figures-collection";
+import { sprites } from "../services/sprites";
 
 
 export class ElementListener {
@@ -52,7 +52,7 @@ export class ElementListener {
     @setState
     copyElement(element: SVGElement) {
         const newEl = this.copyInPlaceElement(element);
-        const delegate = figuresCollection.delegate(newEl);
+        const delegate = sprites.resolve(newEl);
         if (delegate && delegate.move) {
             delegate.move.by(newEl, {x: 20, y: 20});
         }

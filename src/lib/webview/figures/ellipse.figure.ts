@@ -12,12 +12,12 @@ import { coordinator } from "@/webview/services/coordinator";
 import { cancelListener } from "@/webview/listeners";
 import { guides } from "@/webview/services/guides";
 import { hints } from "@/webview/services/hints";
-import { Figure } from "@/webview/models/figure.model";
+import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 import { ellipsePointsEdtitor } from "../points-editor";
 
 
-export class EllipseFigure implements Figure<SVGEllipseElement> {
+export class EllipseFigure implements Sprite<SVGEllipseElement> {
 
     readonly name = 'ellipse';
 

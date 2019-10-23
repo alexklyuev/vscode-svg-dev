@@ -190,6 +190,12 @@
                 "when": "svgDevActive && !svgDevHostInput",
                 "command": "svgDevEditMode",
                 "args": "off"
+            },
+            {
+                "key": "alt+l",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevEditMode",
+                "args": "box"
             }
         ],
         "commands": [
@@ -351,6 +357,30 @@
                         "type": "integer",
                         "default": 1,
                         "description": "Bezier point line dash-array",
+                        "scope": "window"
+                    },
+                    "SVGdev.appearance.editBoxPointFill": {
+                        "type": "string",
+                        "default": "blue",
+                        "description": "Edit box mode control point fill",
+                        "scope": "window"
+                    },
+                    "SVGdev.appearance.editBoxPointStroke": {
+                        "type": "string",
+                        "default": "none",
+                        "description": "Edit box mode control point stroke",
+                        "scope": "window"
+                    },
+                    "SVGdev.appearance.editBoxPointWidth": {
+                        "type": "number",
+                        "default": 10,
+                        "description": "Edit box mode control point width",
+                        "scope": "window"
+                    },
+                    "SVGdev.appearance.editBoxPointHeight": {
+                        "type": "number",
+                        "default": 10,
+                        "description": "Edit box mode control point height",
                         "scope": "window"
                     }
                 }

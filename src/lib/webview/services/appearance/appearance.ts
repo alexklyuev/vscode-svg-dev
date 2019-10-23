@@ -12,6 +12,7 @@ export class Appearance {
 
     fill = 'green';
     stroke  = '#aaa';
+
     editControlPointFill = 'rgba(255,255,255,.8)';
     editControlPointStroke  = 'blue';
     editControlPointStrokeDasharray = '0';
@@ -23,8 +24,13 @@ export class Appearance {
     editBezierPointLineStroke = 'red';
     editBezierPointLineStrokeDasharray = '1';
 
+    editBoxPointFill = 'blue';
+    editBoxPointStroke = 'none';
+    editBoxPointWidth = 10;
+    editBoxPointHeight = 10;
+
     constructor() {
-        const fire = this.fireChangeEvent.bind(this);
+        const fire = this.change.bind(this);
         const proxy = new Proxy(this, {
             get(target: any, key) {
                 return target[key];
@@ -42,7 +48,7 @@ export class Appearance {
     }
 
     @makeMethodIterator()
-    fireChangeEvent(data: {prop: string, value: string}) {
+    change(data: {prop: string, value: string | number}) {
         return data;
     }
 

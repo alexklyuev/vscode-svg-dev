@@ -1,6 +1,6 @@
 import { findMethodIterator } from '@/common/iterators';
 import { appearance } from '@/webview/services/appearance';
-import { editPointsHub } from '@/webview/services/edit-points-hub';
+import { editHub } from '@/webview/services/edit-points-hub';
 import { webviewEndpoint } from '@/webview/services/webview-endpoint';
 import { artboard } from '@/webview/services/artboard';
 import { artboardMove } from '@/webview/services/artboard-move';
@@ -46,7 +46,7 @@ import { undoPipe } from '@/shared/pipes/undo.pipe';
 import { ConfigListener } from '@/webview/listeners/config.listener';
 import { configPipe } from '@/shared/pipes/config.pipe';
 import { holder } from '@/webview/services/holder';
-import { figuresCollection } from '@/webview/services/figures-collection';
+import { sprites } from '@/webview/services/sprites';
 
 import '@/webview/figures';
 
@@ -183,7 +183,7 @@ moveKeyListener.listen();
 (async () => {
     const keys = findMethodIterator(moveKeyListener.fireMoveEvent);
     for await (const _key of keys) {
-        editPointsHub.purge();
+        editHub.purge();
         guides.setContainerStyles();
         guides.setSelectionStyles(holder.elements);
     }
@@ -236,10 +236,11 @@ moveKeyListener.listen();
  * hide edit points control when edit on pick mode is on
  */
 (async () => {
-    const toggles = findMethodIterator(editPointsHub.editOnPickSet);
-    for await (const isOn of toggles) {
-        if (isOn) {
+    const toggles = findMethodIterator(editHub.editModeSet);
+    for await (const editMode of toggles) {
+        if (editMode !== 'off') {
             editPointsControl.hide();
+            editBoxControl.hide();
         }
     }
 })();
@@ -251,13 +252,13 @@ moveKeyListener.listen();
 (async () => {
     const elementsSet = findMethodIterator(holder.elementsHasBeenSet);
     for await (const elements of elementsSet) {
-        const activeElement = editPointsHub.element;
-        if (!editPointsHub.editOnPick) {
+        const activeElement = editHub.element;
+        if (editHub.editMode === 'off') {
             if (elements.length > 1) {
-                editPointsHub.purge();
+                editHub.purge();
             }
             if (!activeElement || !elements.includes(activeElement)) {
-                editPointsHub.purge();
+                editHub.purge();
             }
         }
     }
@@ -269,9 +270,9 @@ moveKeyListener.listen();
 (async () => {
     const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
     for await (const elements of elementsHasBeenSet) {
-        if (elements.length === 1 && !editPointsHub.editOnPick) {
+        if (elements.length === 1 && editHub.editMode === 'off') {
             const element = elements[0];
-            const delegate = figuresCollection.delegate(element);
+            const delegate = sprites.resolve(element);
             if (delegate && delegate.edit instanceof Function) {
                 editPointsControl.show();
             } else {
@@ -289,9 +290,9 @@ moveKeyListener.listen();
 (async () => {
     const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
     for await (const elements of elementsHasBeenSet) {
-        if (elements.length === 1 && !editPointsHub.editOnPick) {
+        if (elements.length === 1 && editHub.editMode === 'off') {
             const element = elements[0];
-            const delegate = figuresCollection.delegate(element);
+            const delegate = sprites.resolve(element);
             if (delegate && delegate.editBox instanceof Function) {
                 editBoxControl.show();
             } else {
@@ -310,23 +311,7 @@ moveKeyListener.listen();
     const elementsHasBeenSet = findMethodIterator(holder.elementsHasBeenSet);
     for await (const elements of elementsHasBeenSet) {
         if (elements.length !== 1) {
-            editPointsHub.purge();
-        }
-    }
-})();
-
-(async () => {
-    const events = findMethodIterator(editBoxControl.editBox);
-    for await (const _event of events) {
-        const element = holder.elements[0];
-        if (element) {
-            const delegate = figuresCollection.delegate(element);
-            if (delegate && delegate.editBox instanceof Function) {
-                const fn = delegate.editBox(element);
-                editPointsHub.takeActiveElement(element);
-                editPointsHub.takeCancelationFn(fn);
-
-            }
+            editHub.purge();
         }
     }
 })();
@@ -337,17 +322,17 @@ moveKeyListener.listen();
 (async () => {
     const events = findMethodIterator(picker.onMouseup);
     for await (const _event of events) {
-        if (editPointsHub.editOnPick && holder.elements.length === 1) {
-            editPointsHub.startEditing(holder.elements[0]);
+        if (editHub.editMode !== 'off' && holder.elements.length === 1) {
+            editHub.startEditing(holder.elements[0]);
         }
     }
 })();
 
 (async () => {
-    const dispathces = findMethodIterator(editPointsHub.dispatchEditMode);
+    const dispathces = findMethodIterator(editHub.dispatchEditMode);
     for await (const mode of dispathces) {
-        if (mode === 'points' && holder.elements.length === 1) {
-            editPointsHub.startEditing(holder.elements[0]);
+        if (mode !== 'off' && holder.elements.length === 1) {
+            editHub.startEditing(holder.elements[0]);
         }
     }
 })();
@@ -358,8 +343,8 @@ moveKeyListener.listen();
 (async () => {
     const copyElement = findMethodIterator(elementListener.copyInPlaceElement);
     for await (const _element of copyElement) {
-        if (editPointsHub.editOnPick) {
-            editPointsHub.startEditing(holder.elements[0]);
+        if (editHub.editMode !== 'off') {
+            editHub.startEditing(holder.elements[0]);
         }
     }
 })();
@@ -368,7 +353,7 @@ moveKeyListener.listen();
  * 
  */
 (async () => {
-    const toggles = findMethodIterator(editPointsHub.editOnPickSet);
+    const toggles = findMethodIterator(editHub.editModeSet);
     for await (const _val of toggles) {
         holder.elements = [...holder.elements];
     }
@@ -404,7 +389,7 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
     const creates = findMethodIterator(shapesOutlet.createShape);
     for await (const shapeName of creates) {
         inverseInteractiveEndpoint.makeSetRequest({});
-        figuresCollection.delegate(shapeName)! .create(shapeName, {});
+        sprites.resolve(shapeName)! .create(shapeName, {});
     }
 })();
 
@@ -444,8 +429,8 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
 (async () => {
     const deleteElement = findMethodIterator(elementListener.deleteElement);
     for await (const _void of deleteElement) {
-        editPointsHub.takeActiveElement(null);
-        editPointsHub.takeCancelationFn(() => {});
+        editHub.takeActiveElement(null);
+        editHub.takeCancelationFn(() => {});
     }
 })();
 
@@ -483,11 +468,42 @@ configListener.listen();
 
 /**
  * Stream of clicks on 'edit point' button inside editing window
+ * @todo use editHub.startEditing somehow
  */
 (async () => {
     const clicks = findMethodIterator(editPointsControl.editPoints);
     for await ( const _event of clicks ) {
-        inverseInteractiveEndpoint.makeSetRequest({});
-        editPointsHub.startEditing(holder.elements[0]);
+        // inverseInteractiveEndpoint.makeSetRequest({});
+        // editHub.startEditing(holder.elements[0]);
+        const element = holder.elements[0];
+        if (element) {
+            const sprite = sprites.resolve(element);
+            if (sprite && sprite.edit instanceof Function) {
+                const fn = sprite.edit(element);
+                editHub.takeActiveElement(element);
+                if (fn instanceof Function) {
+                    editHub.takeCancelationFn(fn);
+                }
+            }
+        }
+    }
+})();
+
+/**
+ * Stream of clicks onn 'edit box' button inside editing window
+ * @todo use editHub.startEditing somehow
+ */
+(async () => {
+    const events = findMethodIterator(editBoxControl.editBox);
+    for await (const _event of events) {
+        const element = holder.elements[0];
+        if (element) {
+            const sprite = sprites.resolve(element);
+            if (sprite && sprite.editBox instanceof Function) {
+                const fn = sprite.editBox(element);
+                editHub.takeActiveElement(element);
+                editHub.takeCancelationFn(fn);
+            }
+        }
     }
 })();

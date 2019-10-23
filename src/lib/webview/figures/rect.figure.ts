@@ -12,12 +12,12 @@ import { appearance } from "@/webview/services/appearance";
 import { rectPointsEditor } from "@/webview/points-editor";
 import { spawner } from "@/dom/spawner";
 import { zoom } from "@/webview/services/zoom";
-import { Figure } from "@/webview/models/figure.model";
+import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 import { rectBoxEditor } from "@/webview/box-editor";
 
 
-export class RectFigure implements Figure<SVGRectElement> {
+export class RectFigure implements Sprite<SVGRectElement> {
 
     readonly name = 'rect';
 

@@ -1,24 +1,23 @@
 import { spawner } from "@/dom/spawner";
-import { guides } from "../services/guides";
-import { artboardMove } from "../services/artboard-move";
-import { artboard } from "../services/artboard";
-import { zoom } from "../services/zoom";
+import { guides } from "@/webview/services/guides";
+import { artboardMove } from "@/webview/services/artboard-move";
+import { artboard } from "@/webview/services/artboard";
+import { zoom } from "@/webview/services/zoom";
 import { findMethodIterator } from "@/common/iterators";
 import { fromDomEvent } from "@/dom/iterators";
+import { appearance } from "@/webview/services/appearance";
 
 
 export class BaseBoxEditor {
 
-    controlPointWidth = 10;
-    controlPointHeight = 10;
-
-    editBox(element: SVGRectElement) {
+    editBox(element: SVGElement) {
         const controls = Array(8).fill(null)
         .map(() => {
             const control = spawner.svg.rect({
-                width: `${ this.controlPointWidth }`,
-                height: `${ this.controlPointHeight }`,
-                fill: 'blue',
+                width: `${ appearance.editBoxPointWidth }`,
+                height: `${ appearance.editBoxPointHeight}`,
+                fill: appearance.editBoxPointFill,
+                stroke: appearance.editBoxPointStroke,
             }, {
                 pointerEvents: 'fill',
             });
@@ -71,10 +70,10 @@ export class BaseBoxEditor {
         const points = this.getPoints(element);
         controls.forEach((control, index) => {
             const point = points[index];
-            const [ x, y ] = this.render2d(point);
+            const [ x, y ] = this.renderPoint(point);
             spawner.svg.update(control, {
-                x: `${ x  - this.controlPointWidth/2 }`,
-                y: `${ y  - this.controlPointHeight/2 }`,
+                x: `${ x  - appearance.editBoxPointWidth/2 }`,
+                y: `${ y  - appearance.editBoxPointHeight/2 }`,
             });
         });
     }
@@ -102,7 +101,7 @@ export class BaseBoxEditor {
         return points;
     }
 
-    render2d([x, y]: [number, number]) {
+    renderPoint([x, y]: [number, number]) {
         const { value: zoomValue } = zoom;
         const { scrollLeft, scrollTop } = document.scrollingElement!;
         const {

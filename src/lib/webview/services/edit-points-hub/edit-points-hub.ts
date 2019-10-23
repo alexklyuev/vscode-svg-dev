@@ -1,47 +1,43 @@
 import { findMethodIterator, makeMethodIterator } from "@/common/iterators";
-import { figuresCollection } from "@/webview/services/figures-collection";
+import { sprites } from "@/webview/services/sprites";
 import { cancelListener } from "@/webview/listeners";
-import { EditMode } from "../../../shared/pipes/edit-mode.pipe";
+import { EditMode } from "@/shared/pipes/edit-mode.pipe";
 
 
-export class EditPointsHub {
+export class EditHub {
 
     private cancelFn: (() => void) | null = null;
 
     private innerElement: SVGElement | null = null;
 
+    private innerElementMode: EditMode | null = null;
+
     get element(): SVGElement | null {
         return this.innerElement;
     }
 
-    private editOnPickInner = false;
+    private editModeInner: EditMode = 'off';
 
-    get editOnPick(): boolean {
-        return this.editOnPickInner;
+    get editMode(): EditMode {
+        return this.editModeInner;
     }
 
-    set editOnPick(val: boolean) {
-        this.editOnPickInner = val;
-        this.editOnPickSet(val);
-        if (val === false) {
+    set editMode(val: EditMode) {
+        this.editModeInner = val;
+        this.editModeSet(val);
+        if (val === 'off') {
             this.purge();
         }
     }
 
     @makeMethodIterator()
-    editOnPickSet(val: boolean): boolean {
+    editModeSet(val: EditMode): EditMode {
         return val;
     }
 
     @makeMethodIterator()
     dispatchEditMode(mode: EditMode) {
-        switch (mode) {
-            case 'off':
-                this.editOnPick = false;
-                break;
-            case 'points':
-                this.editOnPick = true;
-        }
+        this.editMode = mode;
         return mode;
     }
 
@@ -52,11 +48,25 @@ export class EditPointsHub {
         if (element) {
             if (!this.isSameElement(element)) {
                 this.takeActiveElement(element);
-                const delegate = figuresCollection.delegate(element);
-                if (delegate && delegate.edit instanceof Function) {
-                    const cancelFn = delegate.edit(element);
-                    if (cancelFn instanceof Function) {
-                        this.takeCancelationFn(cancelFn);
+                const delegate = sprites.resolve(element);
+                if (delegate) {
+                    switch (this.editMode) {
+                        case 'points':
+                            if (delegate.edit instanceof Function) {
+                                const cancelFn = delegate.edit(element);
+                                if (cancelFn instanceof Function) {
+                                    this.takeCancelationFn(cancelFn);
+                                }
+                            }
+                            break;
+                        case 'box':
+                            if (delegate.editBox instanceof Function) {
+                                const cancelFn = delegate.editBox(element);
+                                if (cancelFn instanceof Function) {
+                                    this.takeCancelationFn(cancelFn);
+                                }
+                            }
+                            break;
                     }
                 }
             }
@@ -66,7 +76,7 @@ export class EditPointsHub {
     }
 
     isSameElement(element: SVGElement) {
-        return element === this.innerElement;
+        return element === this.innerElement && this.editMode === this.innerElementMode;
     }
 
     purge() {
@@ -76,6 +86,7 @@ export class EditPointsHub {
 
     takeActiveElement(element: SVGElement | null) {
         this.innerElement = element;
+        this.innerElementMode = this.editMode;
     }
 
     takeCancelationFn(fn: () => void) {

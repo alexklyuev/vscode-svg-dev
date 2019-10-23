@@ -3,7 +3,7 @@ import { spawner } from "@/dom/spawner";
 import { userEventMan } from "@/webview/services/user-event";
 import { artboard } from "@/webview/services/artboard";
 import { holder } from "@/webview/services/holder";
-import { figuresCollection } from "@/webview/services/figures-collection";
+import { sprites } from "@/webview/services/sprites";
 
 
 export class Picker {
@@ -20,7 +20,7 @@ export class Picker {
     onMousemove(event: MouseEvent) {
         this.controlPropagation(event);
         holder.elements.forEach(element => {
-            figuresCollection.delegate(element)!.drag.onMousemove(
+            sprites.resolve(element)!.drag.onMousemove(
                 element,
                 event,
             );
@@ -45,7 +45,7 @@ export class Picker {
                 break;
             }
         }
-        const pickableCtors = figuresCollection.getFiltered('drag').map(figure => figure.ctor);
+        const pickableCtors = sprites.getFiltered('drag').map(figure => figure.ctor);
         if (pickableCtors.some(Ctor => eventTarget instanceof Ctor)) {
             const target = eventTarget as SVGElement;
             const { elements } = holder;
@@ -74,7 +74,7 @@ export class Picker {
                 holder.elements = [copy];
             }
             holder.elements.forEach(element => {
-                figuresCollection.delegate(element)!.drag.onMousedown(
+                sprites.resolve(element)!.drag.onMousedown(
                     element,
                     event,
                 );
@@ -93,7 +93,7 @@ export class Picker {
     onMouseup(event: MouseEvent) {
         this.controlPropagation(event);
         holder.elements.forEach(element => {
-            figuresCollection.delegate(element)!.drag.onMouseup(
+            sprites.resolve(element)!.drag.onMouseup(
                 element,
                 event,
             );

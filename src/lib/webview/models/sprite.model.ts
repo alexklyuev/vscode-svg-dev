@@ -2,7 +2,7 @@ import { Dragger } from "@/webview/draggers/dragger.interface";
 import { Mover } from "@/webview/movers/mover.model";
 
 
-export interface Figure<Ctor> {
+export interface Sprite<Ctor> {
 
     readonly name: string;
 

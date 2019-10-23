@@ -1,8 +1,8 @@
 import { findMethodIterator } from "@/common/iterators";
 import { spawner } from "@/dom/spawner";
+import { editHub } from "@/webview/services/edit-points-hub";
 
 import { Outlet } from "./models/outlet.model";
-import { editPointsHub } from "../services/edit-points-hub";
 
 
 export class EditOnPick implements Outlet {
@@ -25,20 +25,32 @@ export class EditOnPick implements Outlet {
         'user-select': 'none',
       }
     );
-    const text = spawner.html.span();
+    const prefix = spawner.html.span();
+    prefix.innerHTML = 'edit on pick: ';
+    const off = spawner.html.span({}, {padding: '5px'});
+    const points = spawner.html.span({}, {padding: '5px'});
+    const box = spawner.html.span({}, {padding: '5px'});
+    this.el.appendChild(prefix);
+    this.el.appendChild(off);
+    this.el.appendChild(points);
+    this.el.appendChild(box);
     const render = () => {
-      text.innerHTML =  `edit on pick: ${ editPointsHub.editOnPick ? '<strong>on</strong>' : 'off' }`;
-    };
-    text.innerHTML = 'edit on pick: off';
-    this.el.appendChild(text);
-    this.el.onclick = (event: MouseEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      editPointsHub.editOnPick = !editPointsHub.editOnPick;
+      off.innerHTML = editHub.editMode === 'off' ? '<strong>off</strong>' : 'off';
+      points.innerHTML = editHub.editMode === 'points' ? '<strong>points</strong>' : 'points';
+      box.innerHTML = editHub.editMode === 'box' ? '<strong>box</strong>' : 'box';
     };
     render();
+    off.onclick = _event => {
+      editHub.editMode = 'off';
+    };
+    points.onclick = _event => {
+      editHub.editMode = 'points';
+    };
+    box.onclick = _event => {
+      editHub.editMode = 'box';
+    };
     (async () => {
-      const toggles = findMethodIterator(editPointsHub.editOnPickSet);
+      const toggles = findMethodIterator(editHub.editModeSet);
       for await (const _val of toggles) {
         render();
       }

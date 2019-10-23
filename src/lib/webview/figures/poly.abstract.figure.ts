@@ -11,12 +11,12 @@ import { cancelListener } from "@/webview/listeners";
 import { zoom } from "@/webview/services/zoom";
 import { appearance } from "@/webview/services/appearance";
 import { hints } from "@/webview/services/hints";
-import { Figure } from "@/webview/models/figure.model";
+import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 import { polyPointsEditor } from "@/webview/points-editor";
 
 
-export abstract class PolyFigure implements Figure<SVGElement> {
+export abstract class PolyFigure implements Sprite<SVGElement> {
 
     abstract readonly name: string;
     abstract readonly ctor = SVGElement;

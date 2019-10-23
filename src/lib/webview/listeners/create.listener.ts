@@ -3,7 +3,7 @@ import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
 import { CreatePipeRequest, ElementsDict, createPipe } from "../../shared/pipes/create.pipe";
 import { setState } from "../decorators/set-state.decorator";
-import { figuresCollection } from "../services/figures-collection";
+import { sprites } from "../services/sprites";
 
 
 export class CreateListener {
@@ -25,7 +25,7 @@ export class CreateListener {
 
     @setState
     createElement(elementName: keyof ElementsDict, attributes: {}) {
-        const delegate = figuresCollection.delegate(elementName);
+        const delegate = sprites.resolve(elementName);
         if (delegate) {
             delegate.create(elementName, attributes);
         }
