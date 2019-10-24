@@ -25,6 +25,57 @@ export class BaseBoxEditor {
             return control;
         });
         this.updateControls(element, controls);
+
+        let mirror: [boolean, boolean] = [false, false];
+        const controlDownListeners = controls.map((control, controlIndex) => {
+            const controlMouseDown = fromDomEvent<MouseEvent>(control, 'mousedown');
+            (async () => {
+                for await (const downEvent of controlMouseDown) {
+                    downEvent.stopPropagation();
+                    const {
+                        clientX,
+                        clientY,
+                    } = downEvent;
+                    const downX = clientX;
+                    const downY = clientY;
+                    let usedDeltaX = 0;
+                    let usedDeltaY = 0;
+                    const listeningTarget = window;
+                    const controlMouseMove = fromDomEvent<MouseEvent>(listeningTarget, 'mousemove');
+                    const controlMouseUp = fromDomEvent<MouseEvent>(listeningTarget, 'mouseup');
+                    (async () => {
+                        for await (const moveEvent of controlMouseMove) {
+                            moveEvent.stopPropagation();
+                            const {
+                                clientX,
+                                clientY,
+                            } = moveEvent;
+                            const { value: zoomValue } = zoom;
+                            const absDeltaX = (clientX - downX) / zoomValue;
+                            const absDeltaY = (clientY - downY) / zoomValue;
+                            const relDeltaX = absDeltaX - usedDeltaX;
+                            const relDeltaY = absDeltaY - usedDeltaY;
+                            usedDeltaX += relDeltaX;
+                            usedDeltaY += relDeltaY;
+                            this.onMove(element, controlIndex, moveEvent, [relDeltaX, relDeltaY], mirror);
+                            guides.setSelectionStyles([element]);
+                            this.updateControls(element, controls);
+                        }
+                    })();
+                    (async () => {
+                        for await (const upEvent of controlMouseUp) {
+                            upEvent.stopPropagation();
+                            controlMouseUp.return! ();
+                            controlMouseMove.return! ();
+                            // this.updateControls(element, controls);
+                            mirror = [false, false];
+                        }
+                    })();
+                }
+            })();
+            return controlMouseDown;
+        });
+
         const zoomIter = findMethodIterator(zoom.update);
         (async () => {
             for await (const _value of zoomIter) {
@@ -56,6 +107,7 @@ export class BaseBoxEditor {
         return () => {
             controls.forEach(control => control.remove());
             [
+                ...controlDownListeners,
                 zoomIter,
                 mouseDownIter,
                 mouseMoveIter,
@@ -77,6 +129,14 @@ export class BaseBoxEditor {
             });
         });
     }
+
+    onMove(
+        _element: SVGElement,
+        _controlIndex: number,
+        _event: MouseEvent,
+        _delta: [number, number],
+        _mirror: [boolean, boolean],
+    ) {}
 
     getPoints(element: SVGElement) {
         const clientRect: ClientRect = element.getBoundingClientRect();

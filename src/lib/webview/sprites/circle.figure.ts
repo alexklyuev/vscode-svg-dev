@@ -75,6 +75,7 @@ export class CircleFigure implements Sprite<SVGCircleElement> {
         (async () => {
             for await (const _key of cancelEvents) {
                 cancel();
+                cancelEvents.return! ();
             }
         })();
     }

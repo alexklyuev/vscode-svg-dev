@@ -80,6 +80,7 @@ export class EllipseFigure implements Sprite<SVGEllipseElement> {
         (async () => {
             for await (const _event of cancelEvents) {
                 cancel();
+                cancelEvents.return! ();
             }
         })();
     }

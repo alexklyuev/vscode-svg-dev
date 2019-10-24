@@ -118,6 +118,7 @@ export class PathFigure implements Sprite<SVGPathElement> {
         (async () => {
             for await (const key of cancelEvents) {
                 stop(key);
+                cancelEvents.return! ();
             }
         })();
     }

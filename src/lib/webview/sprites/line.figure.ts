@@ -92,6 +92,7 @@ export class LineFigure implements Sprite<SVGLineElement> {
         (async () => {
             for await (const _key of cancelEvents) {
                 cancel();
+                cancelEvents.return! ();
             }
         })();
     }

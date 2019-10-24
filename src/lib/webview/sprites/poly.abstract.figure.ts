@@ -86,6 +86,7 @@ export abstract class PolyFigure implements Sprite<SVGElement> {
         (async () => {
             for await (const key of cancelEvents) {
                 stop(key);
+                cancelEvents.return! ();
             }
         })();
     }

@@ -83,6 +83,7 @@ export class RectFigure implements Sprite<SVGRectElement> {
         (async () => {
             for await (const _key of cancelEvents) {
                 cancel();
+                cancelEvents.return! ();
             }
         })();
     }
