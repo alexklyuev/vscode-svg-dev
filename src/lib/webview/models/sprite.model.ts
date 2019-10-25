@@ -10,7 +10,7 @@ export interface Sprite<Ctor> {
 
     drag: Dragger;
 
-    testByElement(element: any): element is Ctor;
+    move?: Mover;
 
     create(elementName: string, attributes: {[K: string]: string}): void;
 
@@ -18,6 +18,6 @@ export interface Sprite<Ctor> {
 
     editBox?(element: SVGElement): () => void;
 
-    move?: Mover;
+    // testByElement(element: any): element is Ctor;
 
 }
