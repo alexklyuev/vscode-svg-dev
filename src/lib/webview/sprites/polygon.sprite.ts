@@ -1,4 +1,4 @@
-import { PolySprite } from "./poly.abstract.figure";
+import { PolySprite } from "./poly.abstract.sprite";
 import { Sprite } from "../models/sprite.model";
 
 

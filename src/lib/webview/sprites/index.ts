@@ -1,12 +1,12 @@
-import { CircleSprite } from "@/webview/sprites/circle.figure";
-import { RectSprite } from "@/webview/sprites/rect.figure";
-import { TextSprite } from "@/webview/sprites/text.figure";
-import { GSprite } from "@/webview/sprites/g.figure";
-import { EllipseSprite } from "@/webview/sprites/ellipse.figure";
-import { LineSprite } from "@/webview/sprites/line.figure";
-import { PolygonSprite } from "@/webview/sprites/polygon.figure";
-import { PolylineSprite } from "@/webview/sprites/polyline.figure";
-import { PathSprite } from "@/webview/sprites/path.figure";
+import { CircleSprite } from "@/webview/sprites/circle.sprite";
+import { RectSprite } from "@/webview/sprites/rect.sprite";
+import { TextSprite } from "@/webview/sprites/text.sprite";
+import { GSprite } from "@/webview/sprites/g.sprite";
+import { EllipseSprite } from "@/webview/sprites/ellipse.sprite";
+import { LineSprite } from "@/webview/sprites/line.sprite";
+import { PolygonSprite } from "@/webview/sprites/polygon.sprite";
+import { PolylineSprite } from "@/webview/sprites/polyline.sprite";
+import { PathSprite } from "@/webview/sprites/path.sprite";
 import { sprites } from "@/webview/services/sprites";
 
 
