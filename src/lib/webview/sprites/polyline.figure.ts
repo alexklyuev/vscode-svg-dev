@@ -1,8 +1,8 @@
-import { PolyFigure } from "./poly.abstract.figure";
+import { PolySprite } from "./poly.abstract.figure";
 import { Sprite } from "../models/sprite.model";
 
 
-export class PolylineFigure extends PolyFigure implements Sprite<SVGPolylineElement> {
+export class PolylineSprite extends PolySprite implements Sprite<SVGPolylineElement> {
 
     readonly name = 'polyline';
     readonly ctor = SVGPolylineElement;

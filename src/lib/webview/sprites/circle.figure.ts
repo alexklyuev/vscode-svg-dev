@@ -18,7 +18,7 @@ import { circlePointsEditor } from "../points-editor";
 
 
 
-export class CircleFigure implements Sprite<SVGCircleElement> {
+export class CircleSprite implements Sprite<SVGCircleElement> {
 
     readonly name = 'circle';
 

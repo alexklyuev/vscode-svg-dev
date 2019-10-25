@@ -16,7 +16,7 @@ import { setState } from "@/webview/decorators/set-state.decorator";
 import { linePointsEditor } from "../points-editor";
 
 
-export class LineFigure implements Sprite<SVGLineElement> {
+export class LineSprite implements Sprite<SVGLineElement> {
 
     readonly name = 'line';
     readonly ctor = SVGLineElement;

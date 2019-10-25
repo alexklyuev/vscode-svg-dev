@@ -5,7 +5,7 @@ import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 
 
-export class GFigure implements Sprite<SVGGElement> {
+export class GSprite implements Sprite<SVGGElement> {
 
     readonly name = 'g';
 

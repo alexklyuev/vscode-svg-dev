@@ -17,7 +17,7 @@ import { setState } from "@/webview/decorators/set-state.decorator";
 import { ellipsePointsEdtitor } from "../points-editor";
 
 
-export class EllipseFigure implements Sprite<SVGEllipseElement> {
+export class EllipseSprite implements Sprite<SVGEllipseElement> {
 
     readonly name = 'ellipse';
 

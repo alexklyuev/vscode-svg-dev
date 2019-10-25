@@ -16,7 +16,7 @@ import { setState } from "@/webview/decorators/set-state.decorator";
 import { polyPointsEditor } from "@/webview/points-editor";
 
 
-export abstract class PolyFigure implements Sprite<SVGElement> {
+export abstract class PolySprite implements Sprite<SVGElement> {
 
     abstract readonly name: string;
     abstract readonly ctor = SVGElement;

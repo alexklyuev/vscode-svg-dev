@@ -67,7 +67,6 @@ export class BaseBoxEditor {
                             upEvent.stopPropagation();
                             controlMouseUp.return! ();
                             controlMouseMove.return! ();
-                            // this.updateControls(element, controls);
                             mirror = [false, false];
                         }
                     })();

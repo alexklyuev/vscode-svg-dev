@@ -17,7 +17,7 @@ import { setState } from "@/webview/decorators/set-state.decorator";
 import { rectBoxEditor } from "@/webview/box-editor";
 
 
-export class RectFigure implements Sprite<SVGRectElement> {
+export class RectSprite implements Sprite<SVGRectElement> {
 
     readonly name = 'rect';
 

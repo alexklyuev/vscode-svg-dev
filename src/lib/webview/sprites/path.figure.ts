@@ -20,7 +20,7 @@ import { pathPointsEditor } from "../points-editor";
 import { BaseBoxEditor } from "../box-editor/base.box-editor";
 
 
-export class PathFigure implements Sprite<SVGPathElement> {
+export class PathSprite implements Sprite<SVGPathElement> {
 
     stroke = 'white';
     fill = 'none';

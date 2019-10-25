@@ -7,7 +7,7 @@ import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 
 
-export class TextFigure implements Sprite<SVGTextElement> {
+export class TextSprite implements Sprite<SVGTextElement> {
 
     readonly name = 'text';
 
