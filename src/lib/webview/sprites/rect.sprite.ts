@@ -15,6 +15,7 @@ import { zoom } from "@/webview/services/zoom";
 import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 import { rectBoxEditor } from "@/webview/box-editor";
+import { rectCreateOperator } from "@/webview/creators";
 
 
 export class RectSprite implements Sprite<SVGRectElement> {
@@ -23,8 +24,11 @@ export class RectSprite implements Sprite<SVGRectElement> {
 
     readonly ctor = SVGRectElement;
 
-    public readonly drag = draggerLeftTop;
-    public readonly move = moverLeftTop;
+    public readonly createOperator = rectCreateOperator;
+    public readonly dragOperator = draggerLeftTop;
+    public readonly moveOperator = moverLeftTop;
+    public readonly editPointsOperator = rectPointsEditor;
+    public readonly editBoxOperator = rectBoxEditor;
 
     create(_elementName: string, _attributes: {[K: string]: string}): void {
         const points = Array<PointConcerns>();
@@ -167,18 +171,6 @@ export class RectSprite implements Sprite<SVGRectElement> {
             'width': `${ width }`,
             'height': `${ height }`,
         });
-    }
-
-    testByElement(element: any): element is SVGRectElement {
-        return element instanceof SVGRectElement;
-    }
-
-    edit(element: SVGRectElement) {
-        return rectPointsEditor.edit(element);
-    }
-
-    editBox(element: SVGRectElement) {
-        return rectBoxEditor.editBox(element);
     }
 
 }

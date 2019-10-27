@@ -10,7 +10,7 @@ import { appearance } from "@/webview/services/appearance";
 
 export class BaseBoxEditor {
 
-    editBox(element: SVGElement) {
+    edit(element: SVGElement) {
         const controls = Array(8).fill(null)
         .map(() => {
             const control = spawner.svg.rect({

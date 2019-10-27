@@ -10,8 +10,4 @@ export class PolygonSprite extends PolySprite implements Sprite<SVGPolygonElemen
     stroke = '#777';
     fill = '#555';
 
-    testByElement(element: any): element is SVGPolygonElement {
-        return element instanceof this.ctor;
-    }
-
 }

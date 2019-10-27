@@ -10,8 +10,4 @@ export class PolylineSprite extends PolySprite implements Sprite<SVGPolylineElem
     stroke = '#777';
     fill = 'none';
 
-    testByElement(element: any): element is SVGPolylineElement {
-        return element instanceof this.ctor;
-    }
-
 }

@@ -11,7 +11,6 @@ import { moverCenter } from "@/webview/movers";
 import { coordinator } from "@/webview/services/coordinator";
 import { cancelListener } from "@/webview/listeners";
 import { guides } from "@/webview/services/guides";
-import { hints } from "@/webview/services/hints";
 import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 import { ellipsePointsEdtitor } from "../points-editor";
@@ -23,12 +22,9 @@ export class EllipseSprite implements Sprite<SVGEllipseElement> {
 
     readonly ctor = SVGEllipseElement;
 
-    public readonly drag = draggerCenter;
-    public readonly move = moverCenter;
-
-    testByElement(element: any): element is SVGEllipseElement {
-        return element instanceof SVGEllipseElement;
-    }
+    public readonly dragOperator = draggerCenter;
+    public readonly moveOperator = moverCenter;
+    public readonly editPointsOperator = ellipsePointsEdtitor;
 
     /**
      * //
@@ -137,11 +133,6 @@ export class EllipseSprite implements Sprite<SVGEllipseElement> {
             'rx': `${ rx }`,
             'ry': `${ ry }`,
         });
-    }
-
-    edit(element: SVGEllipseElement) {
-        hints.setHint('finishEdit');
-        return ellipsePointsEdtitor.edit(element);
     }
 
 }

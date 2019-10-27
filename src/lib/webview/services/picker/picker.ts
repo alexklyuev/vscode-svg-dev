@@ -20,7 +20,7 @@ export class Picker {
     onMousemove(event: MouseEvent) {
         this.controlPropagation(event);
         holder.elements.forEach(element => {
-            sprites.resolve(element)!.drag.onMousemove(
+            sprites.resolve(element)!.dragOperator.onMousemove(
                 element,
                 event,
             );
@@ -45,7 +45,7 @@ export class Picker {
                 break;
             }
         }
-        const pickableCtors = sprites.getFiltered('drag').map(figure => figure.ctor);
+        const pickableCtors = sprites.getFiltered('dragOperator').map(figure => figure.ctor);
         if (pickableCtors.some(Ctor => eventTarget instanceof Ctor)) {
             const target = eventTarget as SVGElement;
             const { elements } = holder;
@@ -74,7 +74,7 @@ export class Picker {
                 holder.elements = [copy];
             }
             holder.elements.forEach(element => {
-                sprites.resolve(element)!.drag.onMousedown(
+                sprites.resolve(element)!.dragOperator.onMousedown(
                     element,
                     event,
                 );
@@ -93,7 +93,7 @@ export class Picker {
     onMouseup(event: MouseEvent) {
         this.controlPropagation(event);
         holder.elements.forEach(element => {
-            sprites.resolve(element)!.drag.onMouseup(
+            sprites.resolve(element)!.dragOperator.onMouseup(
                 element,
                 event,
             );

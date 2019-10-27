@@ -4,16 +4,16 @@ import { NameResolver } from "./resolvers/name.resolver";
 import { CtorResolver } from "./resolvers/ctor.resolver";
 
 
-export class SpritesCollection {
+export class SpritesCollection<T extends Sprite<any> = Sprite<any>> {
 
-    private types = new Set<Sprite<any>>();
+    private types = new Set<T>();
 
     public resolvers = Array<Resolver>(
         new NameResolver,
         new CtorResolver,
     );
 
-    add(...types: Sprite<any>[]) {
+    add(...types: T[]) {
         types.forEach(type => this.types.add(type));
     }
 
@@ -27,7 +27,7 @@ export class SpritesCollection {
         return null;
     }
 
-    getFiltered<K extends keyof Sprite<any>>(key: K): Sprite<any>[] {
+    getFiltered<K extends keyof T>(key: K): T[] {
         return Array.from(this.types).filter(t => !!t[key]);
     }
 

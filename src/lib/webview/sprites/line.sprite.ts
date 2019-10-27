@@ -9,7 +9,6 @@ import { coordinator } from "@/webview/services/coordinator";
 import { appearance } from "@/webview/services/appearance";
 import { cancelListener } from "@/webview/listeners";
 import { guides } from "@/webview/services/guides";
-import { hints } from "@/webview/services/hints";
 import { zoom } from "@/webview/services/zoom";
 import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
@@ -20,12 +19,10 @@ export class LineSprite implements Sprite<SVGLineElement> {
 
     readonly name = 'line';
     readonly ctor = SVGLineElement;
-    public drag = draggerDouble;
-    public readonly move = moverLine;
 
-    testByElement(element: any): element is SVGLineElement {
-        return element instanceof SVGLineElement;
-    }
+    public readonly dragOperator = draggerDouble;
+    public readonly moveOperator = moverLine;
+    public readonly editPointsOperator = linePointsEditor;
 
     @setState
     create(_elementName: string, _attributes: {[K: string]: string}) {
@@ -144,11 +141,6 @@ export class LineSprite implements Sprite<SVGLineElement> {
             guides.guidesContainer!.removeChild(pseudoLine);
             guides.guidesContainer!.removeChild(pseudoPoint);
         };
-    }
-
-    edit(element: SVGLineElement) {
-        hints.setHint('finishEdit');
-        return linePointsEditor.edit(element);
     }
 
 }

@@ -7,8 +7,8 @@ export class MoverDelegate extends MoverAbstract {
   by(element: SVGElement, {x, y}: {x: number, y: number}) {
     Array.from(element.children).forEach(child => {
       const delegate = sprites.resolve(child);
-      if (delegate && delegate.move) {
-        delegate.move.by(child as SVGElement, {x, y});
+      if (delegate && delegate.moveOperator) {
+        delegate.moveOperator.by(child as SVGElement, {x, y});
       }
     });
   }

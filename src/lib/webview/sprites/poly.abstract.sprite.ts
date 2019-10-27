@@ -10,7 +10,6 @@ import { userEventMan } from "@/webview/services/user-event";
 import { cancelListener } from "@/webview/listeners";
 import { zoom } from "@/webview/services/zoom";
 import { appearance } from "@/webview/services/appearance";
-import { hints } from "@/webview/services/hints";
 import { Sprite } from "@/webview/models/sprite.model";
 import { setState } from "@/webview/decorators/set-state.decorator";
 import { polyPointsEditor } from "@/webview/points-editor";
@@ -24,10 +23,10 @@ export abstract class PolySprite implements Sprite<SVGElement> {
     abstract stroke: string;
     abstract fill: string;
 
-    public readonly drag = draggerPoints;
-    public readonly move = moverPoints;
+    public readonly dragOperator = draggerPoints;
+    public readonly moveOperator = moverPoints;
+    public readonly editPointsOperator = polyPointsEditor;
 
-    abstract testByElement(element: any): element is SVGElement;
 
     @setState
     create(_elementName: string, _attributest: {[K: string]: string}) {
@@ -222,11 +221,6 @@ export abstract class PolySprite implements Sprite<SVGElement> {
             mousemoveRemover();
             artboard.tools.removeChild(svg);
         };
-    }
-
-    edit(element: SVGElement) {
-        hints.setHint('finishEdit');
-        return polyPointsEditor.edit(element);
     }
 
 }

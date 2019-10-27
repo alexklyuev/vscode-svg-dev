@@ -1,4 +1,4 @@
-import { Dragger } from "@/webview/draggers/dragger.interface";
+import { Dragger } from "@/webview/models/operators/drag-operator.model";
 import { pathPoints } from "@/webview/services/path";
 import { zoom } from "@/webview/services/zoom";
 

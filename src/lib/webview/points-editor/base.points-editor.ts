@@ -5,6 +5,7 @@ import { appearance } from "@/webview/services/appearance";
 import { artboard } from "@/webview/services/artboard";
 import { zoom } from "@/webview/services/zoom";
 import { guides } from "@/webview/services/guides";
+import { EditOperator } from "../models/operators/edit-operator.model";
 
 
 /**
@@ -14,7 +15,7 @@ type ControlPointsCollection = SVGElement[];
 type ReturnablesCollection = AsyncIterableIterator<MouseEvent>[];
 
 
-export abstract class BasePointsEditor<E extends SVGElement> {
+export abstract class BasePointsEditor<E extends SVGElement> implements EditOperator {
 
     abstract getPoints(_element: E): [number, number][];
 

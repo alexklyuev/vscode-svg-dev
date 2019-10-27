@@ -1,5 +1,5 @@
 import { sprites } from "@/webview/services/sprites";
-import { Dragger } from "@/webview/draggers/dragger.interface";
+import { Dragger } from "@/webview/models/operators/drag-operator.model";
 
 
 export class DraggerDelegate implements Dragger {
@@ -11,7 +11,7 @@ export class DraggerDelegate implements Dragger {
         Array.from(element.children).forEach(child => {
             const delegate = sprites.resolve(child);
             if (delegate) {
-                delegate.drag.onMousedown(child as SVGElement, event);
+                delegate.dragOperator.onMousedown(child as SVGElement, event);
             }
         });
     }
@@ -23,7 +23,7 @@ export class DraggerDelegate implements Dragger {
         Array.from(element.children).forEach(child => {
             const delegate = sprites.resolve(child);
             if (delegate) {
-                delegate.drag.onMousemove(child as SVGElement, event);
+                delegate.dragOperator.onMousemove(child as SVGElement, event);
             }
         });
     }
@@ -35,7 +35,7 @@ export class DraggerDelegate implements Dragger {
         Array.from(element.children).forEach(child => {
             const delegate = sprites.resolve(child);
             if (delegate) {
-                delegate.drag.onMouseup(child as SVGElement, event);
+                delegate.dragOperator.onMouseup(child as SVGElement, event);
             }
         });
     }

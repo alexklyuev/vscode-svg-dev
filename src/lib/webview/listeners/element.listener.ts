@@ -53,8 +53,8 @@ export class ElementListener {
     copyElement(element: SVGElement) {
         const newEl = this.copyInPlaceElement(element);
         const delegate = sprites.resolve(newEl);
-        if (delegate && delegate.move) {
-            delegate.move.by(newEl, {x: 20, y: 20});
+        if (delegate && delegate.moveOperator) {
+            delegate.moveOperator.by(newEl, {x: 20, y: 20});
         }
         return newEl;
     }

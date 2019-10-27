@@ -13,8 +13,8 @@ export class TextSprite implements Sprite<SVGTextElement> {
 
     readonly ctor = SVGTextElement;
 
-    public readonly drag = draggerLeftTop;
-    public readonly move = moverPath;
+    public readonly dragOperator = draggerLeftTop;
+    public readonly moveOperator = moverPath;
 
     @setState
     async create(_elementName: string, attributes: {[K: string]: string}) {
@@ -40,10 +40,6 @@ export class TextSprite implements Sprite<SVGTextElement> {
                 default: text.setAttribute(attrName, attrValue); break;
             }
         });
-    }
-
-    testByElement(element: any): element is SVGTextElement {
-        return element instanceof this.ctor;
     }
 
 }

@@ -11,8 +11,8 @@ export class GSprite implements Sprite<SVGGElement> {
 
     readonly ctor = SVGGElement;
 
-    public readonly drag = draggerDelegate;
-    public readonly move = moverDelegate;
+    public readonly dragOperator = draggerDelegate;
+    public readonly moveOperator = moverDelegate;
 
     /**
      * 
@@ -22,10 +22,6 @@ export class GSprite implements Sprite<SVGGElement> {
         const { svg } = artboard;
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         svg.appendChild(g);
-    }
-
-    testByElement(element: any): element is SVGGElement {
-        return element instanceof SVGGElement;
     }
 
 }

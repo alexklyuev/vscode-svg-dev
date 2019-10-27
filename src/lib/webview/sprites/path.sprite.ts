@@ -1,5 +1,4 @@
-import { CancelKeys } from "../../shared/pipes/cancel.pipe";
-
+import { CancelKeys } from "@/shared/pipes/cancel.pipe";
 import { findMethodIterator } from "@/common/iterators";
 import { PointConcerns, PointSharedConcerns } from "@/webview/models/point-concerns.model";
 import { draggerPath } from "@/webview/draggers";
@@ -32,15 +31,11 @@ export class PathSprite implements Sprite<SVGPathElement> {
 
     readonly ctor = SVGPathElement;
 
-    public readonly drag = draggerPath;
-    public readonly move = moverPath;
+    public readonly dragOperator = draggerPath;
+    public readonly moveOperator = moverPath;
+    public readonly editPointsOperator = pathPointsEditor;
+    public readonly editBoxOperator = new BaseBoxEditor();
 
-    /**
-     * //
-     */
-    testByElement(element: any): element is SVGPathElement {
-        return element instanceof SVGPathElement;
-    }
 
     /**
      * //
@@ -226,15 +221,6 @@ export class PathSprite implements Sprite<SVGPathElement> {
                 }
             }
         }).join(' ');
-    }
-
-    edit(element: SVGPathElement) {
-        hints.setHint('finishEdit');
-        return pathPointsEditor.edit(element);
-    }
-
-    editBox(element: SVGPathElement) {
-        return new BaseBoxEditor() .editBox(element);
     }
 
 }

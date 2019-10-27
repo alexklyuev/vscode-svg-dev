@@ -21,8 +21,8 @@ export class MoveKeyListener {
                 const { key, shift } = request;
                 holder.elements.forEach(element => {
                     const delegate = sprites.resolve(element);
-                    if (delegate && delegate.move) {
-                        delegate.move.byKey(element, key, shift);
+                    if (delegate && delegate.moveOperator) {
+                        delegate.moveOperator.byKey(element, key, shift);
                         this.fireMoveEvent(key);
                     }
                 });

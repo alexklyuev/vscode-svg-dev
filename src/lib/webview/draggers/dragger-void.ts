@@ -1,4 +1,4 @@
-import { Dragger } from "@/webview/draggers/dragger.interface";
+import { Dragger } from "@/webview/models/operators/drag-operator.model";
 
 
 export class DraggerVoid implements Dragger {

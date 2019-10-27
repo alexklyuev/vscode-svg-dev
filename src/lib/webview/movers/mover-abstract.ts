@@ -1,4 +1,4 @@
-import { Mover } from "@/webview/movers/mover.model";
+import { Mover } from "@/webview/models/operators/move-operator.model";
 import { MoveArrowKeys } from "../../shared/pipes/move-key.pipe";
 
 
