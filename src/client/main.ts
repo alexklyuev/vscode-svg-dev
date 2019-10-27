@@ -272,8 +272,8 @@ moveKeyListener.listen();
     for await (const elements of elementsHasBeenSet) {
         if (elements.length === 1 && editHub.editMode === 'off') {
             const element = elements[0];
-            const delegate = sprites.resolve(element);
-            if (delegate && delegate.edit instanceof Function) {
+            const sprite = sprites.resolve(element);
+            if (sprite && sprite.editPointsOperator) {
                 editPointsControl.show();
             } else {
                 editPointsControl.hide();
@@ -292,8 +292,8 @@ moveKeyListener.listen();
     for await (const elements of elementsHasBeenSet) {
         if (elements.length === 1 && editHub.editMode === 'off') {
             const element = elements[0];
-            const delegate = sprites.resolve(element);
-            if (delegate && delegate.editBox instanceof Function) {
+            const sprite = sprites.resolve(element);
+            if (sprite && sprite.editBoxOperator) {
                 editBoxControl.show();
             } else {
                 editBoxControl.hide();
@@ -478,12 +478,10 @@ configListener.listen();
         const element = holder.elements[0];
         if (element) {
             const sprite = sprites.resolve(element);
-            if (sprite && sprite.edit instanceof Function) {
-                const fn = sprite.edit(element);
+            if (sprite && sprite.editPointsOperator) {
+                const fn = sprite.editPointsOperator.edit(element);
                 editHub.takeActiveElement(element);
-                if (fn instanceof Function) {
-                    editHub.takeCancelationFn(fn);
-                }
+                editHub.takeCancelationFn(fn);
             }
         }
     }
@@ -499,8 +497,8 @@ configListener.listen();
         const element = holder.elements[0];
         if (element) {
             const sprite = sprites.resolve(element);
-            if (sprite && sprite.editBox instanceof Function) {
-                const fn = sprite.editBox(element);
+            if (sprite && sprite.editBoxOperator) {
+                const fn = sprite.editBoxOperator.edit(element);
                 editHub.takeActiveElement(element);
                 editHub.takeCancelationFn(fn);
             }

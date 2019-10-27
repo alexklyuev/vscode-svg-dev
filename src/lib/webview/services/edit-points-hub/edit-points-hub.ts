@@ -48,23 +48,19 @@ export class EditHub {
         if (element) {
             if (!this.isSameElement(element)) {
                 this.takeActiveElement(element);
-                const delegate = sprites.resolve(element);
-                if (delegate) {
+                const sprite = sprites.resolve(element);
+                if (sprite) {
                     switch (this.editMode) {
                         case 'points':
-                            if (delegate.edit instanceof Function) {
-                                const cancelFn = delegate.edit(element);
-                                if (cancelFn instanceof Function) {
-                                    this.takeCancelationFn(cancelFn);
-                                }
+                            if (sprite.editPointsOperator) {
+                                const cancelFn = sprite.editPointsOperator.edit(element);
+                                this.takeCancelationFn(cancelFn);
                             }
                             break;
                         case 'box':
-                            if (delegate.editBox instanceof Function) {
-                                const cancelFn = delegate.editBox(element);
-                                if (cancelFn instanceof Function) {
-                                    this.takeCancelationFn(cancelFn);
-                                }
+                            if (sprite.editBoxOperator) {
+                                const cancelFn = sprite.editBoxOperator.edit(element);
+                                this.takeCancelationFn(cancelFn);
                             }
                             break;
                     }
