@@ -1,5 +1,5 @@
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
-import { editHub } from "@/webview/services/edit-points-hub";
+import { editHub } from "@/webview/services/edit-hub";
 import { editModePipe } from "../../../shared/pipes/edit-mode.pipe";
 
 

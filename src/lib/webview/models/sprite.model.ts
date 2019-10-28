@@ -20,7 +20,7 @@ export interface Sprite<Ctor> {
 
     editBoxOperator?: EditOperator;
 
-    create(elementName: string, attributes: {[K: string]: string}): void;
+    // create(elementName: string, attributes: {[K: string]: string}): void;
 
     // edit?(element: SVGElement): void | (() => void);
 

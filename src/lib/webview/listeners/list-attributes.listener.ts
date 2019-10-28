@@ -1,8 +1,7 @@
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
-
-import { ListAttributesRequest, ListAttributesResponse } from "../../shared/pipes/list-attributes.pipe";
-import { ElementHolder } from "../services/holder/element-holder";
+import { ListAttributesRequest, ListAttributesResponse } from "@/shared/pipes/list-attributes.pipe";
+import { ElementHolder } from "@/webview/services/holder/element-holder";
 
 
 export class ListAttributesListener {

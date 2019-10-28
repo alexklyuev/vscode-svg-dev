@@ -1,6 +1,6 @@
 import { findMethodIterator } from "@/common/iterators";
 import { spawner } from "@/dom/spawner";
-import { editHub } from "@/webview/services/edit-points-hub";
+import { editHub } from "@/webview/services/edit-hub";
 
 import { Outlet } from "./models/outlet.model";
 

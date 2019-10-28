@@ -1,8 +1,8 @@
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
 import { Appearance } from "@/webview/services/appearance/appearance";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { ConfigRequest, ConfigResponse } from "@/shared/pipes/config.pipe";
 
-import { ConfigRequest, ConfigResponse } from "../../shared/pipes/config.pipe";
 
 export class ConfigListener {
   private endpoint: PipeEndpoint<ConfigRequest, ConfigResponse, 'config'>;

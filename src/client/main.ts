@@ -1,6 +1,6 @@
 import { findMethodIterator } from '@/common/iterators';
 import { appearance } from '@/webview/services/appearance';
-import { editHub } from '@/webview/services/edit-points-hub';
+import { editHub } from '@/webview/services/edit-hub';
 import { webviewEndpoint } from '@/webview/services/webview-endpoint';
 import { artboard } from '@/webview/services/artboard';
 import { artboardMove } from '@/webview/services/artboard-move';

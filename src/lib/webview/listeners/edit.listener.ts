@@ -1,4 +1,4 @@
-import { editHub } from "@/webview/services/edit-points-hub";
+import { editHub } from "@/webview/services/edit-hub";
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 
