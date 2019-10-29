@@ -1,18 +1,12 @@
-import { PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
-
-import { CreatePipeRequest, ElementsDict, createPipe } from "../../shared/pipes/create.pipe";
-import { setState } from "../decorators/set-state.decorator";
-import { sprites } from "../services/sprites";
+import { ElementsDict, createPipe } from "@/shared/pipes/create.pipe";
+import { setState } from "@/webview/decorators/set-state.decorator";
+import { sprites } from "@/webview/services/sprites";
 
 
 export class CreateListener {
-    private createClient: PipeEndpoint<CreatePipeRequest<keyof ElementsDict>, {}, "create">;
 
-    constructor(
-    ) {
-        this.createClient = webviewEndpoint.createFromPipe(createPipe);
-    }
+    private createClient = webviewEndpoint.createFromPipe(createPipe);
 
     listen() {
         this.createClient.listenSetRequest(
@@ -25,9 +19,9 @@ export class CreateListener {
 
     @setState
     createElement(elementName: keyof ElementsDict, attributes: {}) {
-        const delegate = sprites.resolve(elementName);
-        if (delegate) {
-            delegate.create(elementName, attributes);
+        const sprite = sprites.resolve(elementName);
+        if (sprite && sprite.createOperator) {
+            sprite.createOperator.create(elementName, attributes);
         }
     }
 

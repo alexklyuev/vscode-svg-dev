@@ -3,6 +3,7 @@ import { draggerPoints } from "@/webview/draggers";
 import { moverPoints } from "@/webview/movers";
 import { Sprite } from "@/webview/models/sprite.model";
 import { polyPointsEditor } from "@/webview/points-editor";
+import { polyBoxEditor } from "../box-editor";
 
 
 export abstract class PolySprite implements Sprite<SVGElement> {
@@ -16,6 +17,7 @@ export abstract class PolySprite implements Sprite<SVGElement> {
     public readonly dragOperator = draggerPoints;
     public readonly moveOperator = moverPoints;
     public readonly editPointsOperator = polyPointsEditor;
+    public readonly editBoxOperator = polyBoxEditor;
 
 
     // @setState

@@ -389,7 +389,10 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
     const creates = findMethodIterator(shapesOutlet.createShape);
     for await (const shapeName of creates) {
         inverseInteractiveEndpoint.makeSetRequest({});
-        sprites.resolve(shapeName)! .create(shapeName, {});
+        const sprite = sprites.resolve(shapeName);
+        if (sprite && sprite.createOperator) {
+            sprite.createOperator.create(shapeName, {});
+        }
     }
 })();
 

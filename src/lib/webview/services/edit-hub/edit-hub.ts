@@ -2,6 +2,7 @@ import { findMethodIterator, makeMethodIterator } from "@/common/iterators";
 import { sprites } from "@/webview/services/sprites";
 import { cancelListener } from "@/webview/listeners";
 import { EditMode } from "@/shared/pipes/edit-mode.pipe";
+import { EditOperator } from "@/webview/models/operators/edit-operator.model";
 
 
 export class EditHub {
@@ -50,19 +51,20 @@ export class EditHub {
                 this.takeActiveElement(element);
                 const sprite = sprites.resolve(element);
                 if (sprite) {
+                    let operator: EditOperator | undefined | null = null;
                     switch (this.editMode) {
                         case 'points':
-                            if (sprite.editPointsOperator) {
-                                const cancelFn = sprite.editPointsOperator.edit(element);
-                                this.takeCancelationFn(cancelFn);
-                            }
+                            operator = sprite.editPointsOperator;
                             break;
                         case 'box':
-                            if (sprite.editBoxOperator) {
-                                const cancelFn = sprite.editBoxOperator.edit(element);
-                                this.takeCancelationFn(cancelFn);
-                            }
+                            operator = sprite.editBoxOperator;
                             break;
+                    }
+                    if (operator) {
+                        const cancelFn = operator.edit(element);
+                        this.takeCancelationFn(cancelFn);
+                    } else {
+                        this.purge();
                     }
                 }
             }
