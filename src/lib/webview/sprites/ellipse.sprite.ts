@@ -4,6 +4,7 @@ import { Sprite } from "@/webview/models/sprite.model";
 import { ellipsePointsEdtitor } from "../points-editor";
 import { ellipseCreateOperator } from "../creators";
 import { baseCopyOperator } from "@/webview/copiers";
+import { ellipseBoxEditor } from "@/webview/box-editor";
 
 
 export class EllipseSprite implements Sprite<SVGEllipseElement> {
@@ -17,6 +18,7 @@ export class EllipseSprite implements Sprite<SVGEllipseElement> {
         dragOperator: draggerCenter,
         moveOperator: moverCenter,
         editPointsOperator: ellipsePointsEdtitor,
+        editBoxOperator: ellipseBoxEditor,
         copyOperator: baseCopyOperator,
     };
 
