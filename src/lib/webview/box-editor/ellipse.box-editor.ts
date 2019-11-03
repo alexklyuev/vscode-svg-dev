@@ -22,41 +22,41 @@ export class EllipseBoxEditor  extends BaseBoxEditor {
                 cx += dx/2;
                 rx += dx/2 * (mx ? 1 : -1);
                 cy += dy/2;
-                ry -= dy/2;
+                ry += dy/2 * (my ? 1 : -1);
                 break;
             case 1:
                 cy += dy/2;
-                ry -= dy/2;
+                ry += dy/2 * (my ? 1 : -1);
                 break;
             case 2:
                 cx += dx/2;
                 rx += dx/2 * (mx ? -1 : 1);
                 cy += dy/2;
-                ry -= dy/2;
+                ry += dy/2 * (my ? 1 : -1);
                 break;
             case 3:
                 cx += dx/2;
-                rx += dx/2;
+                rx += dx/2 * (mx ? -1 : 1);
                 break;
             case 4:
                 cx += dx/2;
-                rx += dx/2;
+                rx += dx/2 * (mx ? -1 : 1);
                 cy += dy/2;
-                ry += dy/2;
+                ry += dy/2 * (my ? -1 : 1);
                 break;
             case 5:
                 cy += dy/2;
-                ry += dy/2;
+                ry += dy/2 * (my ? -1 : 1);
                 break;
             case 6:
                 cx += dx/2;
-                rx -= dx/2;
+                rx += dx/2 * (mx ? 1 : -1);
                 cy += dy/2;
-                ry += dy/2;
+                ry += dy/2 * (my ? -1 : 1);
                 break;
             case 7:
                 cx += dx/2;
-                rx -= dx/2;
+                rx += dx/2 * (mx ? 1 : -1);
                 break;
         }
         if (rx < 0) {
