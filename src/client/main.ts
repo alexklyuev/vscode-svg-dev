@@ -273,7 +273,7 @@ moveKeyListener.listen();
         if (elements.length === 1 && editHub.editMode === 'off') {
             const element = elements[0];
             const sprite = sprites.resolve(element);
-            if (sprite && sprite.editPointsOperator) {
+            if (sprite && sprite.operators.editPointsOperator) {
                 editPointsControl.show();
             } else {
                 editPointsControl.hide();
@@ -293,7 +293,7 @@ moveKeyListener.listen();
         if (elements.length === 1 && editHub.editMode === 'off') {
             const element = elements[0];
             const sprite = sprites.resolve(element);
-            if (sprite && sprite.editBoxOperator) {
+            if (sprite && sprite.operators.editBoxOperator) {
                 editBoxControl.show();
             } else {
                 editBoxControl.hide();
@@ -341,7 +341,7 @@ moveKeyListener.listen();
  * edit on copy
  */
 (async () => {
-    const copyElement = findMethodIterator(elementListener.copyInPlaceElement);
+    const copyElement = findMethodIterator(elementListener.copyOneElement);
     for await (const _element of copyElement) {
         if (editHub.editMode !== 'off') {
             editHub.startEditing(holder.elements[0]);
@@ -390,8 +390,8 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
     for await (const shapeName of creates) {
         inverseInteractiveEndpoint.makeSetRequest({});
         const sprite = sprites.resolve(shapeName);
-        if (sprite && sprite.createOperator) {
-            sprite.createOperator.create(shapeName, {});
+        if (sprite && sprite.operators.createOperator) {
+            sprite.operators.createOperator.create(shapeName, {});
         }
     }
 })();
@@ -416,7 +416,7 @@ const appearanceRequestCallback = async (response: Promise<AppearanceResponse>) 
  * rebuild container and selection on element copy
  */
 (async () => {
-    const copyElement = findMethodIterator(elementListener.copyInPlaceElement);
+    const copyElement = findMethodIterator(elementListener.copyOneElement);
     for await (const _element of copyElement) {
         setTimeout(() => {
             guides.setContainerStyles();
@@ -481,8 +481,8 @@ configListener.listen();
         const element = holder.elements[0];
         if (element) {
             const sprite = sprites.resolve(element);
-            if (sprite && sprite.editPointsOperator) {
-                const fn = sprite.editPointsOperator.edit(element);
+            if (sprite && sprite.operators.editPointsOperator) {
+                const fn = sprite.operators.editPointsOperator.edit(element);
                 editHub.takeActiveElement(element);
                 editHub.takeCancelationFn(fn);
             }
@@ -500,8 +500,8 @@ configListener.listen();
         const element = holder.elements[0];
         if (element) {
             const sprite = sprites.resolve(element);
-            if (sprite && sprite.editBoxOperator) {
-                const fn = sprite.editBoxOperator.edit(element);
+            if (sprite && sprite.operators.editBoxOperator) {
+                const fn = sprite.operators.editBoxOperator.edit(element);
                 editHub.takeActiveElement(element);
                 editHub.takeCancelationFn(fn);
             }

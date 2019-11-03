@@ -54,10 +54,10 @@ export class EditHub {
                     let operator: EditOperator | undefined | null = null;
                     switch (this.editMode) {
                         case 'points':
-                            operator = sprite.editPointsOperator;
+                            operator = sprite.operators.editPointsOperator;
                             break;
                         case 'box':
-                            operator = sprite.editBoxOperator;
+                            operator = sprite.operators.editBoxOperator;
                             break;
                     }
                     if (operator) {

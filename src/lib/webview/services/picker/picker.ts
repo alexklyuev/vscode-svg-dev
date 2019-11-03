@@ -1,5 +1,4 @@
 import { makeMethodIterator } from "@/common/iterators";
-import { spawner } from "@/dom/spawner";
 import { userEventMan } from "@/webview/services/user-event";
 import { artboard } from "@/webview/services/artboard";
 import { holder } from "@/webview/services/holder";
@@ -14,13 +13,12 @@ export class Picker {
 
     /**
      * 
-     * @param event 
      */
     @makeMethodIterator()
     onMousemove(event: MouseEvent) {
         this.controlPropagation(event);
         holder.elements.forEach(element => {
-            sprites.resolve(element)!.dragOperator.onMousemove(
+            sprites.resolve(element)!.operators.dragOperator!.onMousemove(
                 element,
                 event,
             );
@@ -37,52 +35,73 @@ export class Picker {
             return event;
         }
         this.controlPropagation(event);
+        const {
+            altKey,
+            shiftKey,
+        } = event;
         let { target: eventTarget } = event;
+
+        if (eventTarget instanceof SVGSVGElement) {
+            holder.elements = [];
+            return event;
+        }
+
         while (true) {
-            if (eventTarget && eventTarget instanceof SVGElement && eventTarget.parentElement instanceof SVGGElement) {
+            if (
+                eventTarget
+                &&
+                eventTarget instanceof SVGElement
+                &&
+                eventTarget.parentElement instanceof SVGGElement
+            ) {
                 eventTarget = eventTarget.parentElement;
             } else {
                 break;
             }
         }
-        const pickableCtors = sprites.getFiltered('dragOperator').map(figure => figure.ctor);
-        if (pickableCtors.some(Ctor => eventTarget instanceof Ctor)) {
-            const target = eventTarget as SVGElement;
-            const { elements } = holder;
-            if (event.shiftKey) {
-                if (elements.indexOf(target) === -1) {
-                    holder.elements = elements.concat(target);
-                } else {
-                    holder.elements = holder.elements.filter(el => el !== target);
-                }
+
+        const target = eventTarget as SVGElement;
+
+        const { elements } = holder;
+
+        if (shiftKey) {
+            if (elements.indexOf(target) === -1) {
+                holder.elements = elements.concat(target);
             } else {
-                if (holder.elements.indexOf(target) === -1) {
-                    holder.elements = [target];
-                } else {
-                    holder.elements = elements;
-                }
+                holder.elements = holder.elements.filter(el => el !== target);
             }
-            if (event.altKey) {
-                const outer = target.outerHTML;
-                const g = spawner.svg.create('g');
-                g.innerHTML = outer;
-                const copy = g.children[0] as SVGElement;
-                copy.removeAttribute('id');
-                const svg = artboard.svg;
-                svg.insertBefore(copy, target);
-                target.insertAdjacentElement('afterend', copy);
-                holder.elements = [copy];
-            }
-            holder.elements.forEach(element => {
-                sprites.resolve(element)!.dragOperator.onMousedown(
-                    element,
-                    event,
-                );
-            });
-            artboard.svg.addEventListener('mousemove', this.bindedMousemove);
         } else {
-            holder.elements = [];
+            if (holder.elements.indexOf(target) === -1) {
+                holder.elements = [target];
+            } else {
+                holder.elements = elements;
+            }
         }
+
+        if (altKey) {
+            const newEls = holder.elements
+            .map(el => {
+                const sprite = sprites.resolve(el);
+                if (sprite) {
+                    const { copyOperator } = sprite.operators;
+                    if (copyOperator) {
+                        return copyOperator.copy(el);
+                    }
+                }
+            })
+            .filter(el => el instanceof SVGElement) as SVGElement[];
+            holder.elements = newEls;
+        }
+
+        holder.elements.forEach(element => {
+            sprites.resolve(element)!.operators.dragOperator!.onMousedown(
+                element,
+                event,
+            );
+        });
+
+        artboard.svg.addEventListener('mousemove', this.bindedMousemove);
+
         return event;
     }
 
@@ -93,7 +112,7 @@ export class Picker {
     onMouseup(event: MouseEvent) {
         this.controlPropagation(event);
         holder.elements.forEach(element => {
-            sprites.resolve(element)!.dragOperator.onMouseup(
+            sprites.resolve(element)!.operators.dragOperator!.onMouseup(
                 element,
                 event,
             );

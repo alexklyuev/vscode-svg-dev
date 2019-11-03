@@ -6,7 +6,7 @@ import { CtorResolver } from "./resolvers/ctor.resolver";
 
 export class SpritesCollection<T extends Sprite<any> = Sprite<any>> {
 
-    private types = new Set<T>();
+    private sprites = new Set<T>();
 
     public resolvers = Array<Resolver>(
         new NameResolver,
@@ -14,12 +14,12 @@ export class SpritesCollection<T extends Sprite<any> = Sprite<any>> {
     );
 
     add(...types: T[]) {
-        types.forEach(type => this.types.add(type));
+        types.forEach(type => this.sprites.add(type));
     }
 
     resolve(element: {} | string) {
         for (let resolver of this.resolvers) {
-            const localResult = resolver.find(this.types, element);
+            const localResult = resolver.find(this.sprites, element);
             if (localResult) {
                 return localResult;
             }
@@ -27,8 +27,8 @@ export class SpritesCollection<T extends Sprite<any> = Sprite<any>> {
         return null;
     }
 
-    getFiltered<K extends keyof T>(key: K): T[] {
-        return Array.from(this.types).filter(t => !!t[key]);
+    toArray() {
+        return Array.from(this.sprites);
     }
 
 }

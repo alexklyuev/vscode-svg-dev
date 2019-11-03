@@ -1,7 +1,4 @@
-import { Dragger } from "@/webview/models/operators/drag-operator.model";
-import { Mover } from "@/webview/models/operators/move-operator.model";
-import { EditOperator } from "@/webview/models/operators/edit-operator.model";
-import { CreateOperator } from "./operators/create-operator.model";
+import { PartialOperators } from "@/webview/operators/all-operators";
 
 
 export interface Sprite<Ctor> {
@@ -10,20 +7,16 @@ export interface Sprite<Ctor> {
 
     readonly ctor: {new (): Ctor};
 
-    createOperator?: CreateOperator;
+    // createOperator?: CreateOperator;
 
-    dragOperator: Dragger;
+    // dragOperator: Dragger;
 
-    moveOperator?: Mover;
+    // moveOperator?: Mover;
 
-    editPointsOperator?: EditOperator;
+    // editPointsOperator?: EditOperator;
 
-    editBoxOperator?: EditOperator;
+    // editBoxOperator?: EditOperator;
 
-    // create(elementName: string, attributes: {[K: string]: string}): void;
-
-    // edit?(element: SVGElement): void | (() => void);
-
-    // editBox?(element: SVGElement): () => void;
+    operators: PartialOperators;
 
 }

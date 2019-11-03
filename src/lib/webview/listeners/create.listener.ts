@@ -20,8 +20,11 @@ export class CreateListener {
     @setState
     createElement(elementName: keyof ElementsDict, attributes: {}) {
         const sprite = sprites.resolve(elementName);
-        if (sprite && sprite.createOperator) {
-            sprite.createOperator.create(elementName, attributes);
+        if (sprite) {
+            const { createOperator } = sprite.operators;
+            if (createOperator) {
+                createOperator.create(elementName, attributes);
+            }
         }
     }
 

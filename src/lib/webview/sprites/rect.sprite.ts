@@ -4,6 +4,7 @@ import { rectPointsEditor } from "@/webview/points-editor";
 import { Sprite } from "@/webview/models/sprite.model";
 import { rectBoxEditor } from "@/webview/box-editor";
 import { rectCreateOperator } from "@/webview/creators";
+import { baseCopyOperator } from "@/webview/copiers";
 
 
 export class RectSprite implements Sprite<SVGRectElement> {
@@ -12,10 +13,13 @@ export class RectSprite implements Sprite<SVGRectElement> {
 
     readonly ctor = SVGRectElement;
 
-    public readonly createOperator = rectCreateOperator;
-    public readonly dragOperator = draggerLeftTop;
-    public readonly moveOperator = moverLeftTop;
-    public readonly editPointsOperator = rectPointsEditor;
-    public readonly editBoxOperator = rectBoxEditor;
+    operators = {
+        createOperator: rectCreateOperator,
+        dragOperator: draggerLeftTop,
+        moveOperator: moverLeftTop,
+        editPointsOperator: rectPointsEditor,
+        editBoxOperator: rectBoxEditor,
+        copyOperator: baseCopyOperator,
+    };
 
 }

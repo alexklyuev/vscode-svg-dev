@@ -9,9 +9,12 @@ export class DraggerDelegate implements Dragger {
         event: MouseEvent,
     ) {
         Array.from(element.children).forEach(child => {
-            const delegate = sprites.resolve(child);
-            if (delegate) {
-                delegate.dragOperator.onMousedown(child as SVGElement, event);
+            const sprite = sprites.resolve(child);
+            if (sprite) {
+                const { dragOperator } = sprite.operators;
+                if (dragOperator) {
+                    dragOperator.onMousedown(child as SVGElement, event);
+                }
             }
         });
     }
@@ -21,9 +24,12 @@ export class DraggerDelegate implements Dragger {
         event: MouseEvent,
     ) {
         Array.from(element.children).forEach(child => {
-            const delegate = sprites.resolve(child);
-            if (delegate) {
-                delegate.dragOperator.onMousemove(child as SVGElement, event);
+            const sprite = sprites.resolve(child);
+            if (sprite) {
+                const { dragOperator } = sprite.operators;
+                if (dragOperator) {
+                    dragOperator.onMousemove(child as SVGElement, event);
+                }
             }
         });
     }
@@ -33,9 +39,12 @@ export class DraggerDelegate implements Dragger {
         event: MouseEvent,
     ) {
         Array.from(element.children).forEach(child => {
-            const delegate = sprites.resolve(child);
-            if (delegate) {
-                delegate.dragOperator.onMouseup(child as SVGElement, event);
+            const sprite = sprites.resolve(child);
+            if (sprite) {
+                const { dragOperator } = sprite.operators;
+                if (dragOperator) {
+                    dragOperator.onMouseup(child as SVGElement, event);
+                }
             }
         });
     }

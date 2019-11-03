@@ -20,9 +20,9 @@ export class MoveKeyListener {
             (request, _true) => {
                 const { key, shift } = request;
                 holder.elements.forEach(element => {
-                    const delegate = sprites.resolve(element);
-                    if (delegate && delegate.moveOperator) {
-                        delegate.moveOperator.byKey(element, key, shift);
+                    const sprite = sprites.resolve(element);
+                    if (sprite && sprite.operators.moveOperator) {
+                        sprite.operators.moveOperator.byKey(element, key, shift);
                         this.fireMoveEvent(key);
                     }
                 });
@@ -30,7 +30,6 @@ export class MoveKeyListener {
         );
     }
 
-    // @connectEvent('moveEvent')
     @makeMethodIterator()
     fireMoveEvent(key: 'left' | 'up' | 'right' | 'down') {
         return key;
