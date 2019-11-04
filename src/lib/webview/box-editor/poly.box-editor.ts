@@ -77,7 +77,7 @@ export class PolyBoxEditor extends BaseBoxEditor {
             case 0:
                 newPoints = points.map(([x, y]) => [ mx ? incX(x) : decX(x), my ? incY(y) : decY(y) ]);
                 break;
-                case 1:
+            case 1:
                 newPoints = points.map(([x, y]) => [ x, my ? incY(y) : decY(y) ]);
                 break;
             case 2:
@@ -89,7 +89,7 @@ export class PolyBoxEditor extends BaseBoxEditor {
             case 4:
                 newPoints = points.map(([x, y]) => [ mx ? decX(x) : incX(x), my ? decY(y) : incY(y) ]);
                 break;
-                case 5:
+            case 5:
                 newPoints = points.map(([x, y]) => [ x, my ? decY(y) : incY(y) ]);
                 break;
             case 6:

@@ -110,6 +110,7 @@ export class CircleCreateOperator extends BaseCreateOperator {
 
         const [ [x1, y1], [x2, y2] ] = points.map(point => coordinator.renderPointConcerns(point, true));
         this.renderCoordAttributes(element, [x1, y1], [x2, y2]);
+
         return element;
     }
 

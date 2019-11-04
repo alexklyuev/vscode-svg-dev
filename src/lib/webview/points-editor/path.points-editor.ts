@@ -96,6 +96,8 @@ export class PathPointsEditor {
         this.destroyControls(controls);
         this.destroyReturnables(returnables);
 
+        this.ensureAbsolute(element);
+
         const controlPoints = Array<SVGElement>();
         const controlBeziers = Array<SVGElement>();
         const controlLines = Array<SVGElement>();
@@ -233,6 +235,12 @@ export class PathPointsEditor {
 
             });
         });
+    }
+
+    ensureAbsolute(element: SVGElement) {
+        const d = element.getAttribute('d') ! ;
+        const newD = pathPoints.setPointsAbsolute(d);
+        element.setAttribute('d', newD);
     }
 
 }
