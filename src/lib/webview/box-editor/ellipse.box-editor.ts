@@ -4,6 +4,9 @@ import { spawner } from "@/dom/spawner";
 
 export class EllipseBoxEditor  extends BaseBoxEditor {
 
+    /**
+     * @override
+     */
     onMove(
         element: SVGElement,
         controlIndex: number,
