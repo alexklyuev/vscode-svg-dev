@@ -165,7 +165,15 @@
                 "key": "ctrl+e",
                 "mac": "cmd+e",
                 "when": "svgDevActive && !svgDevHostInput",
-                "command": "svgDevEdit"
+                "command": "svgDevEdit",
+                "args": "points"
+            },
+            {
+                "key": "ctrl+shift+e",
+                "mac": "cmd+shift+e",
+                "when": "svgDevActive && !svgDevHostInput",
+                "command": "svgDevEdit",
+                "args": "box"
             },
             {
                 "key": "ctrl+z",

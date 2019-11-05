@@ -75,13 +75,24 @@ Also you can hold `alt` while moving shape to make copy of this shape.
 
 ### Editing shapes by points
 
-You can edit existing shapes (path, polygon, polyline, line) point by point clicking on "edit points" button in editor window (button would appear if editable shape selected), editing mode would be entered and editable points would be shown, you can drag them and see shape changes - when you done editing press `esc` or `enter` to exit point editing mode.
+You can edit existing shapes point by point clicking on "edit points" button in editor window (button would appear if editable shape selected), editing mode would be entered and editable points would be shown, you can drag them and see shape changes - when you done editing press `esc` or `enter` to exit point editing mode.
 You can also enter edit by points mode with keyboard shortcut `ctrl+e` (mac: `cmd+e`).
 
+### Editing shapes box
+
+You can shrink and stretch existing shapes by control points in edit-box-mode. You can activate this mode by selecting shape and pressing `edit box` button when 'edit-on-pick' mode is off, or by using `ctrl+shift+e` keyboard shortcut. When 'edit-on-pick' mode if 'box' this mode would be applied automatically on selecting shape.
+
 ### Edit-on-pick mode
-In this mode if you pick an editable shape it would automatically go to edit mode. You can switch it on/off by button in editor window or by keyboard shortcuts - `alt+p` to switch it on and `alt+o` to switch it off.
+In this mode if you pick an editable shape it would automatically go to one of editing modes: edit points or edit box.
+You can switch modes by clicking on correcponding item on 'edit on pick' button or by keyboard shortcuts:
+- `alt+p` - edit points
+- `alt+l` - edit box
+- `alt+o` - turn edit on pick off
 
 ## What`s new
+ - 0.8.14
+   - 'Edit Box' mode added - if this mode is on, it adds 8 control points on shape bounding box, which allows to shrink and stretch this shape. You can activate this mode on selected shape by pressing `ctrl+shift+e` or by 'edit box' button (appears if selected shape supports box editing and edit-on-pick mode is off)
+   - edit-box-mode added as item to 'edit-on-pick' button, also activates by `alt+l`
  - 0.8.13
    - keyboard shortcuts for edit-on-pick mode
      - `alt+p` - to switch it on

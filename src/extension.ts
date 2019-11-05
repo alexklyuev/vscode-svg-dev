@@ -190,12 +190,10 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('svgDevNew', async () => {
             const panel = editor.create(context);
             await editor.activate(panel);
-            console.log('New');
             const hostEndpoint = new HostEndpoint(panel);
             connectionsManager.each(connection => connection.connect(hostEndpoint));
             configConnection.ifConnected(endpoint => {
                 endpoint.makeSetRequest(config);
-                console.log('Config sent');
             });
             // @deprecated
             // loggerConnection.ifConnected(hostLogger => {
@@ -247,11 +245,13 @@ export function activate(context: vscode.ExtensionContext) {
                 );
             });
         }),
-        vscode.commands.registerCommand('svgDevEdit', () => {
-            editConnection.ifConnected(endpoint => {
-                vscode.commands.executeCommand('setContext', 'svgDevAddInteractive', true);
-                endpoint.makeSetRequest({});
-            });
+        vscode.commands.registerCommand('svgDevEdit', (mode: EditMode) => {
+            if (mode !== 'off') {
+                editConnection.ifConnected(endpoint => {
+                    vscode.commands.executeCommand('setContext', 'svgDevAddInteractive', true);
+                    endpoint.makeSetRequest({ mode });
+                });
+            }
         }),
         vscode.commands.registerCommand('svgDevAddText', async () => {
             await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);

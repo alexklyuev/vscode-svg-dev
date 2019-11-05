@@ -1,5 +1,7 @@
 # Change Log
-
+ - 0.8.14
+   - 'Edit Box' mode added - if this mode is on, it adds 8 control points on shape bounding box, which allows to shrink and stretch this shape. You can activate this mode on selected shape by pressing `ctrl+shift+e` or by 'edit box' button (appears if selected shape supports box editing and edit-on-pick mode is off)
+   - edit-box-mode added as item to 'edit-on-pick' button, also activates by `alt+l`
  - 0.8.13
    - keyboard shortcuts for edit-on-pick mode
      - `alt+p` - to switch it on
