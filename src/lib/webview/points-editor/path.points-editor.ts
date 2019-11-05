@@ -4,8 +4,8 @@ import { spawner } from "@/dom/spawner";
 import { pathPoints } from "@/webview/services/path";
 import { artboard } from "@/webview/services/artboard";
 import { zoom } from "@/webview/services/zoom";
-import { guides } from "@/webview//services/guides";
-import { appearance } from "../services/appearance";
+import { guides } from "@/webview/services/guides";
+import { appearance } from "@/webview/services/appearance";
 
 
 /**
@@ -21,31 +21,32 @@ export class PathPointsEditor {
      *
      */
     edit(element: SVGPathElement) {
-        const d = element.getAttribute('d')!;
-        const newD = pathPoints.setPointsAbsolute(d);
-        element.setAttribute('d', newD);
+        // const d = element.getAttribute('d')!;
+        // const newD = pathPoints.setPointsAbsolute(d);
+        // element.setAttribute('d', newD);
         const returnables: ReturnablesCollection = Array<AsyncIterableIterator<MouseEvent>>();
         const controls: ControlPointsCollection = Array<SVGCircleElement>();
-        this.update(element, controls, returnables);
+        this.update(element, controls, returnables, true);
 
         let mouseMoveIter: AsyncIterableIterator<MouseEvent>;
         let mouseUpIter: AsyncIterableIterator<MouseEvent>;
         const mouseDownIter = fromDomEvent(element, 'mousedown');
         (async () => {
             for await (const _down of mouseDownIter) {
+                // this.ensureRelative(element);
                 const listeningTarget = artboard.svg;
                 mouseMoveIter = fromDomEvent(listeningTarget, 'mousemove');
                 mouseUpIter = fromDomEvent(listeningTarget, 'mouseup');
                 (async () => {
                     for await (const _moveEvent of mouseMoveIter) {
-                        this.update(element, controls, returnables);
+                        this.update(element, controls, returnables, false);
                     }
                 })();
                 (async () => {
                     for await (const _upEvent of mouseUpIter) {
                         mouseUpIter.return! ();
                         mouseMoveIter.return! ();
-                        this.update(element, controls, returnables);
+                        this.update(element, controls, returnables, true);
                     }
                 })();
             }
@@ -53,7 +54,7 @@ export class PathPointsEditor {
         const zoomIter = findMethodIterator(zoom.update);
         (async () => {
             for await (const _value of zoomIter) {
-                this.update(element, controls, returnables);
+                this.update(element, controls, returnables, true);
             }
         })();
         const cancel = () => {
@@ -92,11 +93,17 @@ export class PathPointsEditor {
     /**
      *
      */
-    update(element: SVGPathElement, controls: SVGElement[], returnables: AsyncIterableIterator<MouseEvent>[]) {
+    update(
+        element: SVGPathElement,
+        controls: SVGElement[],
+        returnables: AsyncIterableIterator<MouseEvent>[],
+        pathPointsAbsolutMode: boolean,
+    ) {
         this.destroyControls(controls);
         this.destroyReturnables(returnables);
 
-        this.ensureAbsolute(element);
+        // this.ensureAbsolute(element);
+        pathPointsAbsolutMode ? this.ensureAbsolute(element) : this.ensureRelative(element);
 
         const controlPoints = Array<SVGElement>();
         const controlBeziers = Array<SVGElement>();
@@ -177,7 +184,7 @@ export class PathPointsEditor {
                         d0 = element.getAttribute('d')!;
                         const listeningElement = window;
                         const controlMouseMove = fromDomEvent<MouseEvent>(listeningElement, 'mousemove');
-                        const controlMouseUp = fromDomEvent<MouseEvent>(listeningElement, 'mouseup');    
+                        const controlMouseUp = fromDomEvent<MouseEvent>(listeningElement, 'mouseup');
                         (async () => {
                             for await (const moveEvent of controlMouseMove) {
                                 moveEvent.stopPropagation();
@@ -219,7 +226,7 @@ export class PathPointsEditor {
                                 })
                                 .join(' ');
                                 element.setAttribute('d', points);
-                                this.update(element, controls, returnables);
+                                this.update(element, controls, returnables, true);
                             }
                         })();
                         (async () => {
@@ -227,7 +234,7 @@ export class PathPointsEditor {
                                 upEvent.stopPropagation();
                                 controlMouseMove.return! ();
                                 controlMouseUp.return! ();
-                                this.update(element, controls, returnables);
+                                this.update(element, controls, returnables, true);
                             }
                         })();
                     }
@@ -235,12 +242,19 @@ export class PathPointsEditor {
 
             });
         });
+        guides.setSelectionStyles([element]);
     }
 
     ensureAbsolute(element: SVGElement) {
         const d = element.getAttribute('d') ! ;
         const newD = pathPoints.setPointsAbsolute(d);
         element.setAttribute('d', newD);
+    }
+
+    ensureRelative(element: SVGElement) {
+        const d = element.getAttribute('d') ! ;
+        const dRel = pathPoints.setPointsRelative(d);
+        element.setAttribute('d', dRel);
     }
 
 }

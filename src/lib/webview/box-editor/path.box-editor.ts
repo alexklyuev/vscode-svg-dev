@@ -38,20 +38,24 @@ export class PathBoxEditor extends BaseBoxEditor {
         this.ensureAbsolute(element);
 
         const { value: zv } = zoom;
+        const {
+            scrollLeft,
+            scrollTop,
+        } = document.scrollingElement ! ;
 
         const clientRect  = element.getBoundingClientRect();
         const { width, height } = clientRect;
         let { left, top, right, bottom } = clientRect;
 
-        left = left - artboardMove.left + artboard.width * (zv - 1)/2;
-        right = right - artboardMove.left + artboard.width * (zv - 1)/2;
-        top = top - artboardMove.top + artboard.height * (zv - 1)/2;
-        bottom = bottom - artboardMove.top + artboard.height * (zv - 1)/2;
+        left = left - artboardMove.left + scrollLeft + artboard.width * (zv - 1)/2;
+        right = right - artboardMove.left + scrollLeft + artboard.width * (zv - 1)/2;
+        top = top - artboardMove.top + scrollTop + artboard.height * (zv - 1)/2;
+        bottom = bottom - artboardMove.top + scrollTop + artboard.height * (zv - 1)/2;
 
         const [ dx, dy ] = delta;
 
-        const kw = (width + dx*zv) / width;
-        const kh = (height + dy*zv) / height;
+        const kw = (width + dx * zv) / width;
+        const kh = (height + dy * zv) / height;
 
         const d = element.getAttribute('d') ! ;
         const points = pathPoints.parseStr(d);
