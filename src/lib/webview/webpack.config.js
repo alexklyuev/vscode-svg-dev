@@ -9,8 +9,8 @@ module.exports = {
     mode: isDevelopment ? 'development' : 'production',
     entry: __dirname + '/main.ts',
     output: {
-        path: path.resolve(__dirname, '../../out/client'),
-        filename: 'build/main.js'
+        path: path.resolve(__dirname, '../../../out'),
+        filename: 'webview.js'
     },
     module: {
         rules: [
@@ -26,7 +26,7 @@ module.exports = {
     resolve: {
         extensions: ['.ts'],
         alias: {
-            '@': path.resolve(__dirname, '../../src/lib'),
+            '@': path.resolve(__dirname, '..'),
         },
     },
 };

@@ -5,21 +5,21 @@ const path = require('path');
 /**@type {import('webpack').Configuration}*/
 module.exports = {
     target: 'node',
-    entry: './src/extension.ts',
+    entry: __dirname + '/extension.ts',
     output: {
-        path: path.resolve(__dirname, 'out'),
+        path: path.resolve(__dirname, '../../../out'),
         filename: 'extension.js',
         libraryTarget: 'commonjs2',
         devtoolModuleFilenameTemplate: '../[resource-path]',
     },
-    devtool: 'source-map',
+    // devtool: 'source-map',
     externals: {
         vscode: 'commonjs vscode',
     },
     resolve: {
         extensions: ['.ts'],
         alias: {
-            '@': path.resolve(__dirname, './src/lib'),
+            '@': path.resolve(__dirname, '..'),
         },
     },
     module: {

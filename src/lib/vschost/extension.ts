@@ -1,21 +1,21 @@
 import * as vscode from 'vscode';
-import { WebappTemplate } from './lib/vschost/services/webapp-template';
-import { AssetsManager } from './lib/vschost/services/assets-manager';
-import { Editor } from './lib/vschost/services/editor';
-import { ContextManager } from './lib/vschost/services/context-manager';
+import { WebappTemplate } from '@/vschost/services/webapp-template';
+import { AssetsManager } from '@/vschost/services/assets-manager';
+import { Editor } from '@/vschost/services/editor';
+import { ContextManager } from '@/vschost/services/context-manager';
 import { AppContext } from './app-context.type';
-import { ToolsTreeProvider } from './lib/vschost/services/tools-tree-provider';
-import { RemoteAttributeInput } from './lib/vschost/services/inputs/remote-attribute-input';
-import { HostEndpoint } from './lib/vschost/services/host-endpoint/host-endpoint';
-import { CreatePipeRequest, ElementsDict } from './lib/shared/pipes/create.pipe';
-import { EditorSerializer } from './lib/vschost/services/editor-serializer';
-import { ArrangePipeRequest } from './lib/shared/pipes/arrange.pipe';
-import { ElementCommand } from './lib/shared/pipes/element.pipe';
+import { ToolsTreeProvider } from '@/vschost/services/tools-tree-provider';
+import { RemoteAttributeInput } from '@/vschost/services/inputs/remote-attribute-input';
+import { HostEndpoint } from '@/vschost/services/host-endpoint/host-endpoint';
+import { CreatePipeRequest, ElementsDict } from '@/shared/pipes/create.pipe';
+import { EditorSerializer } from '@/vschost/services/editor-serializer';
+import { ArrangePipeRequest } from '@/shared/pipes/arrange.pipe';
+import { ElementCommand } from '@/shared/pipes/element.pipe';
 import { StatusBarItem, StatusBarAlignment } from 'vscode';
-import { BaseInput } from './lib/vschost/services/inputs/base-input';
+import { BaseInput } from '@/vschost/services/inputs/base-input';
 
 
-import { toolbox } from './lib/vschost/tools';
+import { toolbox } from '@/vschost/tools';
 
 import {
     connectionsManager,
@@ -45,11 +45,11 @@ import {
     historyConnection,
     configConnection,
     editModeConnection,
-} from './lib/vschost/services/connection';
-import { CancelKeys } from './lib/shared/pipes/cancel.pipe';
-import { MoveArrowKeys } from './lib/shared/pipes/move-key.pipe';
-import { hintsDict } from './lib/shared/hints/hints.dict';
-import { EditMode } from './lib/shared/pipes/edit-mode.pipe';
+} from '@/vschost/services/connection';
+import { CancelKeys } from '@/shared/pipes/cancel.pipe';
+import { MoveArrowKeys } from '@/shared/pipes/move-key.pipe';
+import { hintsDict } from '@/shared/hints/hints.dict';
+import { EditMode } from '@/shared/pipes/edit-mode.pipe';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -61,8 +61,8 @@ export function activate(context: vscode.ExtensionContext) {
     const webappTemplate = new WebappTemplate(assetsManager);
     const editor = new Editor(webappTemplate, contextManager, connectionsManager, config);
 
-    assetsManager.addScript('out', 'client', 'build', 'main.js');
-    assetsManager.addStyle('out', 'client', 'build', 'artboard.css');
+    assetsManager.addScript('out', 'webview.js');
+    assetsManager.addStyle('out', 'artboard.css');
 
     vscode.window.registerTreeDataProvider(
         'svgDevToolsTreeView',

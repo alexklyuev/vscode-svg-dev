@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { WebviewPanel, ExtensionContext } from 'vscode';
 import { ContextManager } from './context-manager';
-import { AppContext } from '../../../app-context.type';
+import { AppContext } from '@/vschost/app-context.type';
 import { Template } from '../models/template.model';
 import { HostEndpoint } from './host-endpoint/host-endpoint';
 import { ConnectionsManager } from './connection/connections-manager';
@@ -39,7 +39,8 @@ export class Editor {
             {
                 enableScripts: true,
                 retainContextWhenHidden: true,
-                localResourceRoots: [vscode.Uri.file(path.join(context.extensionPath, 'out', 'client', 'build'))],
+                localResourceRoots: [vscode.Uri.file(
+                    path.join(context.extensionPath, 'out'))],
             },
         );
         return this.webviewPanel;

@@ -8,9 +8,9 @@
             "dom",
             "esnext"
         ],
-        "baseUrl": ".",
+        "baseUrl": "..",
         "paths": {
-            "@/*": ["../../src/lib/*"]
+            "@/*": ["./*"]
         },
         "sourceMap": false,
         // "rootDir": "assets",
