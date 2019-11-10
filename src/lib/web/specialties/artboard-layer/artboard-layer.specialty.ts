@@ -1,5 +1,5 @@
 import { findMethodIterator } from "@/common/iterators";
-import { LayerComponent } from "@/webapp/components/layer.component";
+import { LayerComponent } from "@/web/components/layer.component";
 import { CanvasZoom } from "@/web/services/canvas-zoom/canvas-zoom";
 
 

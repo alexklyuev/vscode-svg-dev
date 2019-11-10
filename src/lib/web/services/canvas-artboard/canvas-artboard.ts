@@ -1,4 +1,4 @@
-import { LayerComponent } from "@/webapp/components/layer.component";
+import { LayerComponent } from "@/web/components/layer.component";
 
 
 export class CanvasArtboard {

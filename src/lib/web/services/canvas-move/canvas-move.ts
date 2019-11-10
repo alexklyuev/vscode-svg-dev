@@ -1,6 +1,6 @@
 import { makeMethodIterator } from "@/common/iterators";
 import { userEventMan } from "@/webview/services/user-event";
-import { LayerComponent } from "@/webapp/components/layer.component";
+import { LayerComponent } from "@/web/components/layer.component";
 
 
 

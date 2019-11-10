@@ -1,9 +1,12 @@
-import { LayerComponent } from "@/webapp/components/layer.component";
 import { spawner } from "@/dom/spawner";
+import { LayerComponent } from "@/web/components/layer.component";
 
 
 export class CanvasGuides {
 
+    /**
+     * @todo move to appearance
+     */
     private readonly borderStyle = '1px dotted #666';
 
     private selection: SVGRectElement | null = null;
