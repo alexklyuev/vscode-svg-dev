@@ -404,7 +404,8 @@
         "compile:webview": "webpack --config src/lib/webview/webpack.config.js",
         "styles": "cp ./src/lib/webview/artboard.css ./out/artboard.css",
         "host": "npm run compile:extension -- --watch",
-        "webview": "npm run styles && npm run compile:webview -- --watch"
+        "webview": "npm run styles && npm run compile:webview -- --watch",
+        "webapp": "webpack-dev-server --config src/lib/webapp/webpack.config.js --watch"
     },
     "devDependencies": {
         "@types/mocha": "^2.2.42",
@@ -415,6 +416,7 @@
         "typescript": "^2.6.1",
         "vscode-test": "^1.2.0",
         "webpack": "^4.20.2",
-        "webpack-cli": "^3.1.2"
+        "webpack-cli": "^3.1.2",
+        "webpack-dev-server": "^3.9.0"
     }
 }

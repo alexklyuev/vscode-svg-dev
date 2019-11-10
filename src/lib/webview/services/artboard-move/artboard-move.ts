@@ -20,17 +20,13 @@ export class ArtboardMove {
     public readonly initialX = initialX;
     public readonly initialY = initialY;
 
+    target: HTMLElement = artboard.box;
+
     constructor(
     ) {
         this.bindedOnMouseDown = this.onMouseDown.bind(this);
         this.bindedOnMouseMove = this.onMouseMove.bind(this);
         this.bindedOnMouseUp = this.onMouseUp.bind(this);
-
-        Object.assign(artboard.box.style, {
-            position: 'absolute',
-            top: `${ initialY }px`,
-            left: `${ initialX }px`,
-        });
     }
 
     get left(): number {
@@ -39,6 +35,14 @@ export class ArtboardMove {
 
     get top(): number {
         return this.marginTop;
+    }
+
+    initPosition() {
+        Object.assign(this.target.style, {
+            position: 'absolute',
+            top: `${ initialY }px`,
+            left: `${ initialX }px`,
+        });
     }
 
     on() {
@@ -68,7 +72,7 @@ export class ArtboardMove {
     @makeMethodIterator()
     onMouseMove(event: MouseEvent) {
         const { clientX, clientY } = event;
-        const box = artboard.box;
+        const box = this.target;
         const deltaX = clientX - this.coords.clientX;
         const deltaY = clientY - this.coords.clientY;
         this.marginLeft = deltaX;

@@ -58,6 +58,7 @@ guides.createContainer();
 /**
  * 
  */
+artboardMove.initPosition();
 artboardMove.on();
 
 

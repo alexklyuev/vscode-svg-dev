@@ -1,0 +1,37 @@
+// @ts-check
+
+const path = require('path');
+
+const isDevelopment = true;
+
+/**@type {import('webpack').Configuration}*/
+module.exports = {
+    mode: isDevelopment ? 'development' : 'production',
+    entry: __dirname + '/webapp.ts',
+    output: {
+        path: path.resolve(__dirname, './public'),
+        filename: 'webapp.js',
+        // publicPath: 'src/lib/webapp/public',
+    },
+    devServer: {
+        contentBase: path.resolve(__dirname, './public'),
+    },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                loader: 'awesome-typescript-loader',
+                options: {
+                    configFileName: __dirname + '/tsconfig.json',
+                }
+            }
+        ],
+    },
+    resolve: {
+        // modules: ["src", "node_modules"],
+        extensions: ['.ts', '.js'],
+        alias: {
+            '@': path.resolve(__dirname, '..'),
+        },
+    },
+};

@@ -9,6 +9,8 @@ export class Zoom {
 
     private zoom = 1;
 
+    target: HTMLElement = artboard.box;
+
     /**
      * zoom value getter
      */
@@ -27,7 +29,7 @@ export class Zoom {
         if (abs) {
             this.zoom = abs;
         }
-        Object.assign(artboard.box.style, {
+        Object.assign(this.target.style, {
             transform: `scale(${ this.zoom })`,
         });
         return this.zoom;

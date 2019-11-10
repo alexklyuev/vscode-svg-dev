@@ -37,6 +37,9 @@ export class Guides {
         };
     }
 
+    /**
+     * 
+     */
     get guidesContainer(): SVGSVGElement | null {
         return this.container;
     }
@@ -57,9 +60,19 @@ export class Guides {
         this.setContainerStyles();
     }
 
-    setContainerStyles() {
+    /**
+     * 
+     */
+    setContainer(container: SVGSVGElement) {
+        this.container = container;
+    }
+
+    /**
+     * 
+     */
+    setContainerStyles(source = artboard.svg) {
         if (this.container) {
-            const { left, top, width, height } = artboard.svg.getBoundingClientRect();
+            const { left, top, width, height } = source.getBoundingClientRect();
             spawner.svg.update(this.container, {}, {
                 position: 'absolute',
                 border: this.borderStyle,
@@ -163,6 +176,9 @@ export class Guides {
         }
     }
 
+    /**
+     * 
+     */
     appendControlPoint(element: SVGElement) {
         if (this.selection) {
             this.selection.insertAdjacentElement('afterend', element);
