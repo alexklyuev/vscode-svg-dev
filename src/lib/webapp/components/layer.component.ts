@@ -12,4 +12,13 @@ export class LayerComponent extends HTMLElement {
         this.div.appendChild(this.svg);
     }
 
+    /**
+     * @todo temporary method, should be removed in the future
+     */
+    replaceSvgDocument(svg: SVGSVGElement) {
+        this.svg.remove();
+        this.div.appendChild(svg);
+        this.svg = svg;
+    }
+
 }

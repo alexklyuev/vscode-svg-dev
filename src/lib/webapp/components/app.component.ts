@@ -3,52 +3,44 @@ import { guides } from "@/webview/services/guides";
 import { artboardMove } from "@/webview/services/artboard-move";
 import { zoom } from "@/webview/services/zoom";
 import { LayerComponent } from "./layer.component";
+import { CanvasArtboard } from "@/web/services/canvas-artboard/canvas-artboard";
+import { CanvasZoom } from "@/web/services/canvas-zoom/canvas-zoom";
+import { CanvasMove } from "@/web/services/canvas-move/canvas-move";
 
 
 export class AppComponent extends HTMLElement {
 
-//     private template = `
-// <div id="main">
-//     <div id="artboard">
-//         <svg width="300px" height="400px" viewBox="0 0 300 400" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-//         </svg>
-//     </div>
-//     <div id="tools">
-//     </div>
-//     <div id="hud">
-//     </div>
-// </div>
-//     `;
-
     constructor() {
         super();
+
         const shadow = this.attachShadow({mode: 'open'});
-        artboard.setSelectionHost(shadow);
-        // shadow.innerHTML = this.template;
-        // console.log('SvgdevApp component constructed');
+
         const div = document.createElement('div');
         shadow.appendChild(div);
-        const workarea = new LayerComponent();
-        const tools = new LayerComponent();
-        div.appendChild(workarea);
-        div.appendChild(tools);
 
-        workarea.id = 'workareaLayer';
-        tools.id = 'toolsLayer';
+        const artboardLayer = new LayerComponent();
+        const toolsLayer = new LayerComponent();
 
-        artboard.getBoxFn = () => workarea.div;
-        artboard.getSvgFn = () => workarea.svg;
-        artboard.getToolsFn = () => tools.div;
-        artboard.clearCache();
+        div.appendChild(artboardLayer);
+        div.appendChild(toolsLayer);
 
-        guides.setContainer(tools.svg);
-        // guides.setContainerStyles();
+        artboardLayer.id = 'workareaLayer';
+        toolsLayer.id = 'toolsLayer';
 
-        artboardMove.target = workarea.div;
+        const canvasZoom = new CanvasZoom();
+        const canvasArtboard = new CanvasArtboard(artboardLayer);
+        const canvasMove = new CanvasMove(artboardLayer);
+
+
+
+        guides.setContainer(toolsLayer.svg);
+        guides.setContainerStyles();
+
+        artboardMove.target = artboardLayer.div;
         artboardMove.initPosition();
         artboardMove.on();
 
-        zoom.target = workarea.div;
+        zoom.target = artboardLayer.div;
 
         setTimeout(() => {
             Object.assign(artboard.box.style, {
