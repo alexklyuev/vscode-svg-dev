@@ -1,6 +1,6 @@
 import { BaseCreateOperator } from "./base.create-operator";
 import { PointConcerns, PointSharedConcerns } from "../models/point-concerns.model";
-import { artboard } from "../services/artboard";
+import { artboard } from "@/web/init";
 import { userEventMan } from "../services/user-event";
 import { artboardMove } from "../services/artboard-move";
 import { zoom } from "../services/zoom";

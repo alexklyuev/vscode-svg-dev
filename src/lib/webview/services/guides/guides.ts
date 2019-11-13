@@ -1,6 +1,6 @@
 import { EventBus, connectEvent } from "@/common/events";
 import { spawner } from "@/dom/spawner";
-import { artboard } from "@/webview/services/artboard";
+import { artboard } from "@/web/init";
 
 
 const enum GuidesEvents {

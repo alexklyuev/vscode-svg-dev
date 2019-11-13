@@ -1,4 +1,4 @@
-import { artboard } from "@/webview/services/artboard";
+import { artboard } from "@/web/init";
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { findMethodIterator } from "@/common/iterators";
 

@@ -1,5 +1,5 @@
 import { vscodeHost } from "@/webview/services/host-api/index";
-import { artboard } from "@/webview/services/artboard";
+import { artboard } from "@/web/init";
 import { historyProducer } from "@/webview/producers/history.producer";
 
 let timeout: number | null = null;

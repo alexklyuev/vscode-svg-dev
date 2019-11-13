@@ -1,6 +1,6 @@
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
-import { artboard } from "@/webview/services/artboard";
+import { artboard } from "@/web/init";
 
 import { ArrangePipeRequest } from "../../shared/pipes/arrange.pipe";
 import { ElementHolder } from "../services/holder/element-holder";

@@ -1,6 +1,6 @@
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
-import { artboard } from "@/webview/services/artboard";
+import { artboard } from "@/web/init";
 
 import { FlushPayload } from "../../shared/pipes/flush.pipe";
 

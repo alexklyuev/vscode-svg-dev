@@ -1,5 +1,5 @@
 import { makeMethodIterator } from "@/common/iterators";
-import { artboard } from "@/webview/services/artboard";
+import { artboard } from "@/web/init";
 
 
 /**

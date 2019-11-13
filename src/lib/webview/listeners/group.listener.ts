@@ -1,6 +1,6 @@
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
-import { artboard } from "@/webview/services/artboard";
+import { artboard } from "@/web/init";
 
 import { ElementHolder } from "../services/holder/element-holder";
 import { setState } from "../decorators/set-state.decorator";

@@ -1,7 +1,6 @@
 import { CopyOperator } from "@/webview/models/operators/copy-operator.model";
 import { spawner } from "@/dom/spawner";
-import { artboard } from "@/webview/services/artboard";
-
+import { artboard } from "@/web/init";
 
 export class BaseCopyOperator implements CopyOperator {
 

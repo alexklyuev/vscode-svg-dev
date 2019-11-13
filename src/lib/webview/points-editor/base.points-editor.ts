@@ -2,7 +2,7 @@ import { findMethodIterator } from "@/common/iterators";
 import { fromDomEvent } from "@/dom/iterators";
 import { spawner } from "@/dom/spawner";
 import { appearance } from "@/webview/services/appearance";
-import { artboard } from "@/webview/services/artboard";
+import { artboard } from "@/web/init";
 import { zoom } from "@/webview/services/zoom";
 import { guides } from "@/webview/services/guides";
 import { EditOperator } from "../models/operators/edit-operator.model";
