@@ -1,6 +1,6 @@
 import { Dragger } from "@/webview/models/operators/drag-operator.model";
 import { pathPoints } from "@/webview/services/path";
-import { zoom } from "@/webview/services/zoom";
+import { zoom } from "@/web/init";
 
 
 export class DraggerPath implements Dragger {

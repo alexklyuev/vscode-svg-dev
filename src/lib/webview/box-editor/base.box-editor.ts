@@ -2,7 +2,7 @@ import { spawner } from "@/dom/spawner";
 import { guides } from "@/webview/services/guides";
 import { artboardMove } from '@/web/init';
 import { artboard } from "@/web/init";
-import { zoom } from "@/webview/services/zoom";
+import { zoom } from "@/web/init";
 import { findMethodIterator } from "@/common/iterators";
 import { fromDomEvent } from "@/dom/iterators";
 import { appearance } from "@/webview/services/appearance";

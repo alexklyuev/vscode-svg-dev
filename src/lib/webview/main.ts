@@ -29,7 +29,7 @@ import { pickPipe } from '@/shared/pipes/pick.pipe';
 import { groupPipe } from '@/shared/pipes/group.pipe';
 import { ElementListener } from '@/webview/listeners/element.listener';
 import { picker } from '@/webview/services/picker';
-import { zoom } from '@/webview/services/zoom';
+import { zoom } from '@/web/init';
 import { GroupListener } from '@/webview/listeners/group.listener';
 import { cancelListener, artboardListener, artboardStyleListener } from '@/webview/listeners';
 import { guides } from '@/webview/services/guides';

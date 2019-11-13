@@ -1,4 +1,4 @@
-import { zoom } from "@/webview/services/zoom";
+import { zoom } from "@/web/init";
 import { Dragger } from "@/webview/models/operators/drag-operator.model";
 
 

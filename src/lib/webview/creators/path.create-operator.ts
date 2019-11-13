@@ -3,7 +3,7 @@ import { PointConcerns, PointSharedConcerns } from "../models/point-concerns.mod
 import { artboard } from "@/web/init";
 import { userEventMan } from "../services/user-event";
 import { artboardMove } from '@/web/init';
-import { zoom } from "../services/zoom";
+import { zoom } from "@/web/init";
 import { hints } from "../services/hints";
 import { findMethodIterator } from "@/common/iterators";
 import { cancelListener } from "../listeners";

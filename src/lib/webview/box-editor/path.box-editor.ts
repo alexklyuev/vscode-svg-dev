@@ -1,8 +1,6 @@
 import { BaseBoxEditor } from "@/webview/box-editor/base.box-editor";
 import { pathPoints } from "@/webview/services/path";
-import { artboardMove } from '@/web/init';
-import { zoom } from "@/webview/services/zoom";
-import { artboard } from "@/web/init";
+import { artboard, artboardMove, zoom } from "@/web/init";
 
 
 /**

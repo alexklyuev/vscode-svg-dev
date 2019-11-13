@@ -3,7 +3,7 @@ import { fromDomEvent } from "@/dom/iterators";
 import { spawner } from "@/dom/spawner";
 import { pathPoints } from "@/webview/services/path";
 import { artboard } from "@/web/init";
-import { zoom } from "@/webview/services/zoom";
+import { zoom } from "@/web/init";
 import { guides } from "@/webview/services/guides";
 import { appearance } from "@/webview/services/appearance";
 

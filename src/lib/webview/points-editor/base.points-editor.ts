@@ -3,7 +3,7 @@ import { fromDomEvent } from "@/dom/iterators";
 import { spawner } from "@/dom/spawner";
 import { appearance } from "@/webview/services/appearance";
 import { artboard } from "@/web/init";
-import { zoom } from "@/webview/services/zoom";
+import { zoom } from "@/web/init";
 import { guides } from "@/webview/services/guides";
 import { EditOperator } from "../models/operators/edit-operator.model";
 
