@@ -2,7 +2,7 @@ import { BaseCreateOperator } from "./base.create-operator";
 import { PointConcerns, PointSharedConcerns } from "../models/point-concerns.model";
 import { artboard } from "@/web/init";
 import { userEventMan } from "../services/user-event";
-import { artboardMove } from "../services/artboard-move";
+import { artboardMove } from '@/web/init';
 import { zoom } from "../services/zoom";
 import { hints } from "../services/hints";
 import { findMethodIterator } from "@/common/iterators";

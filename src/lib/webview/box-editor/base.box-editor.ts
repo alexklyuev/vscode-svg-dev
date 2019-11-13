@@ -1,6 +1,6 @@
 import { spawner } from "@/dom/spawner";
 import { guides } from "@/webview/services/guides";
-import { artboardMove } from "@/webview/services/artboard-move";
+import { artboardMove } from '@/web/init';
 import { artboard } from "@/web/init";
 import { zoom } from "@/webview/services/zoom";
 import { findMethodIterator } from "@/common/iterators";
