@@ -15,25 +15,25 @@ export const guidesLayer = new LayerComponent();
 artboardLayer.id = 'artboardLayer';
 guidesLayer.id = 'guidesLayer';
 
-export const canvasZoom = new CanvasZoom();
-export const canvasArtboard = new CanvasArtboard(artboardLayer);
-export const canvasMove = new CanvasMove(artboardLayer);
-export const canvasGuides = new CanvasGuides(guidesLayer, artboardLayer);
+export const zoom = new CanvasZoom();
+export const artboard = new CanvasArtboard(artboardLayer);
+export const artboardMove = new CanvasMove(artboardLayer);
+export const guides = new CanvasGuides(guidesLayer, artboardLayer);
 
 export const app = new AppComponent(
     artboardLayer,
     guidesLayer,
-    canvasZoom,
-    canvasArtboard,
-    canvasMove,
-    canvasGuides,
+    zoom,
+    artboard,
+    artboardMove,
+    guides,
 );
 
 Object.assign(window, {
     svgdev: {
-        zoom: canvasZoom,
-        artboard: canvasArtboard,
-        move: canvasMove,
-        guides: canvasGuides,
+        zoom: zoom,
+        artboard: artboard,
+        move: artboardMove,
+        guides: guides,
     },
 });
