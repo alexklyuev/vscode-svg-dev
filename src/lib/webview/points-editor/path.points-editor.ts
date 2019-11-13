@@ -4,7 +4,7 @@ import { spawner } from "@/dom/spawner";
 import { pathPoints } from "@/webview/services/path";
 import { artboard } from "@/web/init";
 import { zoom } from "@/web/init";
-import { guides } from "@/webview/services/guides";
+import { guides } from "@/web/init";
 import { appearance } from "@/webview/services/appearance";
 
 

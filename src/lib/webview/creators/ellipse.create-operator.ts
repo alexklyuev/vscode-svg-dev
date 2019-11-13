@@ -8,7 +8,7 @@ import { coordinator } from "../services/coordinator";
 import { appearance } from "../services/appearance";
 import { findMethodIterator } from "@/common/iterators";
 import { cancelListener } from "../listeners";
-import { guides } from "../services/guides";
+import { guides } from "@/web/init";
 import { spawner } from "@/dom/spawner";
 
 

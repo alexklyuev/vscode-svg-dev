@@ -1,5 +1,5 @@
 import { spawner } from "@/dom/spawner";
-import { guides } from "@/webview/services/guides";
+import { guides } from "@/web/init";
 import { artboardMove } from '@/web/init';
 import { artboard } from "@/web/init";
 import { zoom } from "@/web/init";

@@ -7,7 +7,7 @@ import { zoom } from "@/web/init";
 import { coordinator } from "../services/coordinator";
 import { findMethodIterator } from "@/common/iterators";
 import { cancelListener } from "../listeners";
-import { guides } from "../services/guides";
+import { guides } from "@/web/init";
 import { setState } from "../decorators/set-state.decorator";
 import { appearance } from "../services/appearance";
 import { spawner } from "@/dom/spawner";

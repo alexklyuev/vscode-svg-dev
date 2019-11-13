@@ -8,7 +8,7 @@ import { hints } from "../services/hints";
 import { findMethodIterator } from "@/common/iterators";
 import { cancelListener } from "../listeners";
 import { CancelKeys } from "@/shared/pipes/cancel.pipe";
-import { guides } from "../services/guides";
+import { guides } from "@/web/init";
 import { coordinator } from "../services/coordinator";
 import { appearance } from "../services/appearance";
 import { pathPoints } from "../services/path";

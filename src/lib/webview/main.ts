@@ -32,7 +32,7 @@ import { picker } from '@/webview/services/picker';
 import { zoom } from '@/web/init';
 import { GroupListener } from '@/webview/listeners/group.listener';
 import { cancelListener, artboardListener, artboardStyleListener } from '@/webview/listeners';
-import { guides } from '@/webview/services/guides';
+import { guides } from '@/web/init';
 import { EditListener } from '@/webview/listeners/edit.listener';
 import { AppearanceResponse } from '@/shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from '@/webview/producers/inverse-interactive.producer';
