@@ -1,60 +1,67 @@
-import { artboard } from "@/webview/services/artboard";
-import { guides } from "@/webview/services/guides";
-import { artboardMove } from "@/webview/services/artboard-move";
-import { zoom } from "@/webview/services/zoom";
-import { CanvasArtboard } from "@/web/services/canvas-artboard/canvas-artboard";
-import { CanvasZoom } from "@/web/services/canvas-zoom/canvas-zoom";
-import { CanvasMove } from "@/web/services/canvas-move/canvas-move";
 import { LayerComponent } from "@/web/components/layer.component";
+import { CanvasZoom } from "@/web/services/canvas-zoom/canvas-zoom";
+import { CanvasArtboard } from "@/web/services/canvas-artboard/canvas-artboard";
+import { CanvasMove } from "@/web/services/canvas-move/canvas-move";
 import { CanvasGuides } from "@/web/services/canvas-guides/canvas-guides";
+import { findMethodIterator } from "@/common/iterators";
 
 
 export class AppComponent extends HTMLElement {
 
-    constructor() {
+    constructor(
+        public artboardLayer: LayerComponent,
+        public guidesLayer: LayerComponent,
+        public canvasZoom: CanvasZoom,
+        public canvasArtboard: CanvasArtboard,
+        public canvasMove: CanvasMove,
+        public canvasGuides: CanvasGuides,
+    ) {
         super();
 
-        const shadow = this.attachShadow({mode: 'open'});
+        const shadow: ShadowRoot = this.attachShadow({mode: 'open'});
 
         const div = document.createElement('div');
         shadow.appendChild(div);
 
-        const artboardLayer = new LayerComponent();
-        const guidesLayer = new LayerComponent();
-
         div.appendChild(artboardLayer);
         div.appendChild(guidesLayer);
 
-        artboardLayer.id = 'artboardLayer';
-        guidesLayer.id = 'guidesLayer';
+        canvasMove.initPosition();
+        canvasMove.on();
 
-        const canvasZoom = new CanvasZoom();
-        const canvasArtboard = new CanvasArtboard(artboardLayer);
-        const canvasMove = new CanvasMove(artboardLayer);
-        const canvasGuides = new CanvasGuides(guidesLayer, artboardLayer);
+        /**
+         * 
+         */
+        (async () => {
+            const connects = findMethodIterator(LayerComponent.prototype.connected, artboardLayer);
+            for await (const _layer of connects) {
+                console.log('opop', _layer);
+                canvasGuides.setContainerStyles();
+            }
+        })();
 
+        /**
+         * 
+         */
+        (async () => {
+            const zooms = findMethodIterator(canvasZoom.update);
+            for await (const zoom of zooms) {
+                Object.assign(artboardLayer.div.style, {
+                    transform: `scale(${ zoom })`,
+                });
+                canvasGuides.setContainerStyles();
+            }
+        })();
 
-
-        guides.setContainer(guidesLayer.svg);
-        guides.setContainerStyles();
-
-        artboardMove.target = artboardLayer.div;
-        artboardMove.initPosition();
-        artboardMove.on();
-
-        // zoom.target = artboardLayer.div;
-
-        setTimeout(() => {
-            Object.assign(artboard.box.style, {
-                position: 'absolute',
-            });
-            Object.assign(artboard.svg, {
-                position: 'relative',
-                top: '0px',
-                left: '0px',
-            });
-            guides.setContainerStyles();
-        }, 0);
+        /**
+         * 
+         */
+        (async () => {
+            const moves = findMethodIterator(canvasMove.onMouseMove);
+            for await (const _move of moves) {
+                canvasGuides.setContainerStyles();
+            }
+        })();
 
     }
 

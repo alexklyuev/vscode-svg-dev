@@ -1,6 +1,6 @@
 export const createIterativeMethods = () => {
 
-    const map = new Map<Function, Function[]>();
+    const map = new Map<Function, [Function, Object | undefined][]>();
 
     const makeMethodIterator = <T>() => {
         return function (_instancePrototype: any, _methodName: string, descriptor: PropertyDescriptor) {
@@ -9,13 +9,17 @@ export const createIterativeMethods = () => {
                 const result: T = value.call(this, ...args);
                 setTimeout(() => {
                     const fns = map.get(newValue)!;
-                    fns.forEach(fn => fn(result));
+                    fns.forEach(([fn, instance]) => {
+                        if (!instance || instance === this) {
+                            fn(result);
+                        }
+                    });
                     fns.length = 0;
                 }, 0);
                 return result;
             };
             descriptor.value = newValue;
-            map.set(newValue, Array<Function>());
+            map.set(newValue, Array<[Function, Object | undefined]>());
         };
     };
 
@@ -23,7 +27,7 @@ export const createIterativeMethods = () => {
      * method is some class method which has been decorated with `@makeMethodIterator()`
      * R is return value type of method
      */
-    const findMethodIterator = <R>(method: (...args: any[]) => R) => {
+    const findMethodIterator = <R>(method: (...args: any[]) => R, instance: Object | undefined = undefined) => {
         const callbacks = map.get(method)!;
         let localResolve: Function;
         let done = false;
@@ -34,7 +38,7 @@ export const createIterativeMethods = () => {
             next () {
                 const prom = new Promise(resolve => {
                     localResolve = (value: R) => resolve({value, done});
-                    callbacks.push(localResolve);
+                    callbacks.push([localResolve, instance]);
                 });
                 return prom;
             },

@@ -30,9 +30,10 @@ export class CanvasGuides {
         const { left, top, width, height } = this.artboardLayer.svg.getBoundingClientRect();
         spawner.svg.update(this.guidesLayer.svg, {}, {
             position: 'absolute',
-            border: this.borderStyle,
-            left: `${ left - 0.5 }px`,
-            top: `${ top - 0.5 }px`,
+            // border: this.borderStyle,
+            outline: this.borderStyle,
+            left: `${ left }px`,
+            top: `${ top }px`,
             width: `${ width }px`,
             height: `${ height }px`,
         });

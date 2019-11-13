@@ -6,6 +6,14 @@ export class CanvasArtboard {
     constructor(
         private artboardLayer: LayerComponent,
     ) {
+        Object.assign(this.box.style, {
+            position: 'absolute',
+        });
+        Object.assign(this.svg.style, {
+            position: 'relative',
+            top: '0px',
+            left: '0px',
+        });
     }
 
     get svg(): SVGSVGElement {
