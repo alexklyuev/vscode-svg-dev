@@ -29,6 +29,8 @@ export class AppComponent extends HTMLElement {
         canvasMove.initPosition();
         canvasMove.on();
 
+        guidesLayer.div.style.pointerEvents = 'none';
+
         /**
          * 
          */

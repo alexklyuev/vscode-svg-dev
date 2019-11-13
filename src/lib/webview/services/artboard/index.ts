@@ -1,3 +1,7 @@
-import { Artboard } from '@/webview/services/artboard/artboard';
+import { canvasArtboard } from "@/web/init";
 
-export const artboard = new Artboard();
+// import { Artboard } from '@/webview/services/artboard/artboard';
+
+// export const artboard = new Artboard();
+
+export const artboard = canvasArtboard;

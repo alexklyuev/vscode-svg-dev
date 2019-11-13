@@ -50,10 +50,26 @@ import { sprites } from '@/webview/services/sprites';
 
 import '@/webview/sprites';
 
+
+import { app } from '@/web/init';
+
+// -----------------------------------------------------------------------------------------
+
+const main = document.querySelector('#main') ! ;
+const artboardContainer = main.querySelector('#artboard') ! ;
+const svg = main.querySelector('#artboard svg') ! ;
+
+app.artboardLayer.replaceSvgDocument(svg as SVGSVGElement);
+artboardContainer.remove();
+main.appendChild(app);
+
+// -----------------------------------------------------------------------------------------
+
+
 /**
  * 
  */
-guides.createContainer();
+// guides.createContainer();
 
 /**
  * 

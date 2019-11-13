@@ -19,7 +19,7 @@ export class CanvasGuides {
     /**
      * 
      */
-    get guidesContainer(): SVGSVGElement | null {
+    get guidesContainer(): SVGSVGElement {
         return this.guidesLayer.svg;
     }
 

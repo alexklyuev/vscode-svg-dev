@@ -34,7 +34,7 @@ export class UndoListener {
         try {
             artboard.box.innerHTML = state;
         } catch {}
-        artboard.clearCache();
+        // artboard.clearCache();
         this.holder.elements = [];
         return state;
     }

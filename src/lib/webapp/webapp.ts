@@ -1,4 +1,4 @@
-import { app } from "@/webapp/init";
+import { app } from "@/web/init";
 
 
 window.addEventListener('load', onLoad);

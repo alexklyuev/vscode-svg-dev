@@ -9,6 +9,10 @@ export class CanvasZoom {
         return this.zoomValue;
     }
 
+    get value() {
+        return this.zoomValue;
+    }
+
     @makeMethodIterator()
     update(values: {delta?: number, abs?: number}): number {
         const { delta, abs } = values;

@@ -1,3 +1,7 @@
-import { ArtboardMove } from "@/webview/services/artboard-move/artboard-move";
+import { canvasMove } from "@/web/init";
 
-export const artboardMove = new ArtboardMove();
+// import { ArtboardMove } from "@/webview/services/artboard-move/artboard-move";
+
+// export const artboardMove = new ArtboardMove();
+
+export const artboardMove = canvasMove;

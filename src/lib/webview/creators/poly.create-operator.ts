@@ -8,6 +8,7 @@ import { findMethodIterator } from "@/common/iterators";
 import { cancelListener } from "../listeners";
 import { CancelKeys } from "@/shared/pipes/cancel.pipe";
 import { appearance } from "../services/appearance";
+import { guides } from "@/webview/services/guides";
 
 
 export abstract class PolyCreateOperator extends BaseCreateOperator {
@@ -108,7 +109,7 @@ export abstract class PolyCreateOperator extends BaseCreateOperator {
             top: artboardBox.top + scrollTop + 'px',
             left: artboardBox.left + scrollLeft + 'px',
         });
-        artboard.tools.appendChild(svg);
+        guides.guidesContainer.appendChild(svg);
         points.forEach(({ client, scroll, margin, board, zoom }, index) => {
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             const [cx, cy] = [0, 1].map(d => {
@@ -208,7 +209,8 @@ export abstract class PolyCreateOperator extends BaseCreateOperator {
         }
         return () => {
             mousemoveRemover();
-            artboard.tools.removeChild(svg);
+            // artboard.tools.removeChild(svg);
+            svg.remove();
         };
     }
 

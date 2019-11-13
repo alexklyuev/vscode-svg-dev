@@ -1,9 +1,8 @@
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
 import { webviewEndpoint } from "@/webview/services/webview-endpoint";
 import { artboard } from "@/webview/services/artboard";
-
-import { Zoom } from "../../../lib/webview/services/zoom/zoom";
-import { ZoomRequest } from "../../shared/pipes/zoom.pipe";
+import { ZoomRequest } from "@/shared/pipes/zoom.pipe";
+import { CanvasZoom } from "@/web/services/canvas-zoom/canvas-zoom";
 
 
 export class ZoomListener {
@@ -11,7 +10,7 @@ export class ZoomListener {
 
     constructor(
         private zoomPipe: Pipe<ZoomRequest, {}, 'zoom'>,
-        private zoom: Zoom,
+        private zoom: CanvasZoom,
     ) {
         this.zoomer = webviewEndpoint.createFromPipe(this.zoomPipe);
     }
@@ -28,7 +27,7 @@ export class ZoomListener {
     }
 
     updateZoom(delta: number | undefined, abs: number | undefined) {
-        this.zoom.update(delta, abs);
+        this.zoom.update({delta, abs});
     }
 
 }

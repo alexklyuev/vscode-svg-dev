@@ -3,7 +3,7 @@ import { CanvasZoom } from "@/web/services/canvas-zoom/canvas-zoom";
 import { CanvasArtboard } from "@/web/services/canvas-artboard/canvas-artboard";
 import { CanvasMove } from "@/web/services/canvas-move/canvas-move";
 import { CanvasGuides } from "@/web/services/canvas-guides/canvas-guides";
-import { AppComponent } from "./components/app.component";
+import { AppComponent } from "@/web/components/app.component";
 
 
 customElements.define('svgdev-app', AppComponent);

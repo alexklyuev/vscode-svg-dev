@@ -43,8 +43,6 @@ export class WebappTemplate implements Template {
             <div id="artboard">
                 ${ doc }
             </div>
-            <div id="tools">
-            </div>
             <div id="hud">
             </div>
         </div>

@@ -56,7 +56,7 @@ export class Guides {
      */
     createContainer() {
         this.container = spawner.svg.svg();
-        artboard.tools.appendChild(this.container);
+        document.querySelector('#tools')!.appendChild(this.container);
         this.setContainerStyles();
     }
 
@@ -89,7 +89,7 @@ export class Guides {
      */
     destroyContainer() {
         if (this.container) {
-            artboard.tools.removeChild(this.container);
+            document.querySelector('#tools')!.removeChild(this.container);
             this.container = null;
         }
     }
