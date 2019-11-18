@@ -5,9 +5,10 @@ import { RemoteAttributeRequest, RemoteAttributeResponse } from "@/shared/pipes/
 import { ElementHolder } from "@/webview/services/holder/element-holder";
 import { setState } from "&resolve/decorators/set-state.decorator";
 import { rehold } from "@/webview/decorators/rehold.decorator";
+import { Listener } from "@/webview/models/listener.model";
 
 
-export class RemoteAttributeListener {
+export class RemoteAttributeListener implements Listener {
     remoteAttributeClient: PipeEndpoint<RemoteAttributeRequest, RemoteAttributeResponse, "remoteAttribute">;
 
     constructor(

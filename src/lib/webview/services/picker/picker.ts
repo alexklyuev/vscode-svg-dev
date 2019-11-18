@@ -130,9 +130,17 @@ export class Picker {
     /**
      * 
      */
-    listen() {
+    on() {
         artboard.box.addEventListener('mousedown', this.bindedMousedown);
         window.addEventListener('mouseup', this.bindedMouseup);
+    }
+
+    /**
+     * 
+     */
+    off() {
+        artboard.box.removeEventListener('mousedown', this.bindedMousedown);
+        window.removeEventListener('mouseup', this.bindedMouseup);
     }
 
     /**

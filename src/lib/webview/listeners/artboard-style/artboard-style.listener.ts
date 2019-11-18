@@ -6,12 +6,13 @@ import { ArtboardStyleRequest, ArtboardStyleResponse, artboardStylePipe } from "
 import { setState } from "&resolve/decorators/set-state.decorator";
 import { CssJsNotationConverter } from "@/shared/services/css/css-js-notation-converter";
 import { PipeTags } from "@/shared/pipes/tags";
+import { Listener } from "@/webview/models/listener.model";
 
 
 /**
  * 
  */
-export class ArtboardStyleListener {
+export class ArtboardStyleListener implements Listener {
     private artboardStyleClient: PipeEndpoint<ArtboardStyleRequest, ArtboardStyleResponse, PipeTags.artboardStyle>;
     private notationConverter = new CssJsNotationConverter();
 

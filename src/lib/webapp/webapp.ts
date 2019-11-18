@@ -6,10 +6,16 @@ import { addBasicSprites } from '@/webview/sprites';
 import { sprites } from "@/webview/services/sprites";
 import { picker } from '@/webview/services/picker';
 import { toClient, toHost } from "@/webapp/event-emitter";
+import { activateAllListeners } from "@/webview/listeners";
+import { editHub } from "@/webview/services/edit-hub";
+import { appearance } from "@/webview/services/appearance";
+
 
 addBasicSprites(sprites);
 
-picker.listen();
+picker.on();
+
+activateAllListeners();
 
 customElements.define('svgdev-zoom-command', ZoomCommandsComponent);
 customElements.define('svgdev-create-commands', CreateCommandsComponent);
@@ -17,10 +23,12 @@ customElements.define('svgdev-toolbar', ToolbarComponent);
 
 Object.assign(window, {
     svgdev: {
-        zoom: zoom,
-        artboard: artboard,
-        move: artboardMove,
-        guides: guides,
+        zoom,
+        artboard,
+        artboardMove,
+        appearance,
+        guides,
+        editHub,
         events: {
             toClient,
             toHost,

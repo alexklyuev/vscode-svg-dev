@@ -4,9 +4,11 @@ import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { artboard } from "@/web/init";
 import { UndoRequest, UndoResponse } from '@/shared/pipes/undo.pipe';
 import { ElementHolder } from "@/webview/services/holder/element-holder";
+import { Listener } from "@/webview/models/listener.model";
 
 
-export class UndoListener {
+
+export class UndoListener implements Listener {
     private client: PipeEndpoint<UndoRequest, UndoResponse, 'undo'>;
 
     // public readonly renderStateEvent = new EventBus<string>();

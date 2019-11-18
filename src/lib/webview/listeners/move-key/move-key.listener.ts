@@ -4,9 +4,10 @@ import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { MoveKeyRequest, moveKeyPipe } from "@/shared/pipes/move-key.pipe";
 import { holder } from "@/webview/services/holder";
 import { sprites } from "@/webview/services/sprites";
+import { Listener } from "@/webview/models/listener.model";
 
 
-export class MoveKeyListener {
+export class MoveKeyListener implements Listener {
     private moveKeyClient: PipeEndpoint<MoveKeyRequest, {}, 'move-key'>;
 
     constructor() {

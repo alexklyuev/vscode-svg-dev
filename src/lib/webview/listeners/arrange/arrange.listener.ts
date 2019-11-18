@@ -5,9 +5,10 @@ import { artboard } from "@/web/init";
 import { ArrangePipeRequest } from "@/shared/pipes/arrange.pipe";
 import { ElementHolder } from "@/webview/services/holder/element-holder";
 import { setState } from "&resolve/decorators/set-state.decorator";
+import { Listener } from "../../models/listener.model";
 
 
-export class ArrangeListener {
+export class ArrangeListener implements Listener {
     private arrangeClient: PipeEndpoint<ArrangePipeRequest, {}, 'arrange'>;
 
     constructor(

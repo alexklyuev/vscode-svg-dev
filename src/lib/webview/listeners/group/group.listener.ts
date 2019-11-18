@@ -3,9 +3,10 @@ import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { artboard } from "@/web/init";
 import { ElementHolder } from "@/webview/services/holder/element-holder";
 import { setState } from "&resolve/decorators/set-state.decorator";
+import { Listener } from "@/webview/models/listener.model";
 
 
-export class GroupListener {
+export class GroupListener implements Listener {
 
     private groupClient: PipeEndpoint<'group' | 'ungroup', {}, 'group'>;
 

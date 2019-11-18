@@ -5,9 +5,10 @@ import { webviewEndpoint } from "&resolve/webview-endpoint";
 
 import { ArtboardRequest, ArtboardResponse, artboardPipe } from "@/shared/pipes/artboard.pipe";
 import { setState } from "&resolve/decorators/set-state.decorator";
+import { Listener } from "@/webview/models/listener.model";
 
 
-export class ArtboardListener {
+export class ArtboardListener implements Listener {
     private artboardClient: PipeEndpoint<ArtboardRequest, ArtboardResponse, 'artboard'>;
 
     constructor(

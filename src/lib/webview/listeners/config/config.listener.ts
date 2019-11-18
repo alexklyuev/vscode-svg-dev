@@ -2,9 +2,10 @@ import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
 import { Appearance } from "@/webview/services/appearance/appearance";
 import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { ConfigRequest, ConfigResponse } from "@/shared/pipes/config.pipe";
+import { Listener } from "@/webview/models/listener.model";
 
 
-export class ConfigListener {
+export class ConfigListener implements Listener {
   private endpoint: PipeEndpoint<ConfigRequest, ConfigResponse, 'config'>;
 
   constructor(

@@ -2,9 +2,10 @@ import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { ElementsDict, createPipe } from "@/shared/pipes/create.pipe";
 import { setState } from "&resolve/decorators/set-state.decorator";
 import { sprites } from "@/webview/services/sprites";
+import { Listener } from "@/webview/models/listener.model";
 
 
-export class CreateListener {
+export class CreateListener implements Listener {
 
     private createClient = webviewEndpoint.createFromPipe(createPipe);
 

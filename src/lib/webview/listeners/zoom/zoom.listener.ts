@@ -3,9 +3,10 @@ import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { artboard } from "@/web/init";
 import { ZoomRequest } from "@/shared/pipes/zoom.pipe";
 import { CanvasZoom } from "@/web/services/canvas-zoom/canvas-zoom";
+import { Listener } from "@/webview/models/listener.model";
 
 
-export class ZoomListener {
+export class ZoomListener implements Listener {
     private zoomer: PipeEndpoint<ZoomRequest, {}, "zoom">;
 
     constructor(

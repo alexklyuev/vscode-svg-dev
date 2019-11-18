@@ -6,9 +6,10 @@ import { holder } from "@/webview/services/holder";
 import { EditMode } from "@/shared/pipes/edit-mode.pipe";
 import { sprites } from "@/webview/services/sprites";
 import { EditOperator } from "@/webview/models/operators/edit-operator.model";
+import { Listener } from "@/webview/models/listener.model";
 
 
-export class EditListener {
+export class EditListener implements Listener {
     private editClient: PipeEndpoint<EditRequest, {}, "edit">;
 
     constructor(

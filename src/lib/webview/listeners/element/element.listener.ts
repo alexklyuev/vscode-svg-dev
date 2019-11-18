@@ -6,9 +6,10 @@ import { ElementCommand, elementPipe } from "@/shared/pipes/element.pipe";
 import { setState } from "&resolve/decorators/set-state.decorator";
 import { holder } from "@/webview/services/holder";
 import { sprites } from "@/webview/services/sprites";
+import { Listener } from "@/webview/models/listener.model";
 
 
-export class ElementListener {
+export class ElementListener implements Listener {
     private elementReceiver: PipeEndpoint<ElementCommand, {}, 'element'>;
 
     constructor(
