@@ -1,7 +1,7 @@
 import { findMethodIterator } from '@/common/iterators';
 import { appearance } from '@/webview/services/appearance';
 import { editHub } from '@/webview/services/edit-hub';
-import { webviewEndpoint } from '@/webview/services/webview-endpoint';
+import { webviewEndpoint } from '&resolve/webview-endpoint';
 import { artboard } from "@/web/init";
 import { artboardMove } from '@/web/init';
 
@@ -19,41 +19,40 @@ import {
 import { zoomPipe } from '@/shared/pipes/zoom.pipe';
 import { remoteAttributePipe } from '@/shared/pipes/remote-attribute.pipe';
 import { flushPipe } from '@/shared/pipes/flush.pipe';
-import { RemoteAttributeListener } from '@/webview/listeners/remote-attribute.listener';
-import { CreateListener } from '@/webview/listeners/create.listener';
-import { FlushListener } from '@/webview/listeners/flush.listener';
-import { ZoomListener } from '@/webview/listeners/zoom.listener';
-import { ArrangeListener } from '@/webview/listeners/arrange.listener';
+import { RemoteAttributeListener } from '@/webview/listeners/remote-attribute/remote-attribute.listener';
+import { CreateListener } from '@/webview/listeners/create/create.listener';
+import { FlushListener } from '@/webview/listeners/flush/flush.listener';
+import { ZoomListener } from '@/webview/listeners/zoom/zoom.listener';
+import { ArrangeListener } from '@/webview/listeners/arrange/arrange.listener';
 import { arrangePipe } from '@/shared/pipes/arrange.pipe';
 import { pickPipe } from '@/shared/pipes/pick.pipe';
 import { groupPipe } from '@/shared/pipes/group.pipe';
-import { ElementListener } from '@/webview/listeners/element.listener';
+import { ElementListener } from '@/webview/listeners/element/element.listener';
 import { picker } from '@/webview/services/picker';
 import { zoom } from '@/web/init';
-import { GroupListener } from '@/webview/listeners/group.listener';
+import { GroupListener } from '@/webview/listeners/group/group.listener';
 import { cancelListener, artboardListener, artboardStyleListener } from '@/webview/listeners';
 import { guides } from '@/web/init';
-import { EditListener } from '@/webview/listeners/edit.listener';
+import { EditListener } from '@/webview/listeners/edit/edit.listener';
 import { AppearanceResponse } from '@/shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from '@/webview/producers/inverse-interactive.producer';
-import { MoveKeyListener } from '@/webview/listeners/move-key.listener';
-import { ListAttributesListener } from '@/webview/listeners/list-attributes.listener';
+import { MoveKeyListener } from '@/webview/listeners/move-key/move-key.listener';
+import { ListAttributesListener } from '@/webview/listeners/list-attributes/list-attributes.listener';
 import { listAttributesPipe } from '@/shared/pipes/list-attributes.pipe';
 import { infomessageEndpoint } from '@/webview/producers/infomessage.producer';
 import { hints } from '@/webview/services/hints';
-import { UndoListener } from '@/webview/listeners/undo.listener';
+import { UndoListener } from '@/webview/listeners/undo/undo.listener';
 import { undoPipe } from '@/shared/pipes/undo.pipe';
-import { ConfigListener } from '@/webview/listeners/config.listener';
+import { ConfigListener } from '@/webview/listeners/config/config.listener';
 import { configPipe } from '@/shared/pipes/config.pipe';
 import { holder } from '@/webview/services/holder';
 import { sprites } from '@/webview/services/sprites';
-
-import '@/webview/sprites';
-
-
+import { addBasicSprites } from '@/webview/sprites';
 import { app } from '@/web/init';
 
 // -----------------------------------------------------------------------------------------
+
+addBasicSprites(sprites);
 
 const main = document.querySelector('#main') ! ;
 const artboardContainer = main.querySelector('#artboard') ! ;
@@ -74,8 +73,8 @@ main.appendChild(app);
 /**
  * 
  */
-artboardMove.initPosition();
-artboardMove.on();
+// artboardMove.initPosition();
+// artboardMove.on();
 
 
 const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);

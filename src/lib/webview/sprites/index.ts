@@ -7,7 +7,8 @@ import { LineSprite } from "@/webview/sprites/line.sprite";
 import { PolygonSprite } from "@/webview/sprites/polygon.sprite";
 import { PolylineSprite } from "@/webview/sprites/polyline.sprite";
 import { PathSprite } from "@/webview/sprites/path.sprite";
-import { sprites } from "@/webview/services/sprites";
+import { SpritesCollection } from "@/webview/services/sprites/sprites-collection";
+// import { sprites } from "@/webview/services/sprites";
 
 
 export const circleSprite = new CircleSprite();
@@ -20,14 +21,28 @@ export const polygonSprite = new PolygonSprite();
 export const polylineSprite = new PolylineSprite();
 export const pathSprite = new PathSprite();
 
-sprites.add(
-    circleSprite,
-    ellipseSprite,
-    rectSprite,
-    textSprite,
-    gSprite,
-    lineSprite,
-    polygonSprite,
-    polylineSprite,
-    pathSprite,
-);
+// sprites.add(
+//     circleSprite,
+//     ellipseSprite,
+//     rectSprite,
+//     textSprite,
+//     gSprite,
+//     lineSprite,
+//     polygonSprite,
+//     polylineSprite,
+//     pathSprite,
+// );
+
+export const addBasicSprites = (spritesCollection: SpritesCollection) => {
+    spritesCollection.add(
+        circleSprite,
+        ellipseSprite,
+        rectSprite,
+        textSprite,
+        gSprite,
+        lineSprite,
+        polygonSprite,
+        polylineSprite,
+        pathSprite,
+    );
+};

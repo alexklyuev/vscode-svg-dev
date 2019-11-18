@@ -1,10 +1,9 @@
 import { makeMethodIterator } from "@/common/iterators";
 import { PipeEndpoint } from "@/common/pipe/pipe";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
-
-import { MoveKeyRequest, moveKeyPipe } from "../../shared/pipes/move-key.pipe";
-import { holder } from "../services/holder";
-import { sprites } from "../services/sprites";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
+import { MoveKeyRequest, moveKeyPipe } from "@/shared/pipes/move-key.pipe";
+import { holder } from "@/webview/services/holder";
+import { sprites } from "@/webview/services/sprites";
 
 
 export class MoveKeyListener {

@@ -1,10 +1,10 @@
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { artboard } from "@/web/init";
 
-import { ArrangePipeRequest } from "../../shared/pipes/arrange.pipe";
-import { ElementHolder } from "../services/holder/element-holder";
-import { setState } from "../decorators/set-state.decorator";
+import { ArrangePipeRequest } from "@/shared/pipes/arrange.pipe";
+import { ElementHolder } from "@/webview/services/holder/element-holder";
+import { setState } from "&resolve/decorators/set-state.decorator";
 
 
 export class ArrangeListener {

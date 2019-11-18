@@ -11,7 +11,8 @@
         ],
         "baseUrl": ".",
         "paths": {
-            "@/*": ["./src/lib/*"]
+            "@/*": ["./src/lib/*"],
+            "&resolve/*": ["./src/lib/webview/resolve/*"]
         },
         "sourceMap": true,
         "rootDir": "src",

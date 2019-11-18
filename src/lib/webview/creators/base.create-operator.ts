@@ -1,6 +1,6 @@
 import { CreateOperator } from "../models/operators/create-operator.model";
 import { spawner } from "@/dom/spawner";
-import { setState } from "../decorators/set-state.decorator";
+import { setState } from "&resolve/decorators/set-state.decorator";
 
 
 export abstract class BaseCreateOperator implements CreateOperator {

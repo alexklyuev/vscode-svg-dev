@@ -1,6 +1,6 @@
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
 import { Appearance } from "@/webview/services/appearance/appearance";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { ConfigRequest, ConfigResponse } from "@/shared/pipes/config.pipe";
 
 

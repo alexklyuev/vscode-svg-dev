@@ -29,11 +29,5 @@ export const app = new AppComponent(
     guides,
 );
 
-Object.assign(window, {
-    svgdev: {
-        zoom: zoom,
-        artboard: artboard,
-        move: artboardMove,
-        guides: guides,
-    },
-});
+artboard.svg.setAttribute('width', '500');
+artboard.svg.setAttribute('height', '500');

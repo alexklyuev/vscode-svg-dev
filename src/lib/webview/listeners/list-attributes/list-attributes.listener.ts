@@ -1,5 +1,5 @@
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { ListAttributesRequest, ListAttributesResponse } from "@/shared/pipes/list-attributes.pipe";
 import { ElementHolder } from "@/webview/services/holder/element-holder";
 

@@ -9,11 +9,11 @@ export class CanvasArtboard {
         Object.assign(this.box.style, {
             position: 'absolute',
         });
-        Object.assign(this.svg.style, {
-            position: 'relative',
-            top: '0px',
-            left: '0px',
-        });
+        // Object.assign(this.svg.style, {
+        //     position: 'relative',
+        //     top: '0px',
+        //     left: '0px',
+        // });
     }
 
     get svg(): SVGSVGElement {
@@ -26,12 +26,24 @@ export class CanvasArtboard {
 
     get width(): number {
         const widthAttr = this.artboardLayer.svg.getAttribute('width');
-        return parseFloat( widthAttr ! );
+        if (widthAttr) {
+            return parseFloat( widthAttr ! );
+        } else {
+            console.warn('Artboard has no width set');
+            const { width } = this.artboardLayer.svg.getBoundingClientRect();
+            return width;
+        }
     }
 
     get height(): number {
         const heightAttr = this.artboardLayer.svg.getAttribute('height');
-        return parseFloat( heightAttr ! );
+        if (heightAttr) {
+            return parseFloat( heightAttr ! );
+        } else {
+            console.warn('Artboard has no height set');
+            const { height } = this.artboardLayer.svg.getBoundingClientRect();
+            return height;
+        }
     }
 
 }

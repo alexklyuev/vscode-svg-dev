@@ -1,11 +1,11 @@
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { makeMethodIterator } from "@/common/iterators";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 
-import { ElementCommand, elementPipe } from "../../shared/pipes/element.pipe";
-import { setState } from "../decorators/set-state.decorator";
-import { holder } from "../services/holder";
-import { sprites } from "../services/sprites";
+import { ElementCommand, elementPipe } from "@/shared/pipes/element.pipe";
+import { setState } from "&resolve/decorators/set-state.decorator";
+import { holder } from "@/webview/services/holder";
+import { sprites } from "@/webview/services/sprites";
 
 
 export class ElementListener {

@@ -1,6 +1,6 @@
 import { editHub } from "@/webview/services/edit-hub";
 import { PipeEndpoint } from "@/common/pipe/pipe";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { EditRequest, editPipe } from "@/shared/pipes/edit.pipe";
 import { holder } from "@/webview/services/holder";
 import { EditMode } from "@/shared/pipes/edit-mode.pipe";

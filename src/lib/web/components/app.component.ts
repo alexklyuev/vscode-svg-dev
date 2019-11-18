@@ -37,7 +37,6 @@ export class AppComponent extends HTMLElement {
         (async () => {
             const connects = findMethodIterator(LayerComponent.prototype.connected, artboardLayer);
             for await (const _layer of connects) {
-                console.log('opop', _layer);
                 canvasGuides.setContainerStyles();
             }
         })();

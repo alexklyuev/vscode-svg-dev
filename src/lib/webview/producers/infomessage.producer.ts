@@ -1,4 +1,4 @@
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 
 import { infomessagePipe } from "../../shared/pipes/infomessage.pipe";
 

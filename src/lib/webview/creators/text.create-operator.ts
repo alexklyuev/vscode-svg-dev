@@ -1,5 +1,6 @@
 import { BaseCreateOperator } from "./base.create-operator";
-import { setState } from "../decorators/set-state.decorator";
+import { setState } from "&resolve/decorators/set-state.decorator";
+
 import { textReverseEndpoint } from "../producers/text-reverse.producer";
 import { artboard } from "@/web/init";
 import { appearance } from "../services/appearance";

@@ -1,10 +1,10 @@
 import { artboard } from "@/web/init";
 import { PipeEndpoint } from "@/common/pipe/pipe";
 import { makeMethodIterator } from "@/common/iterators";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 
-import { ArtboardRequest, ArtboardResponse, artboardPipe } from "../../shared/pipes/artboard.pipe";
-import { setState } from "../decorators/set-state.decorator";
+import { ArtboardRequest, ArtboardResponse, artboardPipe } from "@/shared/pipes/artboard.pipe";
+import { setState } from "&resolve/decorators/set-state.decorator";
 
 
 export class ArtboardListener {

@@ -10,7 +10,8 @@
         ],
         "baseUrl": "..",
         "paths": {
-            "@/*": ["./*"]
+            "@/*": ["./*"],
+            "&resolve/*": ["./webview/resolve/*"]
         },
         "sourceMap": false,
         // "rootDir": "assets",

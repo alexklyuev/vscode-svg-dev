@@ -1,9 +1,8 @@
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { artboard } from "@/web/init";
-
-import { ElementHolder } from "../services/holder/element-holder";
-import { setState } from "../decorators/set-state.decorator";
+import { ElementHolder } from "@/webview/services/holder/element-holder";
+import { setState } from "&resolve/decorators/set-state.decorator";
 
 
 export class GroupListener {

@@ -1,9 +1,9 @@
 import { PipeEndpoint } from "@/common/pipe/pipe";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { artboard } from "@/web/init";
 
 import { ArtboardStyleRequest, ArtboardStyleResponse, artboardStylePipe } from "@/shared/pipes/artboard-style.pipe";
-import { setState } from "../decorators/set-state.decorator";
+import { setState } from "&resolve/decorators/set-state.decorator";
 import { CssJsNotationConverter } from "@/shared/services/css/css-js-notation-converter";
 import { PipeTags } from "@/shared/pipes/tags";
 

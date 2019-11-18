@@ -6,8 +6,8 @@ import { ArtboardStyleRequest, ArtboardStyleResponse } from "../../shared/pipes/
 import { ColorRepresenterService } from "./color-representer.service";
 import { ArtboardRequest, ArtboardResponse } from "../../shared/pipes/artboard.pipe";
 import { Outlet } from "./models/outlet.model";
-import { ArtboardStyleListener } from "../listeners/artboard-style.listener";
-import { ArtboardListener } from "../listeners/artboard.listener";
+import { ArtboardStyleListener } from "../listeners/artboard-style/artboard-style.listener";
+import { ArtboardListener } from "../listeners/artboard/artboard.listener";
 
 
 export class ArtboardControls implements Outlet {

@@ -1,6 +1,6 @@
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { ElementsDict, createPipe } from "@/shared/pipes/create.pipe";
-import { setState } from "@/webview/decorators/set-state.decorator";
+import { setState } from "&resolve/decorators/set-state.decorator";
 import { sprites } from "@/webview/services/sprites";
 
 

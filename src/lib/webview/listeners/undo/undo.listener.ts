@@ -1,10 +1,9 @@
 import { makeMethodIterator } from "@/common/iterators";
 import { PipeEndpoint, Pipe } from "@/common/pipe/pipe";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { artboard } from "@/web/init";
-
-import { UndoRequest, UndoResponse } from '../../shared/pipes/undo.pipe';
-import { ElementHolder } from "../services/holder/element-holder";
+import { UndoRequest, UndoResponse } from '@/shared/pipes/undo.pipe';
+import { ElementHolder } from "@/webview/services/holder/element-holder";
 
 
 export class UndoListener {

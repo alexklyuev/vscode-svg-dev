@@ -1,5 +1,6 @@
 import { BaseBoxEditor } from "./base.box-editor";
-import { setState } from "../decorators/set-state.decorator";
+// import { setState } from "&resolve/decorators/set-state.decorator";
+import { setState } from "&resolve/decorators/set-state.decorator";
 
 
 export class PolyBoxEditor extends BaseBoxEditor {

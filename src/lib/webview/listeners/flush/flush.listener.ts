@@ -1,8 +1,7 @@
 import { Pipe, PipeEndpoint } from "@/common/pipe/pipe";
-import { webviewEndpoint } from "@/webview/services/webview-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
 import { artboard } from "@/web/init";
-
-import { FlushPayload } from "../../shared/pipes/flush.pipe";
+import { FlushPayload } from "@/shared/pipes/flush.pipe";
 
 
 export class FlushListener {

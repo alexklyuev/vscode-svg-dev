@@ -10,7 +10,8 @@
         ],
         "baseUrl": "..",
         "paths": {
-            "@/*": ["./*"]
+            "@/*": ["./*"],
+            "&resolve/*": ["./webapp/resolve/*"]
         },
         "sourceMap": false,
         // "rootDir": "assets",
