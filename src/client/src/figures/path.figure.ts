@@ -9,19 +9,8 @@ import { CancelListener } from "../listeners/cancel.listener";
 import { Guides } from "../services/guides/guides";
 import { CancelKeys } from "../../../shared/pipes/cancel.pipe";
 import { PathPoints } from "../services/path/path-points";
-
-
-interface PointConcerns {
-    client: [number, number];
-    scroll: [number, number];
-    margin: [number, number];
-    board: [number, number];
-    zoom: number;
-
-    client2?: [number, number];
-}
-
-type PointSharedConcerns = Pick<PointConcerns, 'scroll' | 'margin' | 'board' | 'zoom'>;
+import { PointConcerns, PointSharedConcerns } from "./models/point-concerns.model";
+import { Coorinator } from "../services/coordinator/coordinator";
 
 
 export class PathFigure implements Figure<SVGPathElement> {
@@ -45,6 +34,7 @@ export class PathFigure implements Figure<SVGPathElement> {
         private userEventMan: UserEventManager,
         private guides: Guides,
         private pathPoints: PathPoints,
+        private coords: Coorinator,
     ) {}
 
     /**
@@ -139,10 +129,8 @@ export class PathFigure implements Figure<SVGPathElement> {
         const { scroll, margin, board, zoom } = pointSharedConcerns;
         const onMouseMove = (event: MouseEvent) => {
             const { clientX, clientY } = event;
-            const clientPoint = [clientX, clientY];
-            const [x, y] = [0, 1].map(dim => {
-                return clientPoint[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
-            });
+            const clientPoint: [number, number] = [clientX, clientY];
+            const [x, y] = this.coords.formula2d(clientPoint, scroll, margin, board, zoom, false);
             if (edge.client2) {
                 const newPoint = `L ${ x } ${ y }`;
                 element.setAttribute('d', `${ dAttr } ${ newPoint }`);
@@ -152,9 +140,7 @@ export class PathFigure implements Figure<SVGPathElement> {
                 const remainCoords = dAttr.slice(commandIndex + 1).trim();
                 const [ , , [px, py]] = remainCoords.split(',').map(pair => pair.trim().split(' ').map(s => s.trim()));
                 const prev = points[points.length - 2];
-                const [x1, y1] = [0, 1].map(dim => {
-                    return prev.client[dim] + scroll[dim] - margin[dim] + board[dim] * (zoom - 1) / 2;
-                });
+                const [x1, y1] = this.coords.formula2d(prev.client, scroll, margin, board, zoom, false);
                 const tempC = `C ${ x1 } ${ y1 }, ${ x } ${ y }, ${ px } ${ py }`;
                 element.setAttribute('d', `${ d } ${ tempC }`);
             }
@@ -166,6 +152,9 @@ export class PathFigure implements Figure<SVGPathElement> {
         };
     }
 
+    /**
+     * //
+     */
     renderFinal(pointsConcerns: PointConcerns[], closed: boolean) {
         const parent = this.artboard.svg;
         const attributes: {[K: string]: string} = {
@@ -183,41 +172,29 @@ export class PathFigure implements Figure<SVGPathElement> {
     }
 
     renderPointsS(pointsConcerns: PointConcerns[], useZoom: boolean): string {
-        const formula = (point: number, scroll: number, margin: number, board: number, zoom: number, applyZoom: boolean) => (point + scroll - margin + board * (zoom - 1) / 2) / (applyZoom ? zoom : 1);
         return pointsConcerns.map(({ client, scroll, margin, board, zoom, client2 }, index) => {
-            const [x, y] = [0, 1].map(dim => {
-                return formula(client[dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
-            });
+            const [x, y] = this.coords.formula2d(client, scroll, margin, board, zoom, useZoom);
             if (index === 0 || !client2 || client2.every((i, k) => i === client[k])) {
                 return `${ index === 0 ? 'M' : 'L' } ${ x } ${ y }`;
             } else {
-                const [x2, y2] = [0, 1].map(dim => {
-                    return formula(client2![dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
-                });
+                const [x2, y2] = this.coords.formula2d(client2, scroll, margin, board, zoom, useZoom);
                 return `S ${ x2 } ${ y2 }, ${ x } ${ y }`;
             }
         }).join(' ');
     }
 
     renderPointsC(pointsConcerns: PointConcerns[], useZoom: boolean): string {
-        const formula = (point: number, scroll: number, margin: number, board: number, zoom: number, applyZoom: boolean) => (point + scroll - margin + board * (zoom - 1) / 2) / (applyZoom ? zoom : 1);
         return pointsConcerns.map(({ client, scroll, margin, board, zoom, client2 }, index) => {
-            const [x, y] = [0, 1].map(dim => {
-                return formula(client[dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
-            });
+            const [x, y] = this.coords.formula2d(client, scroll, margin, board, zoom, useZoom);
             if (index === 0) {
                 return `M ${ x } ${ y }`;
             } else {
-                const [x1, y1] = [0, 1].map(dim => {
-                    const prev = pointsConcerns[index - 1];
-                    return formula(prev.client[dim], prev.scroll[dim], prev.margin[dim], prev.board[dim], prev.zoom, useZoom);
-                });
+                const prev = pointsConcerns[index - 1];
+                const [x1, y1] = this.coords.formula2d(prev.client, prev.scroll, prev.margin, prev.board, prev.zoom, useZoom);
                 if (!client2) {
                     return `C ${ x1 } ${ y1 }, ${ x } ${ y }, ${ x } ${ y }`;
                 } else {
-                    const [x2, y2] = [0, 1].map(dim => {
-                        return formula(client2![dim], scroll[dim], margin[dim], board[dim], zoom, useZoom);
-                    });
+                    const [x2, y2] = this.coords.formula2d(client2, scroll, margin, board, zoom, useZoom);
                     return `C ${ x1 } ${ y1 }, ${ x2 } ${ y2 }, ${ x } ${ y }`;
                 }
             }

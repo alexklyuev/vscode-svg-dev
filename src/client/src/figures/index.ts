@@ -18,6 +18,7 @@ import { guides } from "../services/guides";
 import { PathFigure } from "./path.figure";
 import { DraggerPath } from "../services/dragger/dragger-path";
 import { pathPoints } from "../services/path";
+import { coordinator } from "../services/coordinator";
 
 
 const figuresCollection = new FiguresCollection();
@@ -39,7 +40,7 @@ figuresCollection.add(
     new LineFigure(draggerDouble, artboard, zoom, cancelListener, userEventMan),
     new PolygonFigure(draggerPoints, artboard, artboardMove, zoom, cancelListener, userEventMan, guides),
     new PolylineFigure(draggerPoints, artboard, artboardMove, zoom, cancelListener, userEventMan, guides),
-    new PathFigure(draggerPath, artboard, artboardMove, zoom, cancelListener, userEventMan, guides, pathPoints),
+    new PathFigure(draggerPath, artboard, artboardMove, zoom, cancelListener, userEventMan, guides, pathPoints, coordinator),
 );
 
 export { figuresCollection };
