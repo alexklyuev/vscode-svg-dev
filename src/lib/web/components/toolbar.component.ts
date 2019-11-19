@@ -8,6 +8,7 @@ export class ToolbarComponent extends HTMLElement {
         </style>
         <svgdev-zoom-command></svgdev-zoom-command>
         <svgdev-create-commands></svgdev-create-commands>
+        <svgdev-edit></svgdev-edit>
     `;
 
     constructor() {

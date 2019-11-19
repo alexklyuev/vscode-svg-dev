@@ -19,10 +19,16 @@ export class EditHub {
 
     private editModeInner: EditMode = 'off';
 
+    /**
+     * 
+     */
     get editMode(): EditMode {
         return this.editModeInner;
     }
 
+    /**
+     * 
+     */
     set editMode(val: EditMode) {
         this.editModeInner = val;
         this.editModeSet(val);
@@ -31,11 +37,17 @@ export class EditHub {
         }
     }
 
+    /**
+     * 
+     */
     @makeMethodIterator()
     editModeSet(val: EditMode): EditMode {
         return val;
     }
 
+    /**
+     * 
+     */
     @makeMethodIterator()
     dispatchEditMode(mode: EditMode) {
         this.editMode = mode;

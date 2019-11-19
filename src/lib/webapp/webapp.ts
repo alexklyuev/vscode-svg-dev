@@ -9,6 +9,12 @@ import { toClient, toHost } from "@/webapp/event-emitter";
 import { activateAllListeners } from "@/webview/listeners";
 import { editHub } from "@/webview/services/edit-hub";
 import { appearance } from "@/webview/services/appearance";
+import { hostEndpoint } from "@/webapp/host-endpoint";
+import { webviewEndpoint } from "&resolve/webview-endpoint";
+import { editPipe } from "@/shared/pipes/edit.pipe";
+import { activateKeyboardShortcuts } from "@/webapp/keyboard";
+import { producers } from "@/webapp/producers";
+import { EditComponent } from "@/web/components/edit.component";
 
 
 addBasicSprites(sprites);
@@ -17,8 +23,11 @@ picker.on();
 
 activateAllListeners();
 
+activateKeyboardShortcuts();
+
 customElements.define('svgdev-zoom-command', ZoomCommandsComponent);
 customElements.define('svgdev-create-commands', CreateCommandsComponent);
+customElements.define('svgdev-edit', EditComponent);
 customElements.define('svgdev-toolbar', ToolbarComponent);
 
 Object.assign(window, {
@@ -29,9 +38,17 @@ Object.assign(window, {
         appearance,
         guides,
         editHub,
+        producers,
         events: {
             toClient,
             toHost,
+        },
+        endpoints: {
+            host: hostEndpoint,
+            client: webviewEndpoint,
+        },
+        pipes: {
+            editPipe,
         }
     },
 });
