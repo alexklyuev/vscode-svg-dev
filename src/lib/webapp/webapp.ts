@@ -5,6 +5,7 @@ import { ToolbarComponent } from "@/web/components/toolbar.component";
 import { addBasicSprites } from '@/webview/sprites';
 import { sprites } from "@/webview/services/sprites";
 import { picker } from '@/webview/services/picker';
+import { holder } from "@/webview/services/holder";
 import { toClient, toHost } from "@/webapp/event-emitter";
 import { activateAllListeners } from "@/webview/listeners";
 import { editHub } from "@/webview/services/edit-hub";
@@ -39,6 +40,8 @@ Object.assign(window, {
         guides,
         editHub,
         producers,
+        picker,
+        holder,
         events: {
             toClient,
             toHost,

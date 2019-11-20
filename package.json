@@ -398,7 +398,6 @@
     "scripts": {
         "vscode:prepublish": "npm run compile",
         "compile": "rm -rf ./out && mkdir ./out && npm run compile:extension && npm run compile:webview && npm run styles",
-        "postinstall": "node ./node_modules/vscode/bin/install",
         "test": "npm run compile && node ./node_modules/vscode/bin/test",
         "compile:extension": "webpack --config src/lib/vschost/webpack.config.js --mode production",
         "compile:webview": "webpack --config src/lib/webview/webpack.config.js",

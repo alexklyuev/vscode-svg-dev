@@ -59,6 +59,8 @@ export class PathBoxEditor extends BaseBoxEditor {
         const points = pathPoints.parseStr(d);
         const dirs = pathPoints.getAllAbsCoords(points);
 
+        console.log(points.length, dirs.length);
+
         const newD = dirs.map((group, groupIndex) => {
             const newGroup = group.map(point => {
                 let [ x, y ] = point;
