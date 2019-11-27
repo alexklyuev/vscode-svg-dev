@@ -59,46 +59,51 @@ export class PathBoxEditor extends BaseBoxEditor {
         const points = pathPoints.parseStr(d);
         const dirs = pathPoints.getAllAbsCoords(points);
 
-        console.log(points.length, dirs.length);
-
-        const newD = dirs.map((group, groupIndex) => {
-            const newGroup = group.map(point => {
-                let [ x, y ] = point;
-                switch (controlIndex) {
-                    case 0:
-                        x = ((x * zv - right) / kw + right) / zv;
-                        y = ((y * zv - bottom) / kh + bottom) / zv;
-                        break;
-                    case 1:
-                        y = ((y * zv - bottom) / kh + bottom) / zv;
-                        break;
-                    case 2:
-                        x = ((x * zv - left) * kw + left) / zv;
-                        y = ((y * zv - bottom) / kh + bottom) / zv;
-                        break;
-                    case 3:
-                        x = ((x * zv - left) * kw + left) / zv;
-                        break;
-                    case 4:
-                        x = ((x * zv - left) * kw + left) / zv;
-                        y = (((y * zv - top) * kh + top)) / zv;
-                        break;
-                    case 5:
-                        y = ((y * zv - top) * kh + top) / zv;
-                        break;
-                    case 6:
-                        x = ((x * zv - right) / kw + right) / zv;
-                        y = ((y * zv - top) * kh + top) / zv;
-                        break;
-                    case 7:
-                        x = ((x * zv - right) / kw + right) / zv;
-                        break;
-                }
-                return [x, y].join(' ');
-            });
-            const newDir = `${ points[groupIndex][0] } ${ newGroup.join(' ') }`;
-            return newDir;
+        const newD = points.map((point, pointIndex) => {
+            const [ command, ] = point;
+            if (command.toLowerCase() === 'z') {
+                return command;
+            } else {
+                const group = dirs[pointIndex];
+                const newGroup = group.map(coord => {
+                    let [ x, y ] = coord;
+                    switch (controlIndex) {
+                        case 0:
+                            x = ((x * zv - right) / kw + right) / zv;
+                            y = ((y * zv - bottom) / kh + bottom) / zv;
+                            break;
+                        case 1:
+                            y = ((y * zv - bottom) / kh + bottom) / zv;
+                            break;
+                        case 2:
+                            x = ((x * zv - left) * kw + left) / zv;
+                            y = ((y * zv - bottom) / kh + bottom) / zv;
+                            break;
+                        case 3:
+                            x = ((x * zv - left) * kw + left) / zv;
+                            break;
+                        case 4:
+                            x = ((x * zv - left) * kw + left) / zv;
+                            y = (((y * zv - top) * kh + top)) / zv;
+                            break;
+                        case 5:
+                            y = ((y * zv - top) * kh + top) / zv;
+                            break;
+                        case 6:
+                            x = ((x * zv - right) / kw + right) / zv;
+                            y = ((y * zv - top) * kh + top) / zv;
+                            break;
+                        case 7:
+                            x = ((x * zv - right) / kw + right) / zv;
+                            break;
+                    }
+                    return [x, y].join(' ');
+                });
+                const newDir = `${ command } ${ newGroup.join(' ') }`;
+                return newDir;
+            }
         }).join(' ');
+
         element.setAttribute('d', newD);
     }
 

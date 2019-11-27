@@ -19,7 +19,7 @@ export abstract class PolyCreateOperator extends BaseCreateOperator {
         return new Promise<SVGElement>(resolve => {
             // let points = Array<[[number, number], [number, number]]>();
             let cpoints = Array<PointConcerns>();
-            artboard.box.classList.add('interactive-points');
+            artboard.svg.style.cursor = 'crosshair';
             let toolsSvgRemover: null | (() => void) = null;
             userEventMan.mode = 'interactive';
             const pointsListener = (event: MouseEvent) => {
@@ -60,7 +60,7 @@ export abstract class PolyCreateOperator extends BaseCreateOperator {
                 window.removeEventListener('click', pointsListener);
                 // cancelListener.keyEvent.off(stop);
                 cancelEvents.return! ();
-                artboard.box.classList.remove('interactive-points');
+                artboard.svg.style.cursor = 'default';
                 if (toolsSvgRemover instanceof Function) {
                     toolsSvgRemover();
                     toolsSvgRemover = null;

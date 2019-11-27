@@ -18,19 +18,25 @@ import { producers } from "@/webapp/producers";
 import { EditComponent } from "@/web/components/edit.component";
 
 
+/**
+ * initialize stuff
+ */
 addBasicSprites(sprites);
-
 picker.on();
-
 activateAllListeners();
-
 activateKeyboardShortcuts();
 
+/**
+ * register components
+ */
 customElements.define('svgdev-zoom-command', ZoomCommandsComponent);
 customElements.define('svgdev-create-commands', CreateCommandsComponent);
 customElements.define('svgdev-edit', EditComponent);
 customElements.define('svgdev-toolbar', ToolbarComponent);
 
+/**
+ * console interface
+ */
 Object.assign(window, {
     svgdev: {
         zoom,
@@ -56,9 +62,8 @@ Object.assign(window, {
     },
 });
 
-window.addEventListener('load', onLoad);
-
-function onLoad(this: void, _event: Event) {
+window.addEventListener('load', _event => {
     document.body.appendChild(app);
-    document.body.appendChild(new ToolbarComponent());
-}
+    const toolbar = new ToolbarComponent();
+    document.body.appendChild(toolbar);
+});

@@ -16,7 +16,7 @@ export class CircleCreateOperator extends BaseCreateOperator {
     makeElement() {
         return new Promise<SVGCircleElement>(resolve => {
             const points = Array<PointConcerns>();
-            artboard.box.classList.add('interactive-points');
+            artboard.svg.style.cursor = 'crosshair';
             let tempDestroyer: (() => void) | null = null;
             userEventMan.mode = 'interactive';
             const pointsListener = (event: MouseEvent) => {
@@ -48,7 +48,7 @@ export class CircleCreateOperator extends BaseCreateOperator {
                 window.removeEventListener('click', pointsListener);
                 // this.cancelListener.keyEvent.off(cancel);
                 cancelEvents.return! ();
-                artboard.box.classList.remove('interactive-points');
+                artboard.svg.style.cursor = 'default';
                 if (tempDestroyer instanceof Function) {
                     tempDestroyer();
                 }

@@ -16,7 +16,7 @@ export class LineCreateOperator extends BaseCreateOperator {
     makeElement() {
         return new Promise<SVGLineElement>(resolve => {
             let points = Array<PointConcerns>();
-            artboard.box.classList.add('interactive-points');
+            artboard.svg.style.cursor = 'crosshair';
             let tempDestroyer: (() => void) | null = null;
             userEventMan.mode = 'interactive';
             const pointsListener = (event: MouseEvent) => {
@@ -69,7 +69,7 @@ export class LineCreateOperator extends BaseCreateOperator {
                 window.removeEventListener('click', pointsListener);
                 // cancelListener.keyEvent.off(cancel);
                 cancelEvents.return! ();
-                artboard.box.classList.remove('interactive-points');
+                artboard.svg.style.cursor = 'default';
                 if (tempDestroyer instanceof Function) {
                     tempDestroyer();
                 }

@@ -13,6 +13,7 @@ export class Hud {
             position: 'fixed',
             left: '0',
             top: '0',
+            zIndex: '1',
         });
         children.forEach(child => child.appendTo(this.element));
     }

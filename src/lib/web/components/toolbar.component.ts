@@ -3,6 +3,8 @@ export class ToolbarComponent extends HTMLElement {
     private template = `
         <style>
             :host {
+                position: absolute;
+                z-index: 1;
                 user-select: none;
             }
         </style>

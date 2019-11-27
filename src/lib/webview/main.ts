@@ -1,9 +1,10 @@
-import { findMethodIterator } from '@/common/iterators';
-import { appearance } from '@/webview/services/appearance';
-import { editHub } from '@/webview/services/edit-hub';
-import { webviewEndpoint } from '&resolve/webview-endpoint';
-import { artboard } from "@/web/init";
-import { artboardMove } from '@/web/init';
+import {
+    artboard,
+    artboardMove,
+    guides,
+    zoom,
+    app,
+} from "@/web/init";
 import {
     shapesOutlet,
     editPointsControl,
@@ -14,9 +15,6 @@ import {
     editBoxControl,
     // editOnPick,
 } from '@/webview/hud';
-import { pickPipe } from '@/shared/pipes/pick.pipe';
-import { picker } from '@/webview/services/picker';
-import { zoom } from '@/web/init';
 import {
     activateAllListeners,
     artboardListener,
@@ -25,7 +23,12 @@ import {
     undoListener,
     moveKeyListener,
 } from '@/webview/listeners';
-import { guides } from '@/web/init';
+import { findMethodIterator } from '@/common/iterators';
+import { appearance } from '@/webview/services/appearance';
+import { editHub } from '@/webview/services/edit-hub';
+import { webviewEndpoint } from '&resolve/webview-endpoint';
+import { pickPipe } from '@/shared/pipes/pick.pipe';
+import { picker } from '@/webview/services/picker';
 import { AppearanceResponse } from '@/shared/pipes/appearance.pipe';
 import { inverseInteractiveEndpoint } from '@/webview/producers/inverse-interactive.producer';
 import { infomessageEndpoint } from '@/webview/producers/infomessage.producer';
@@ -33,7 +36,6 @@ import { hints } from '@/webview/services/hints';
 import { holder } from '@/webview/services/holder';
 import { sprites } from '@/webview/services/sprites';
 import { addBasicSprites } from '@/webview/sprites';
-import { app } from '@/web/init';
 
 // -----------------------------------------------------------------------------------------
 
@@ -44,6 +46,9 @@ const artboardContainer = main.querySelector('#artboard') ! ;
 const svg = main.querySelector('#artboard svg') ! ;
 
 app.artboardLayer.replaceSvgDocument(svg as SVGSVGElement);
+artboardControls.updateArtboardWidth(artboard.width);
+artboardControls.updateArtboardHeight(artboard.height);
+
 artboardContainer.remove();
 main.appendChild(app);
 
