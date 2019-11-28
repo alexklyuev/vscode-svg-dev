@@ -2,15 +2,15 @@
 
 const path = require('path');
 
-const isDevelopment = true;
+const isDevelopment = false;
 
 /**@type {import('webpack').Configuration}*/
 module.exports = {
     mode: isDevelopment ? 'development' : 'production',
-    entry: __dirname + '/webapp.ts',
+    entry: __dirname + '/app/svgdev.ts',
     output: {
         path: path.resolve(__dirname, './public'),
-        filename: 'webapp.js',
+        filename: 'svgdev.js',
         // publicPath: 'src/lib/webapp/public',
     },
     devServer: {
