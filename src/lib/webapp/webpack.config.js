@@ -2,7 +2,7 @@
 
 const path = require('path');
 
-const isDevelopment = false;
+const isDevelopment = true;
 
 /**@type {import('webpack').Configuration}*/
 module.exports = {

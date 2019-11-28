@@ -9,6 +9,7 @@ export class CreateCommandsComponent extends HTMLElement {
         <button type=button data-name=path>path
         <button type=button data-name=polygon>polygon
         <button type=button data-name=polyline>polyline
+        <button type=button data-name=text>text
     `;
     
     constructor() {

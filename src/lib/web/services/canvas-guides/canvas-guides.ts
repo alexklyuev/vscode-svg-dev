@@ -26,14 +26,25 @@ export class CanvasGuides {
     /**
      * 
      */
+    get div(): HTMLDivElement {
+        return this.guidesLayer.div;
+    }
+
+    /**
+     * 
+     */
     setContainerStyles() {
         const { left, top, width, height } = this.artboardLayer.svg.getBoundingClientRect();
-        spawner.svg.update(this.guidesLayer.svg, {}, {
+        spawner.html.update(this.guidesLayer.div, {}, {
             position: 'absolute',
-            // border: this.borderStyle,
             outline: this.borderStyle,
             left: `${ left }px`,
             top: `${ top }px`,
+        });
+        spawner.svg.update(this.guidesLayer.svg, {}, {
+            position: 'relative',
+            left: '0px',
+            top: '0px',
             width: `${ width }px`,
             height: `${ height }px`,
         });
