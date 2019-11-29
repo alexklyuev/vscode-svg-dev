@@ -38,9 +38,15 @@ export class TextCreateOperator extends BaseCreateOperator {
                         'font-size': `${ this.fontSize }px`,
                         'font-family': 'sans-serif',
                         'color': appearance.fill,
+                        'word-break': 'keep-all',
                     });
                     host.appendChild(editableDiv);
                     editableDiv.innerText = 'Text';
+                    const selection = window.getSelection();
+                    const range = document.createRange();
+                    range.selectNodeContents(editableDiv);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
                     const downEvents: AsyncIterableIterator<MouseEvent> = fromDomEvent(editableDiv, 'mousedown');
                     const returnables = new Set<AsyncIterableIterator<MouseEvent>>();
                     returnables.add(downEvents);
