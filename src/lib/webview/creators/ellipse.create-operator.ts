@@ -20,7 +20,7 @@ export class EllipseCreateOperator extends BaseCreateOperator {
     makeElement() {
         return new Promise<SVGEllipseElement>(resolve => {
             let points = Array<PointConcerns>();
-            artboard.svg.style.cursor = 'crosshair';
+            artboard.box.style.cursor = 'crosshair';
             let pseudoElement: SVGEllipseElement | null = null;
             userEventMan.mode = 'interactive';
             const pointsListener = (event: MouseEvent) => {
@@ -55,7 +55,7 @@ export class EllipseCreateOperator extends BaseCreateOperator {
                 window.removeEventListener('click', pointsListener);
                 // cancelListener.keyEvent.off(cancel);
                 cancelEvents.return! ();
-                artboard.svg.style.cursor = 'default';
+                artboard.box.style.cursor = 'default';
                 if (pseudoElement) {
                     guides.guidesContainer!.removeChild(pseudoElement);
                 }

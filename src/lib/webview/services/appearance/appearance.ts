@@ -29,7 +29,7 @@ export class Appearance {
     editBoxPointWidth = 10;
     editBoxPointHeight = 10;
 
-    textFontSize = 21;
+    textFontSize = 32;
 
     constructor() {
         const fire = this.change.bind(this);

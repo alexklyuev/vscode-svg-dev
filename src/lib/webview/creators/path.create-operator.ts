@@ -30,7 +30,7 @@ export class PathCreateOperator extends BaseCreateOperator {
     makeElement() {
         return new Promise<SVGPathElement>(resolve => {
             const points = Array<PointConcerns>();
-            artboard.svg.style.cursor = 'crosshair';
+            artboard.box.style.cursor = 'crosshair';
             let destroyTempRenderFn: Function | null = null;
             userEventMan.mode = 'interactive';
             const { svg } = artboard;
@@ -89,7 +89,7 @@ export class PathCreateOperator extends BaseCreateOperator {
                 window.removeEventListener(subpointsListenerEvent, subpointsListener);
                 // cancelListener.keyEvent.off(stop);
                 cancelEvents.return! ();
-                artboard.svg.style.cursor = 'default';
+                artboard.box.style.cursor = 'default';
                 if (destroyTempRenderFn instanceof Function) {
                     destroyTempRenderFn();
                     destroyTempRenderFn = null;

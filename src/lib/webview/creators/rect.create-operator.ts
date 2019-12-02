@@ -18,7 +18,7 @@ export class RectCreateOperator extends BaseCreateOperator {
     makeElement() {
         return new Promise<SVGRectElement>(resolve => {
             const points = Array<PointConcerns>();
-            artboard.svg.style.cursor = 'crosshair';
+            artboard.box.style.cursor = 'crosshair';
             let tempDestroyer: (() => void) | null = null;
             userEventMan.mode = 'interactive';
             const pointsListener = (event: MouseEvent) => {
@@ -64,7 +64,7 @@ export class RectCreateOperator extends BaseCreateOperator {
                 window.removeEventListener('click', pointsListener);
                 // cancelListener.keyEvent.off(cancel);
                 cancelEvents.return! ();
-                artboard.svg.style.cursor = 'default';
+                artboard.box.style.cursor = 'default';
                 if (tempDestroyer instanceof Function) {
                     tempDestroyer();
                 }

@@ -12,11 +12,11 @@ export class TextShape extends Shape {
   ) {
     super(name, iconSvg);
     const size = spawner.html.span({}, {
-        margin: '0 5px',
+        margin: '-2px 5px',
         border: '1px solid white',
-        padding: '1px 3px',
+        padding: '0 3px',
         display: 'inline-block',
-        'border-radius': '25%',
+        'border-radius': '5px',
     });
     size.innerText = `${ appearance.textFontSize }`;
     this.el.appendChild(size);
@@ -24,7 +24,7 @@ export class TextShape extends Shape {
         event.preventDefault();
         event.stopPropagation();
         const response = await appearanceEndpoint.makeGetRequest({
-            name: 'fill',
+            name: 'textFontSize',
             value: `${ appearance.textFontSize }`,
         });
         if (response) {
