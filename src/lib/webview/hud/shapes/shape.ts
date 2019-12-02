@@ -1,11 +1,11 @@
-import { EventBus, connectEvent } from "../../../common/events";
+import { EventBus, connectEvent } from "@/common/events";
 
 
 export class Shape {
 
   public readonly createEvent = new EventBus<MouseEvent>();
 
-  private el: HTMLElement;
+  protected el: HTMLElement;
 
   constructor(
     public readonly name: string,

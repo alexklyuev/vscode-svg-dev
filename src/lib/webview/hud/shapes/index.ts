@@ -1,4 +1,5 @@
 import { Shape } from "./shape";
+import { TextShape } from "@/webview/hud/shapes/text-shape";
 
 
 const pathIcon = `
@@ -48,4 +49,4 @@ export const lineShape = new Shape('line', lineIcon);
 export const rectShape = new Shape('rect', rectIcon);
 export const circleShape = new Shape('circle', circleIcon);
 export const ellipseShape = new Shape('ellipse', ellipseIcon);
-export const textShape = new Shape('text', textIcon);
+export const textShape = new TextShape('text', textIcon);

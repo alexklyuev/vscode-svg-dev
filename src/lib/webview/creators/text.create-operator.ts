@@ -9,15 +9,13 @@ import { fromDomEvent } from "@/dom/iterators";
 
 export class TextCreateOperator extends BaseCreateOperator {
 
-    private fontSize = 32;
-
     makeElement() {
         return new Promise<SVGElement>(resolve => {
-            artboard.svg.style.cursor = 'crosshair';
+            artboard.box.style.cursor = 'crosshair';
             const clicks: AsyncIterableIterator<MouseEvent> = fromDomEvent(artboard.svg, 'click');
             (async () => {
                 for await (const clickEvent of clicks) {
-                    artboard.svg.style.cursor = 'default';
+                    artboard.box.style.cursor = 'default';
                     clicks.return!();
                     let {
                         clientX: clickX,
@@ -35,7 +33,7 @@ export class TextCreateOperator extends BaseCreateOperator {
                         'z-index': '2',
                         'pointer-events': 'all',
                         'outline': '1px dotted #777',
-                        'font-size': `${ this.fontSize }px`,
+                        'font-size': `${ appearance.textFontSize }px`,
                         'font-family': 'sans-serif',
                         'color': appearance.fill,
                         'word-break': 'keep-all',
@@ -96,18 +94,18 @@ export class TextCreateOperator extends BaseCreateOperator {
                             returnables.forEach(r => r.return!());
                             const svg = artboard.svg;
                             const x = parseFloat(window.getComputedStyle(editableDiv).getPropertyValue('left'))!;
-                            const y = parseFloat(window.getComputedStyle(editableDiv).getPropertyValue('top'))! + this.fontSize;
+                            const y = parseFloat(window.getComputedStyle(editableDiv).getPropertyValue('top'))! + appearance.textFontSize;
                             const element = spawner.svg.element('text', {
                                 'x': `${ x }`,
                                 'y': `${ y * .98 }`,
                                 'fill': appearance.fill,
                                 'stroke': appearance.stroke,
-                                'font-size': `${ this.fontSize }`,
+                                'font-size': `${ appearance.textFontSize }`,
                                 'font-family': 'sans-serif',
                             }, {
                                 'user-select': 'none',
                             });
-                            element.innerHTML = editableDiv.innerText;
+                            element.innerHTML = editableDiv.innerText.trim();
                             editableDiv.remove();
                             svg.appendChild(element);
                             resolve(element);

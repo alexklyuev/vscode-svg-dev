@@ -142,4 +142,6 @@ You can switch modes by clicking on correcponding item on 'edit on pick' button 
    - visual create all elements (circle, ellipse, rect, polygon, polyline, path)
    - new view and extension icons
 
-_(more in changelog)_
+## Plans
+ - visual text shape creation with font size
+ - rotation

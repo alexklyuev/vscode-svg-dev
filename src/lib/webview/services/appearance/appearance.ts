@@ -29,6 +29,8 @@ export class Appearance {
     editBoxPointWidth = 10;
     editBoxPointHeight = 10;
 
+    textFontSize = 21;
+
     constructor() {
         const fire = this.change.bind(this);
         const proxy = new Proxy(this, {
