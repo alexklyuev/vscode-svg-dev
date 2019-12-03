@@ -90,6 +90,12 @@ You can switch modes by clicking on correcponding item on 'edit on pick' button 
 - `alt+o` - turn edit on pick off
 
 ## What`s new
+ - 0.8.15
+   - text creation changed
+     - now after text addition command (by button or tools menu command) you can point where text should be placed and edit new text in place (press `esc` or `enter` to finish editing)
+     - size of a new text (in pixels) shown on text button, clicking on this size indicator allow you to change it
+   - massive refactoring due to upcoming web version
+   - project repository on github is now open, so you can file an issue
  - 0.8.14
    - 'Edit Box' mode added - if this mode is on, it adds 8 control points on shape bounding box, which allows to shrink and stretch this shape. You can activate this mode on selected shape by pressing `ctrl+shift+e` or by 'edit box' button (appears if selected shape supports box editing and edit-on-pick mode is off)
    - edit-box-mode added as item to 'edit-on-pick' button, also activates by `alt+l`
@@ -143,6 +149,5 @@ You can switch modes by clicking on correcponding item on 'edit on pick' button 
    - new view and extension icons
 
 ## Plans
- - visual text shape creation with font size
  - align
  - rotation
