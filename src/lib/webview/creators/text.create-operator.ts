@@ -1,10 +1,12 @@
 import { BaseCreateOperator } from "./base.create-operator";
-import { artboard, guides, artboardMove } from "@/web/init";
+import { artboard, guides, artboardMove, zoom } from "@/web/init";
 import { appearance } from "../services/appearance";
 import { spawner } from "@/dom/spawner";
 import { findMethodIterator } from "@/common/iterators";
 import { cancelListener } from "../listeners";
 import { fromDomEvent } from "@/dom/iterators";
+import { PointConcerns } from "../models/point-concerns.model";
+import { coordinator } from "@/webview/services/coordinator";
 
 
 export class TextCreateOperator extends BaseCreateOperator {
@@ -21,19 +23,26 @@ export class TextCreateOperator extends BaseCreateOperator {
                         clientX: clickX,
                         clientY: clickY,
                     } = clickEvent;
-                    clickX -= artboardMove.left;
-                    clickY -= artboardMove.top;
+                    const { scrollLeft, scrollTop } = document.scrollingElement!;
+                    const point: PointConcerns = {
+                        client: [clickX, clickY],
+                        scroll: [scrollLeft, scrollTop],
+                        margin: [artboardMove.left, artboardMove.top],
+                        board: [artboard.width, artboard.height],
+                        zoom: zoom.value,
+                    };
+                    const [ x1, y1 ] = coordinator.renderPointConcerns(point, false);
                     const host = guides.div;
                     const editableDiv = spawner.html.div({
                         'contenteditable': 'true'
                     }, {
                         'position': 'absolute',
-                        'left': `${ clickX }px`,
-                        'top': `${ clickY }px`,
+                        'left': `${ x1 }px`,
+                        'top': `${ y1 }px`,
                         'z-index': '2',
                         'pointer-events': 'all',
                         'outline': '1px dotted #777',
-                        'font-size': `${ appearance.textFontSize }px`,
+                        'font-size': `${ appearance.textFontSize * zoom.value }px`,
                         'font-family': 'sans-serif',
                         'color': appearance.fill,
                         'word-break': 'keep-all',
@@ -93,11 +102,13 @@ export class TextCreateOperator extends BaseCreateOperator {
                             cancelEvents.return!();
                             returnables.forEach(r => r.return!());
                             const svg = artboard.svg;
-                            const x = parseFloat(window.getComputedStyle(editableDiv).getPropertyValue('left'))!;
-                            const y = parseFloat(window.getComputedStyle(editableDiv).getPropertyValue('top'))! + appearance.textFontSize;
+                            let x = parseFloat(window.getComputedStyle(editableDiv).getPropertyValue('left'))!;
+                            let y = parseFloat(window.getComputedStyle(editableDiv).getPropertyValue('top'))! + appearance.textFontSize;
+                            x *= 1/zoom.value;
+                            y *= 1/zoom.value;
                             const element = spawner.svg.element('text', {
                                 'x': `${ x }`,
-                                'y': `${ y * .98 }`,
+                                'y': `${ y }`,
                                 'fill': appearance.fill,
                                 'stroke': appearance.stroke,
                                 'font-size': `${ appearance.textFontSize }`,
