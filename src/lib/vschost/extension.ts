@@ -254,12 +254,6 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }),
         vscode.commands.registerCommand('svgDevAddText', async () => {
-            // await vscode.commands.executeCommand('setContext', 'svgDevHostInput', true);
-            // const innerText = await vscode.window.showInputBox();
-            // await vscode.commands.executeCommand('setContext', 'svgDevHostInput', false);
-            // if (innerText) {
-            //     vscode.commands.executeCommand('svgDevAdd', 'text', {innerText});
-            // }
             vscode.commands.executeCommand('svgDevAddInteractive', 'text', {});
         }),
         vscode.commands.registerCommand('svgDevAddInteractive', (name: keyof ElementsDict, attributes = {}) => {
