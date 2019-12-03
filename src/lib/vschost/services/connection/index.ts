@@ -1,29 +1,30 @@
 import { ConnectionsManager } from "./connections-manager";
 import { PipeConnection } from "./pipe-connection";
-import { pickPipe } from "../../../shared/pipes/pick.pipe";
-import { remoteAttributePipe } from "../../../shared/pipes/remote-attribute.pipe";
-import { artboardPipe, artboardInversePipe } from "../../../shared/pipes/artboard.pipe";
-import { artboardStylePipe, artboardStyleInversePipe } from "../../../shared/pipes/artboard-style.pipe";
+import { pickPipe } from "@/shared/pipes/pick.pipe";
+import { remoteAttributePipe } from "@/shared/pipes/remote-attribute.pipe";
+import { artboardPipe, artboardInversePipe } from "@/shared/pipes/artboard.pipe";
+import { artboardStylePipe, artboardStyleInversePipe } from "@/shared/pipes/artboard-style.pipe";
 // import { loggerPipe } from "../../shared/pipes/logger.pipe";
-import { zoomPipe } from "../../../shared/pipes/zoom.pipe";
-import { createPipe } from "../../../shared/pipes/create.pipe";
-import { flushPipe } from "../../../shared/pipes/flush.pipe";
-import { arrangePipe } from "../../../shared/pipes/arrange.pipe";
-import { elementPipe } from "../../../shared/pipes/element.pipe";
-import { groupPipe } from "../../../shared/pipes/group.pipe";
-import { cancelPipe } from "../../../shared/pipes/cancel.pipe";
-import { artboardMovePipe } from "../../../shared/pipes/artboard-move.pipe";
-import { editPipe } from "../../../shared/pipes/edit.pipe";
-import { appearancePipe } from "../../../shared/pipes/appearance.pipe";
-import { inverseInteractivePipe } from "../../../shared/pipes/inverse-interactive.pipe";
-import { textReversePipe } from "../../../shared/pipes/text-reverse.pipe";
-import { moveKeyPipe } from "../../../shared/pipes/move-key.pipe";
-import { listAttributesPipe } from "../../../shared/pipes/list-attributes.pipe";
-import { infomessagePipe } from "../../../shared/pipes/infomessage.pipe";
-import { undoPipe } from "../../../shared/pipes/undo.pipe";
-import { historyPipe } from "../../../shared/pipes/history.pipe";
-import { configPipe } from "../../../shared/pipes/config.pipe";
-import { editModePipe } from "../../../shared/pipes/edit-mode.pipe";
+import { zoomPipe } from "@/shared/pipes/zoom.pipe";
+import { createPipe } from "@/shared/pipes/create.pipe";
+import { flushPipe } from "@/shared/pipes/flush.pipe";
+import { arrangePipe } from "@/shared/pipes/arrange.pipe";
+import { elementPipe } from "@/shared/pipes/element.pipe";
+import { groupPipe } from "@/shared/pipes/group.pipe";
+import { cancelPipe } from "@/shared/pipes/cancel.pipe";
+import { artboardMovePipe } from "@/shared/pipes/artboard-move.pipe";
+import { editPipe } from "@/shared/pipes/edit.pipe";
+import { appearancePipe } from "@/shared/pipes/appearance.pipe";
+import { inverseInteractivePipe } from "@/shared/pipes/inverse-interactive.pipe";
+import { textReversePipe } from "@/shared/pipes/text-reverse.pipe";
+import { moveKeyPipe } from "@/shared/pipes/move-key.pipe";
+import { listAttributesPipe } from "@/shared/pipes/list-attributes.pipe";
+import { infomessagePipe } from "@/shared/pipes/infomessage.pipe";
+import { undoPipe } from "@/shared/pipes/undo.pipe";
+import { historyPipe } from "@/shared/pipes/history.pipe";
+import { configPipe } from "@/shared/pipes/config.pipe";
+import { editModePipe } from "@/shared/pipes/edit-mode.pipe";
+import { alignPipe } from "@/shared/pipes/align.pipe";
 
 
 export const pickConnection = new PipeConnection(pickPipe);
@@ -52,6 +53,7 @@ export const historyConnection = new PipeConnection(historyPipe);
 export const configConnection = new PipeConnection(configPipe);
 export const appearanceConnection = new PipeConnection(appearancePipe);
 export const editModeConnection = new PipeConnection(editModePipe);
+export const alignConnection = new PipeConnection(alignPipe);
 
 const connections: PipeConnection<any, any, any>[] = [
     remoteAttributeConnnection,
@@ -80,6 +82,7 @@ const connections: PipeConnection<any, any, any>[] = [
     historyConnection,
     configConnection,
     editModeConnection,
+    alignConnection,
 ];
 
 export const connectionsManager = new ConnectionsManager();
