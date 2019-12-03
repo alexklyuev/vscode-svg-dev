@@ -4,4 +4,4 @@ import { zoom } from "@/web/init";
 
 
 export const zoomListener = new ZoomListener(zoomPipe, zoom);
-zoomListener.listen();
+// zoomListener.listen();

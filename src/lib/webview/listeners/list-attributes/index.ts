@@ -4,4 +4,4 @@ import { holder } from "@/webview/services/holder";
 
 
 export const listAttributesListener = new ListAttributesListener(listAttributesPipe, holder);
-listAttributesListener.listen();
+// listAttributesListener.listen();

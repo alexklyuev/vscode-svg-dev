@@ -43,7 +43,8 @@ export class GroupListener implements Listener {
     group() {
         const tempAttr = 'data-svg-dev-temp-sort';
         this.holder.elements.forEach(el => el.setAttribute(tempAttr, '1'));
-        const els = Array.from(document.querySelectorAll(`[${ tempAttr }]`));
+        const requestedEls = artboard.svg.querySelectorAll(`[${ tempAttr }]`);
+        const els = Array.from(requestedEls);
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         artboard.svg.appendChild(g);
         els.forEach(el => g.appendChild(el));

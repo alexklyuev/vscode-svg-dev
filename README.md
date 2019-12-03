@@ -144,4 +144,5 @@ You can switch modes by clicking on correcponding item on 'edit on pick' button 
 
 ## Plans
  - visual text shape creation with font size
+ - align
  - rotation

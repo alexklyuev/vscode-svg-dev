@@ -4,4 +4,4 @@ import { appearance } from "@/webview/services/appearance";
 
 
 export const configListener = new ConfigListener(configPipe, appearance);
-configListener.listen();
+// configListener.listen();

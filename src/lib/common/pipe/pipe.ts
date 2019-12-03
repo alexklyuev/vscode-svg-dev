@@ -33,7 +33,15 @@ export class PipeEndpoint<
     private requestGuard: (data: any) => data is {[K in Tag]: {[M in Methods]: Request}};
     private responseGuard: (data: any) => data is {[K in Tag]: {[M in Methods]: Response}};
 
-    private listeners = new Array<() => void>();
+    /**
+     * @todo consider Set
+     */
+    // private listeners = new Array<() => void>();
+    private listeners = new Set<() => void>();
+
+    get listenersCount(): number {
+        return this.listeners.size;
+    }
 
     constructor(
         private tag: Tag,
@@ -93,7 +101,7 @@ export class PipeEndpoint<
                 }
             }
         });
-        this.listeners.push(listener);
+        this.listeners.add(listener);
     }
 
     /**
@@ -112,7 +120,7 @@ export class PipeEndpoint<
                 }
             }
         });
-        this.listeners.push(listener);
+        this.listeners.add(listener);
     }
 
     /**
@@ -120,7 +128,8 @@ export class PipeEndpoint<
      */
     removeListeners() {
         this.listeners.forEach(listener => listener());
-        this.listeners.length = 0;
+        // this.listeners.length = 0;
+        this.listeners.clear();
     }
 
 }
