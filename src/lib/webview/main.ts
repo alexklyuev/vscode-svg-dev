@@ -22,6 +22,7 @@ import {
     groupListener,
     undoListener,
     moveKeyListener,
+    alignListener,
 } from '@/webview/listeners';
 import { findMethodIterator } from '@/common/iterators';
 import { appearance } from '@/webview/services/appearance';
@@ -120,6 +121,16 @@ const pickEndpoint = webviewEndpoint.createFromPipe(pickPipe);
     for await (const _key of keys) {
         editHub.purge();
         guides.setContainerStyles();
+        guides.setSelectionStyles(holder.elements);
+    }
+})();
+
+/**
+ * update guides on align
+ */
+(async () => {
+    const aligns = findMethodIterator(alignListener.performAlign);
+    for await (const _align of aligns) {
         guides.setSelectionStyles(holder.elements);
     }
 })();

@@ -15,8 +15,10 @@ import { moveKeyListener } from './move-key';
 import { remoteAttributeListener } from './remote-attribute';
 import { undoListener } from './undo';
 import { zoomListener } from './zoom';
+import { alignListener } from "./align";
 
 export const allListeners: {[K: string]: Listener} = {
+    alignListener,
     arrangeListener,
     artboardListener,
     artboardStyleListener,
@@ -42,6 +44,7 @@ export const activateAllListeners = () => {
 };
 
 export {
+    alignListener,
     arrangeListener,
     artboardListener,
     artboardStyleListener,
