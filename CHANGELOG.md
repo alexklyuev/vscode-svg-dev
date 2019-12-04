@@ -1,4 +1,6 @@
 # Change Log
+ - 0.8.16
+   - align - you can align multiple selected elements to the left, right, top, bottom, middle or center to key element - key element is first selected element, "Align" menu added to "SVG dev" activity bar "Tools" menu
  - 0.8.15
    - text creation changed
      - now after text addition command (by button or tools menu command) you can point where text should be placed and edit new text in place (press `esc` or `enter` to finish editing)

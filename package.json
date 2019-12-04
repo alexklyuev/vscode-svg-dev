@@ -3,7 +3,7 @@
     "displayName": "SVG dev",
     "description": "SVG visual editor",
     "preview": true,
-    "version": "0.8.15",
+    "version": "0.8.16",
     "icon": "images/line-7_big.png",
     "publisher": "kontrail",
     "repository": {
