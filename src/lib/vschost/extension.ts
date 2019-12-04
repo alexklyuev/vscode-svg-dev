@@ -45,11 +45,13 @@ import {
     historyConnection,
     configConnection,
     editModeConnection,
+    alignConnection,
 } from '@/vschost/services/connection';
 import { CancelKeys } from '@/shared/pipes/cancel.pipe';
 import { MoveArrowKeys } from '@/shared/pipes/move-key.pipe';
 import { hintsDict } from '@/shared/hints/hints.dict';
 import { EditMode } from '@/shared/pipes/edit-mode.pipe';
+import { AlignRequest } from '@/shared/pipes/align.pipe';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -433,6 +435,11 @@ export function activate(context: vscode.ExtensionContext) {
         }),
         vscode.commands.registerCommand('svgDevArrange', async (command: ArrangePipeRequest) => {
             arrangeConnection.ifConnected(endpoint => {
+                endpoint.makeSetRequest(command);
+            });
+        }),
+        vscode.commands.registerCommand('svgDevAlign', (command: AlignRequest) => {
+            alignConnection.ifConnected(endpoint => {
                 endpoint.makeSetRequest(command);
             });
         }),

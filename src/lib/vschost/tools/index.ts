@@ -35,6 +35,7 @@ import { CopyInPlaceTool } from "./element/copy-in-place.tool";
 import { CopyTool } from "./element/copy.tool";
 import { ListAttributesTool } from "./attributes/list-attributes.tool";
 import { AddAttributeTool } from "./attributes/add-attribute.tool";
+import { AlignRequest } from "@/shared/pipes/align.pipe";
 
 export const toolbox = new Toolbox();
 
@@ -145,6 +146,15 @@ toolbox.register(
     {command: {title: 'Send to back', command: 'svgDevArrange', arguments: ['sendToBack']}},
     {command: {title: 'Move forward', command: 'svgDevArrange', arguments: ['moveForward']}},
     {command: {title: 'Move backward', command: 'svgDevArrange', arguments: ['moveBackward']}},
+);
+toolbox.register(
+    new ToolGroup('Align'),
+    {command: {title: 'Horizontal left', command: 'svgDevAlign', arguments: ['left'] as [AlignRequest]}},
+    {command: {title: 'Horizontal center', command: 'svgDevAlign', arguments: ['center'] as [AlignRequest]}},
+    {command: {title: 'Horizontal right', command: 'svgDevAlign', arguments: ['right'] as [AlignRequest]}},
+    {command: {title: 'Vertical top', command: 'svgDevAlign', arguments: ['top'] as [AlignRequest]}},
+    {command: {title: 'Vertical middle', command: 'svgDevAlign', arguments: ['middle'] as [AlignRequest]}},
+    {command: {title: 'Vertical bottom', command: 'svgDevAlign', arguments: ['bottom'] as [AlignRequest]}},
 );
 toolbox.register(
     new ToolGroup('Style'),
