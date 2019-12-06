@@ -151,5 +151,6 @@ You can switch modes by clicking on correcponding item on 'edit on pick' button 
    - new view and extension icons
 
 ## Plans
- - align
  - rotation
+ - masks
+ - sectors

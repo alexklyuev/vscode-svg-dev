@@ -7,16 +7,6 @@ export interface Sprite<Ctor> {
 
     readonly ctor: {new (): Ctor};
 
-    // createOperator?: CreateOperator;
-
-    // dragOperator: Dragger;
-
-    // moveOperator?: Mover;
-
-    // editPointsOperator?: EditOperator;
-
-    // editBoxOperator?: EditOperator;
-
     operators: PartialOperators;
 
 }

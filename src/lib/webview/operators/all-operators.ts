@@ -16,22 +16,3 @@ interface Operators {
 
 export type PartialOperators = Partial<Operators>;
 
-
-// export class AllOperators {
-
-//     createOperator?: CreateOperator | null;
-//     dragOperator?: Dragger | null;
-//     moveOperator?: Mover | null;
-//     editPointsOperator?: EditOperator | null;
-//     editBoxOperator?: EditOperator | null;
-
-//     constructor(
-//         ops: {[K in keyof AllOperators]: AllOperators[K] | null}
-//     ) {
-//         let key: keyof AllOperators;
-//         for (key in ops) {
-//             this[key] = ops[key];
-//         }
-//     }
-
-// }
