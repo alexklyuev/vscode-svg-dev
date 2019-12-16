@@ -6,6 +6,7 @@ export class CreateCommandsComponent extends HTMLElement {
     private template = `
         <button type=button data-name=circle>circle
         <button type=button data-name=rect>rect
+        <button type=button data-name=line>line
         <button type=button data-name=path>path
         <button type=button data-name=polygon>polygon
         <button type=button data-name=polyline>polyline

@@ -27,10 +27,16 @@ export class LayerComponent extends HTMLElement {
     /**
      * @todo temporary method, should be removed in the future
      */
-    replaceSvgDocument(svg: SVGSVGElement) {
+    replaceSvgDocument(svg: SVGSVGElement | string) {
         this.svg.remove();
-        this.div.appendChild(svg);
-        this.svg = svg;
+        if (svg instanceof SVGSVGElement) {
+            this.div.appendChild(svg);
+            this.svg = svg;
+        }
+        if (typeof svg === 'string') {
+            this.div.innerHTML = svg;
+            this.svg = this.div.childNodes[0] as SVGSVGElement;
+        }
     }
 
 }

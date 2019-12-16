@@ -3,6 +3,7 @@ import { userEventMan } from "@/webview/services/user-event";
 import { artboard } from "@/web/init";
 import { holder } from "@/webview/services/holder";
 import { sprites } from "@/webview/services/sprites";
+import { setState } from "&resolve/decorators/set-state.decorator";
 
 
 export class Picker {
@@ -109,6 +110,7 @@ export class Picker {
      * 
      */
     @makeMethodIterator()
+    @setState
     onMouseup(event: MouseEvent) {
         this.controlPropagation(event);
         holder.elements.forEach(element => {

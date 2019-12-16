@@ -22,13 +22,11 @@ export class ElementListener implements Listener {
             _request => holder.elements,
             (command, elements) => {
                 this.applyCommand(command, elements);
-                // elements.forEach(element => {
-                //     this.applyCommand(command, element);
-                // });
             },
         );
     }
 
+    @setState
     applyCommand(command: ElementCommand, elements: SVGElement[]) {
         switch (command) {
             case 'delete':
@@ -87,21 +85,11 @@ export class ElementListener implements Listener {
     @makeMethodIterator()
     @setState
     copyOneElement(element: SVGElement) {
-        // const elHtml = element.outerHTML;
-        // const g = spawner.svg.create('g');
-        // g.innerHTML = elHtml;
-        // const copy = g.children[0] as SVGElement;
-        // element.insertAdjacentElement('afterend', copy);
-        // holder.elements = [copy];
-        // g.remove();
-        // copy.removeAttribute('id');
-        // return copy;
         const sprite = sprites.resolve(element);
         if (sprite) {
             const { copyOperator } = sprite.operators;
             if (copyOperator) {
                 const copy = copyOperator.copy(element);
-                // holder.elements = [copy];
                 return copy;
             }
         }

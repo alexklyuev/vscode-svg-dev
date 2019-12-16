@@ -1,4 +1,4 @@
-import { app, zoom, artboard, artboardMove, guides } from "@/web/init";
+import { app, zoom, artboard, artboardMove, guides, artboardLayer } from "@/web/init";
 import { ZoomCommandsComponent } from "@/web/components/zoom-commands.component";
 import { CreateCommandsComponent } from  "@/web/components/create-commands.component";
 import { ToolbarComponent } from "@/web/components/toolbar.component";
@@ -7,7 +7,7 @@ import { sprites } from "@/webview/services/sprites";
 import { picker } from '@/webview/services/picker';
 import { holder } from "@/webview/services/holder";
 import { toClient, toHost } from "@/webapp/event-emitter";
-import { activateAllListeners } from "@/webview/listeners";
+import { activateAllListeners, allListeners } from "@/webview/listeners";
 import { editHub } from "@/webview/services/edit-hub";
 import { appearance } from "@/webview/services/appearance";
 import { hostEndpoint } from "@/webapp/host-endpoint";
@@ -46,6 +46,7 @@ Object.assign(window, {
         guides,
         editHub,
         producers,
+        listeners: allListeners,
         picker,
         holder,
         events: {
@@ -66,4 +67,8 @@ window.addEventListener('load', _event => {
     document.body.appendChild(app);
     const toolbar = new ToolbarComponent();
     document.body.appendChild(toolbar);
+    const state = localStorage.getItem('state');
+    if (state) {
+        artboardLayer.replaceSvgDocument(state);
+    }
 });

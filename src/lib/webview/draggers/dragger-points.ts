@@ -20,8 +20,10 @@ export class DraggerPoints implements Dragger {
                 .map(val => parseFloat(val))
         )
         .map(([pX, pY]) => [
-            Math.round(clientX - (pX * zoom.value)),
-            Math.round(clientY - (pY * zoom.value)),
+            // Math.round(clientX - (pX * zoom.value)),
+            (clientX - (pX * zoom.value)),
+            // Math.round(clientY - (pY * zoom.value)),
+            (clientY - (pY * zoom.value)),
         ]);
         this.pointsStore.set(
             element,
@@ -47,8 +49,10 @@ export class DraggerPoints implements Dragger {
         }
         const newPoints = points
         .map(([sX, sY]) => [
-            Math.round((clientX - sX) / zoom.value),
-            Math.round((clientY - sY) / zoom.value),
+            // Math.round((clientX - sX) / zoom.value),
+            // Math.round((clientY - sY) / zoom.value),
+            ((clientX - sX) / zoom.value),
+            ((clientY - sY) / zoom.value),
         ])
         .map(pair => pair.join(','))
         .join(' ');

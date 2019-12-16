@@ -1,3 +1,5 @@
+import { artboardLayer } from "@/web/init";
+
 /**
  * class Some {
  *     @setState
@@ -9,6 +11,8 @@ export function setState(_instancePrototype: any, _propertyKey: string, descript
     descriptor.value = function(...args: any[]) {
         const res = orig.call(this, ...args);
         setTimeout(() => {
+            const state = artboardLayer.svg.outerHTML;
+            localStorage.setItem('state', state);
             console.log('State set');
         }, 0);
         return res;
