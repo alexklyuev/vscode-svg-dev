@@ -1,7 +1,8 @@
 import { Sprite } from "@/webview/models/sprite.model";
-import { Resolver } from "./resolvers/resolver.model";
-import { NameResolver } from "./resolvers/name.resolver";
-import { CtorResolver } from "./resolvers/ctor.resolver";
+import { Resolver } from "@/webview/services/sprites/resolvers/resolver.model";
+import { NameResolver } from "@/webview/services/sprites/resolvers/name.resolver";
+import { CtorResolver } from "@/webview/services/sprites/resolvers/ctor.resolver";
+import { AttributeResolver } from "@/webview/services/sprites/resolvers/attribute.resolver";
 
 
 export class SpritesCollection<T extends Sprite<any> = Sprite<any>> {
@@ -9,6 +10,7 @@ export class SpritesCollection<T extends Sprite<any> = Sprite<any>> {
     private sprites = new Set<T>();
 
     public resolvers = Array<Resolver>(
+        new AttributeResolver,
         new NameResolver,
         new CtorResolver,
     );

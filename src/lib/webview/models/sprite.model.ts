@@ -7,6 +7,8 @@ export interface Sprite<Ctor> {
 
     readonly ctor: {new (): Ctor};
 
+    readonly typeAttribute?: string;
+
     operators: PartialOperators;
 
 }
