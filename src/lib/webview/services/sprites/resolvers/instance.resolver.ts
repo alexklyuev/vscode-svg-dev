@@ -7,7 +7,7 @@ export class InstanceResolver implements Resolver {
     find(collection: Set<Sprite<any>>, param: any): Sprite<any> | null {
         if (typeof param === 'object' && param !== null) {
             for (let sprite of collection) {
-                if (param instanceof sprite.ctor) {
+                if (sprite.ctor !== null && param instanceof sprite.ctor) {
                     return sprite;
                 }
             }
