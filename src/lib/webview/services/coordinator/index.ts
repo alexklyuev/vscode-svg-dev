@@ -1,3 +1,3 @@
-import { Coorinator } from "./coordinator";
+import { Coordinator } from "./coordinator";
 
-export const coordinator = new Coorinator();
+export const coordinator = new Coordinator();

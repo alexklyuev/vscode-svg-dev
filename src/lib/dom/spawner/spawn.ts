@@ -2,14 +2,14 @@ export type Props = {[K: string]: string};
 
 abstract class AbstractSpawner<T extends (HTMLElement | SVGElement)> {
 
-  abstract create(name: string): T;
+  abstract actuallyCreateElement(name: string): T;
 
   element(
     name: string,
     attributes: Props,
     styles: Props,
   ) {
-    const element = this.create(name);
+    const element = this.actuallyCreateElement(name);
     this.update(element, attributes, styles);
     return element;
   }
@@ -29,7 +29,7 @@ abstract class AbstractSpawner<T extends (HTMLElement | SVGElement)> {
 
 export class HtmlSpawner extends AbstractSpawner<HTMLElement> {
 
-  create(name: string) {
+  actuallyCreateElement(name: string) {
     return document.createElement(name);
   }
 
@@ -45,7 +45,7 @@ export class HtmlSpawner extends AbstractSpawner<HTMLElement> {
 
 export class SvgSpawner extends AbstractSpawner<SVGElement> {
 
-  create(name: string) {
+  actuallyCreateElement(name: string) {
     return document.createElementNS('http://www.w3.org/2000/svg', name);
   }
 

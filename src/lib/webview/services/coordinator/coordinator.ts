@@ -1,6 +1,6 @@
 import { PointConcerns } from "../../models/point-concerns.model";
 
-export class Coorinator {
+export class Coordinator {
 
     /**
      * //

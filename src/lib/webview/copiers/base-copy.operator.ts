@@ -9,7 +9,7 @@ export class BaseCopyOperator implements CopyOperator {
     @setState
     copy(el: SVGElement): SVGElement {
         const outer = el.outerHTML;
-        const g = spawner.svg.create('g');
+        const g = spawner.svg.element('g', {}, {});
         g.innerHTML = outer;
         const copy = g.children[0] as SVGElement;
         copy.removeAttribute('id');
